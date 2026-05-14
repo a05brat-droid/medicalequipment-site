@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="shortcut icon" href="/icons/android-chrome-192x192.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>УЗИ-аппарата Samsung HS30-РУ</title>
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+         body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+/*верхняя строчка*/
+a {
+    text-decoration: none;
+    color: #5e5d5d;
+}
+
+/* Шапка сайта */
+header {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    text-align: center;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+nav li {
+    display: inline-block;
+    margin: 0 15px;
+}
+/*футер*/
+footer {
+    background-color: #4c4c4c;
+    color: #fff;
+    padding: 20px 0;
+   
+}
+.product-image img {
+    border: 1px solid #ccc; 
+    border-radius: 10px; /* Скругление углов */
+}
+.product-page {
+            display: flex; /* Размещаем изображение и текст рядом */
+            flex-direction: column; /* Вертикальное расположение */
+        }
+        .buttons {
+            display: block;
+             /* Выравнивание по центру */
+            gap: 20px; /* Пробел между кнопками */
+            margin-top: 20px; /* Отступ сверху */
+        }
+
+        .button {
+            padding: 13px 40px;
+            background-color:  #007bff; /* Зеленый цвет */
+            color: white;
+            border: none;
+            border-radius: 5px; /* Скругленные углы */
+            font-size: 16px;
+            cursor: pointer; /* Курсор-указатель */
+            
+        }
+        .button1 {
+            padding: 13px 152px;
+            background-color:  #007bff; /* Зеленый цвет */
+            color: white;
+            border: none;
+            border-radius: 5px; /* Скругленные углы */
+            font-size: 16px;
+            cursor: pointer; /* Курсор-указатель */
+            
+        }
+        .button2 {
+            padding: 13px 75px;
+            background-color:  #007bff; /* Зеленый цвет */
+            color: white;
+            border: none;
+            border-radius: 5px; /* Скругленные углы */
+            font-size: 16px;
+            cursor: pointer; /* Курсор-указатель */
+            
+        }
+        .button:hover {
+            background-color: #868686; 
+        }
+        .button1:hover {
+            background-color: #868686; 
+        }
+        .button2:hover {
+            background-color: #868686; 
+        }
+        li {
+    color: rgb(255, 255, 255); /* Цвет маркеров */
+   }
+   .li1{
+    color: rgb(58, 133, 63);
+   }
+   footer {
+            background-color: #56585b; /* Темно-серый фон */
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: #ffffff; /* Белый шрифт */
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-content p, .footer-content ul {
+            margin: 10px 0;
+        }
+
+        .footer-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer-ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .footer-ul li {
+            margin-bottom: 10px;
+            padding-left: 1.2em;
+            text-indent: -1.2em;
+        }
+
+        .footer-ul li::before {
+            content: "• ";
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .footer-ul strong {
+            color: #ffffff;
+        }
+        
+        .footer1 {
+            background-color: #343a40; /* Темно-серый фон */
+            padding: 40px 20px;
+            color: #ffffff; /* Белый шрифт */
+        }
+
+        .footer1-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer1-column {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+
+        .footer1-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer1-ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .footer1-ul li {
+            margin-bottom: 10px;
+        }
+
+        .contact-info, .legal-info {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .contact-info p, .legal-info p {
+            margin: 5px 0;
+        }
+
+        .footer1-link {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .footer1-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header style="display: flex; justify-content: center; align-items: center;"> 
+        <a href="/" ><img src="./icons/android-chrome-192x192.png" alt="иконка" width="60" style="margin-right: 100px;"> </a>
+        <nav> 
+        <ul style="display: flex; list-style: none; margin: 0; padding: 0;"> 
+            <li><a href="/catalog">Каталог</a></li> 
+            <li><a href="/about">О нас</a></li> 
+            <li><a href="/services">Услуги</a></li> 
+            <li><a href="/operator_guide">Руководство</a></li> 
+            <li><a href="/partners">Партнеры</a></li> 
+            <li><a href="/contacts">Контакты</a></li> 
+          </ul> 
+        </nav> 
+        <div class="line"></div>  <!-- Добавляем линию в шапку -->
+      </header> 
+
+    <main>
+        <section class="product-page">
+            <div style="margin-left:300px; font-size:25px; font-family: Arial;"> <h2>УЗИ-аппарат Samsung HS30-РУ</h2></div>
+            
+            <div class="product-info">
+                <div class="product-image">
+                    
+                     <a href=""target="_blank"><img src="https://mqst.ru/t/GnVxDhr9j8MWfHBWSrjDP1BAU0g=/uploads/2021/03/2326-1.png" hspace="300px" width="450" height="500"
+                    alt="Иллюстрация" align="left" 
+                    vspace="5" hspace="5"></a>
+                </div>
+                <div style="height: 350px;">
+                    
+                <font size="4">
+                <ul><div class="li1" ><span> В наличии</span></div></ul> 
+                <br>
+                <h4>Производитель &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Samsung</h4>
+                <h4>Исполнение &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Переносной (портативный)</h4>
+                <h4>Класс системы &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbspЭкспертный</h4>
+                <h4>Монитор &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp21,5"</h4>
+                <h4>Активные порты&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp&nbsp&nbsp1/3 шт.</h4>
+                <h4>Вес &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 10 кг</h4>
+                <h4>Цена: 1.050.000 руб. &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a href="https://www.youtube.com/watch?v=pb2nlfcutZ4">Оплата</a>&nbsp&nbsp&nbsp &nbsp<a href="https://www.youtube.com/watch?v=pb2nlfcutZ4">Доставка</a></h4>
+                <div class="buttons">
+                    <button class="button1">Запросить КП</button>
+                    <br />
+                    <br />
+                    <button class="button">Заказать сервис</button>
+                    <button class="button2">Лизинг</button>
+                </div>
+            </div>
+            </div>
+        </font>
+            <br>
+            <br>
+            
+        </section>
+    </main>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-title">Описание</p>
+            <p>Ультразвуковой сканер высокого класса Samsung HS30</p>
+            <p>
+                Оснащен оптимальным набором режимов сканирования (B, M, CD, PD, TDI,
+                PW, CW) и подходит для проведения любых рутинных исследований,
+                обеспечивая высокое качество визуализации.
+            </p>
+            <p>
+                Это стало возможным благодаря использованию следующих технологий:
+            </p>
+            <ul class="footer-ul">
+                <li><strong>Elastoscan</strong> — для оценки эластичности тканей;</li>
+                <li><strong>EzAssist</strong> — встроенная система-помощник для проведения
+                    инвазивных процедур;</li>
+                <li><strong>Strain+</strong> — позволяет оценивать параметры сегментарной и
+                    глобальной сократимости левого желудочка сердца;</li>
+                <li><strong>AutoIMT+</strong> — для автоматического расчета комплекса
+                    интим-медиа;</li>
+                <li><strong>NeedleMate</strong> — для подсветки пункционной иглы;</li>
+                <li><strong>ClearVision</strong> — для улучшения качества изображения в
+                    онлайн-режиме за счет удаления спекл-шумов и артефактов. Технология
+                    позволяет видеть контуры более четкими, на границе сред разной
+                    эхоплотности изображение становится более контрастным.</li>
+            </ul>
+            <p>
+                Благодаря совершенному форм-фактору и небольшим габаритам УЗС Samsung
+                HS30 можно перемещать даже в небольших палатах, транспортировать в лифте.
+                Аппарат может использоваться непосредственно на месте оказания медицинской
+                помощи.
+                <br>
+                <br>
+                <br>
+                <p>Strain+</p>
+                <p>Количественная оценка глобальной и локальной сократимости ЛЖ</p>
+                <img src="https://medgrade.pro/upload/iblock/6e1/5h57hjw4s1buvrq5edyaomjcmg2h00s6.jpg" hspace="300px" width="400" height="400">
+                <br>
+                <br>
+                <p>Labor Assist</p>
+                <p>Автоматическое измерение угла прогрессии, отражающего положение головы плода во втором периоде родов</p>
+                <img src="https://medgrade.pro/upload/iblock/e13/kh1sreuavngtqp0jeqmm3b8ows6tw4rw.jpg" hspace="300px" width="400" height="400">
+                <br>
+                <br>
+                <p>2D NT</p>
+                <p>Автоматическое измерение ТВП плода в режиме 2D</p>
+                <img src="https://medgrade.pro/upload/iblock/274/gsz6nka55wrh6tk4df9e4jyiqdaywkw3.jpg" hspace="300px" width="400" height="400">
+                <br>
+                <br>
+                <p>Elastoscan</p>
+                <p>Модуль компрессионной эластографии </p>
+                <img src="https://medgrade.pro/upload/iblock/42b/2tyylfo96vhla65rt4k6hb136noxvijl.jpg" hspace="300px" width="400" height="400">
+            </p>
+        </div>
+    </footer>
+    <footer1>
+            <div class="footer1-container">
+                <div class="footer1-column">
+                    <div class="contact-info">
+                        <p>8 (921) 338-73-75</p>
+                        <p>vitaequip@mail.ru</p>
+                        <p>г. Санкт-Петербург</p>
+                        <p>Волынский пер., 1/36</p>
+                        <p>БЦ «Сенатор», офис 210</p>
+                    </div>
+                </div>
+    
+                <div class="footer1-column">
+                    <p class="footer1-title">О нас</p>
+                    <ul class="footer1-ul">
+                        <li><a href="#" class="footer-link">Проекты</a></li>
+                        <li><a href="#" class="footer-link">Пресс-центр</a></li>
+                        <li><a href="#" class="footer-link">Вакансии</a></li>
+                        <li><a href="#" class="footer-link">Блог</a></li>
+                        <li><a href="#" class="footer-link">Партнеры</a></li>
+                    </ul>
+                </div>
+    
+                <div class="footer1-column">
+                    <p class="footer1-title">Каталог</p>
+                    <ul class="footer1-ul">
+                        <li><a href="#" class="footer-link">В наличии</a></li>
+                        <li><a href="#" class="footer-link">Новинки</a></li>
+                        <li><a href="#" class="footer-link">Хиты</a></li>
+                        <li><a href="#" class="footer-link">Распродажа</a></li>
+                    </ul>
+                </div>
+    
+                <div class="footer1-column">
+                    <p class="footer1-title">Стандарты оснащения</p>
+                    <ul class="footer1-ul">
+                        <li><a href="#" class="footer-link">Услуги</a></li>
+                        <li><a href="#" class="footer-link">Комплексное оснащение</a></li>
+                        <li><a href="#" class="footer-link">Кабинет под ключ</a></li>
+                        <li><a href="#" class="footer-link">Апробация</a></li>
+                        <li><a href="#" class="footer-link">Сервисный центр</a></li>
+                        <li><a href="#" class="footer-link">Лизинг</a></li>
+                        <li><a href="#" class="footer-link">Доставка</a></li>
+                        <li><a href="#" class="footer-link">Шоу-рум</a></li>
+                    </ul>
+                </div>
+            </div>
+    
+            <div class="footer1-container">
+                <div class="footer1-column">
+                    <div class="legal-info">
+                        <p>&copy; 2024 VitaEquip.</p>
+                        <p><a href="#" class="footer1-link">Политика конфиденциальности</a></p>
+                        <p>
+                            Информация на сайте носит информационный характер и не является публичной офертой.
+                            Для получения подробной информации о наличии и стоимости указанных товаров и услуг,
+                            пожалуйста, свяжитесь с нашим менеджером с помощью специальной формы обратной связи
+                            или по телефону 8 (921) 338-73-75.
+                        </p>
+                    </div>
+                </div>
+            </div>
+    </footer1>
+    <!-- Подключение API интеграции -->
+    <script src="/public/api-integration.js"></script>
+</body>
+</html>

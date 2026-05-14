@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Тестер - Медицинское оборудование</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+        
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .response.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e1e8ed;
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 API Тестер</h1>
+            <p>Медицинское оборудование - REST API</p>
+        </div>
+        
+        <div class="content">
+            <!-- Категории -->
+            <div class="section">
+                <h2>📂 Категории</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Получить все категории</h3>
+                        <button class="btn" onclick="getCategories()">GET /api/categories</button>
+                        <div id="categories-response" class="response"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Создать категорию</h3>
+                        <div class="form-group">
+                            <label>Название:</label>
+                            <input type="text" id="category-name" placeholder="Введите название категории">
+                        </div>
+                        <div class="form-group">
+                            <label>Описание:</label>
+                            <textarea id="category-description" placeholder="Введите описание категории"></textarea>
+                        </div>
+                        <button class="btn btn-success" onclick="createCategory()">POST /api/categories</button>
+                        <div id="create-category-response" class="response"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Товары -->
+            <div class="section">
+                <h2>🩺 Товары</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Получить все товары</h3>
+                        <div class="form-group">
+                            <label>Категория (ID):</label>
+                            <input type="number" id="filter-category" placeholder="Оставьте пустым для всех">
+                        </div>
+                        <div class="form-group">
+                            <label>Страница:</label>
+                            <input type="number" id="page" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Товаров на странице:</label>
+                            <input type="number" id="per-page" value="5" min="1" max="50">
+                        </div>
+                        <button class="btn" onclick="getProducts()">GET /api/products</button>
+                        <div id="products-response" class="response"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Получить товар по ID</h3>
+                        <div class="form-group">
+                            <label>ID товара:</label>
+                            <input type="number" id="product-id" value="1" min="1">
+                        </div>
+                        <button class="btn" onclick="getProduct()">GET /api/products/{id}</button>
+                        <div id="product-detail-response" class="response"></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Создать новый товар</h3>
+                    <div class="grid">
+                        <div class="form-group">
+                            <label>Название:</label>
+                            <input type="text" id="product-name" placeholder="Название товара">
+                        </div>
+                        <div class="form-group">
+                            <label>Производитель:</label>
+                            <input type="text" id="product-manufacturer" placeholder="Производитель">
+                        </div>
+                        <div class="form-group">
+                            <label>Исполнение:</label>
+                            <select id="product-execution">
+                                <option value="Портативный">Портативный</option>
+                                <option value="Стационарный">Стационарный</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Класс системы:</label>
+                            <input type="text" id="product-class" placeholder="Класс системы">
+                        </div>
+                        <div class="form-group">
+                            <label>Монитор (дюймы):</label>
+                            <input type="text" id="product-monitor" placeholder="15.6&quot;">
+                        </div>
+                        <div class="form-group">
+                            <label>Активные порты:</label>
+                            <input type="text" id="product-ports" placeholder="USB, HDMI, VGA">
+                        </div>
+                        <div class="form-group">
+                            <label>Вес:</label>
+                            <input type="text" id="product-weight" placeholder="8.5 кг">
+                        </div>
+                        <div class="form-group">
+                            <label>Цена (руб.):</label>
+                            <input type="number" id="product-price" placeholder="2500000" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Категория (ID):</label>
+                            <input type="number" id="product-category" value="1" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Описание:</label>
+                        <textarea id="product-description" placeholder="Подробное описание товара" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="createProduct()">POST /api/products</button>
+                    <div id="create-product-response" class="response"></div>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Загрузка...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function showResponse(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = `response ${isError ? 'error' : 'success'}`;
+        }
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                showLoading();
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP ${response.status}`);
+                }
+                
+                return { success: true, data };
+            } catch (error) {
+                return { success: false, error: error.message };
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        async function getCategories() {
+            const result = await makeRequest(`${API_BASE}/categories`);
+            showResponse('categories-response', result.success ? result.data : result, !result.success);
+        }
+        
+        async function createCategory() {
+            const name = document.getElementById('category-name').value;
+            const description = document.getElementById('category-description').value;
+            
+            if (!name) {
+                alert('Введите название категории');
+                return;
+            }
+            
+            const result = await makeRequest(`${API_BASE}/categories`, {
+                method: 'POST',
+                body: JSON.stringify({ name, description })
+            });
+            
+            showResponse('create-category-response', result.success ? result.data : result, !result.success);
+            
+            if (result.success) {
+                document.getElementById('category-name').value = '';
+                document.getElementById('category-description').value = '';
+            }
+        }
+        
+        async function getProducts() {
+            const categoryId = document.getElementById('filter-category').value;
+            const page = document.getElementById('page').value;
+            const perPage = document.getElementById('per-page').value;
+            
+            let url = `${API_BASE}/products?page=${page}&per_page=${perPage}`;
+            if (categoryId) {
+                url += `&category_id=${categoryId}`;
+            }
+            
+            const result = await makeRequest(url);
+            showResponse('products-response', result.success ? result.data : result, !result.success);
+        }
+        
+        async function getProduct() {
+            const productId = document.getElementById('product-id').value;
+            const result = await makeRequest(`${API_BASE}/products/${productId}`);
+            showResponse('product-detail-response', result.success ? result.data : result, !result.success);
+        }
+        
+        async function createProduct() {
+            const productData = {
+                name: document.getElementById('product-name').value,
+                manufacturer: document.getElementById('product-manufacturer').value,
+                execution_type: document.getElementById('product-execution').value,
+                system_class: document.getElementById('product-class').value,
+                monitor_size: document.getElementById('product-monitor').value,
+                active_ports: document.getElementById('product-ports').value,
+                weight: document.getElementById('product-weight').value,
+                price: parseFloat(document.getElementById('product-price').value),
+                description: document.getElementById('product-description').value,
+                category_id: parseInt(document.getElementById('product-category').value)
+            };
+            
+            if (!productData.name || !productData.manufacturer) {
+                alert('Заполните обязательные поля: название и производитель');
+                return;
+            }
+            
+            const result = await makeRequest(`${API_BASE}/products`, {
+                method: 'POST',
+                body: JSON.stringify(productData)
+            });
+            
+            showResponse('create-product-response', result.success ? result.data : result, !result.success);
+            
+            if (result.success) {
+                // Очистить форму
+                Object.keys(productData).forEach(key => {
+                    const element = document.getElementById(`product-${key.replace('_', '-')}`);
+                    if (element) {
+                        if (element.type === 'number') {
+                            element.value = '';
+                        } else if (element.tagName === 'SELECT') {
+                            element.selectedIndex = 0;
+                        } else {
+                            element.value = '';
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Загрузить категории при загрузке страницы
+        window.addEventListener('load', getCategories);
+    </script>
+</body>
+</html> 

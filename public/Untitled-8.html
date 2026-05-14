@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="shortcut icon" href="/icons/android-chrome-192x192.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Услуги - VitaEquip</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #07111f;
+            --card: #0d1b2e;
+            --card2: #13243a;
+            --blue: #2f80ff;
+            --blue2: #43a5ff;
+            --green: #19c37d;
+            --text: #ffffff;
+            --muted: #9fb3cc;
+            --border: rgba(148, 163, 184, 0.18);
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(47, 128, 255, 0.14), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(25, 195, 125, 0.08), transparent 35%),
+                var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .site-header {
+            background: rgba(7, 17, 31, 0.92);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .logo img {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+        }
+
+        .logo span {
+            color: var(--blue2);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 22px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            font-weight: 600;
+            padding: 10px 4px;
+            transition: 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--blue2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--blue);
+            color: #fff;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 12px 28px rgba(47, 128, 255, 0.28);
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: #1d64e8;
+        }
+
+        .btn-secondary {
+            background: rgba(19, 36, 58, 0.88);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 42px 28px 70px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+
+        .hero-main,
+        .mini-card,
+        .panel-card,
+        .service-card,
+        .faq-card,
+        .step-card,
+        .company-card {
+            background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(13, 27, 46, 0.96));
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-main {
+            padding: 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-main::after {
+            content: "";
+            position: absolute;
+            right: -55px;
+            top: -55px;
+            width: 180px;
+            height: 180px;
+            background: rgba(47, 128, 255, 0.18);
+            border-radius: 50%;
+        }
+
+        .badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(47, 128, 255, 0.16);
+            border: 1px solid rgba(67, 165, 255, 0.35);
+            color: #dbeafe;
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 14px;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-main h1 {
+            margin: 0;
+            font-size: 46px;
+            line-height: 1.12;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-main h1 span {
+            color: var(--blue2);
+        }
+
+        .hero-main p {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.65;
+            max-width: 760px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-side {
+            display: grid;
+            gap: 18px;
+        }
+
+        .mini-card {
+            padding: 24px;
+        }
+
+        .mini-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(47, 128, 255, 0.18);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue2);
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .mini-card h3 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .mini-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .section {
+            margin-top: 36px;
+        }
+
+        .section-title {
+            margin: 0 0 20px;
+            font-size: 32px;
+        }
+
+        .title-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--blue2), var(--green));
+            border-radius: 10px;
+            margin-bottom: 26px;
+        }
+
+        .panel-card {
+            padding: 34px;
+        }
+
+        .panel-card p {
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .service-card {
+            padding: 28px;
+            transition: 0.2s;
+        }
+
+        .service-card:hover,
+        .faq-card:hover,
+        .step-card:hover,
+        .company-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(67, 165, 255, 0.55);
+        }
+
+        .service-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            background: rgba(47, 128, 255, 0.18);
+            color: var(--blue2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+
+        .service-card h3 {
+            margin: 0 0 12px;
+            font-size: 21px;
+        }
+
+        .service-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .map-card {
+            min-height: 430px;
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            background: var(--card);
+            position: relative;
+        }
+
+        .map-card iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 430px;
+            border: 0;
+            filter: grayscale(20%) contrast(1.05);
+        }
+
+        .map-label {
+            position: absolute;
+            left: 22px;
+            right: 22px;
+            bottom: 22px;
+            background: rgba(7, 17, 31, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            backdrop-filter: blur(12px);
+        }
+
+        .map-label b {
+            color: var(--green);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .map-label span {
+            color: var(--muted);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .step-card {
+            padding: 26px;
+            transition: 0.2s;
+        }
+
+        .step-number {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin-bottom: 18px;
+            box-shadow: 0 0 22px rgba(47, 128, 255, 0.35);
+        }
+
+        .step-card h3 {
+            margin: 0 0 10px;
+        }
+
+        .step-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .companies {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .company-card {
+            padding: 26px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .company-logo {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 16px;
+            border-radius: 18px;
+            background: rgba(47, 128, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue2);
+            font-size: 32px;
+        }
+
+        .company-card h3 {
+            margin: 0 0 10px;
+        }
+
+        .company-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .faq-card {
+            padding: 26px;
+            transition: 0.2s;
+        }
+
+        .faq-card h3 {
+            margin: 0 0 12px;
+            font-size: 20px;
+        }
+
+        .faq-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .cta {
+            margin-top: 40px;
+            background: linear-gradient(135deg, #2f80ff, #19c37d);
+            border-radius: 26px;
+            padding: 38px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 18px 45px rgba(47, 128, 255, 0.24);
+        }
+
+        .cta h2 {
+            margin: 0 0 8px;
+        }
+
+        .cta p {
+            margin: 0;
+            color: rgba(255,255,255,0.86);
+        }
+
+        .cta .btn {
+            background: #fff;
+            color: #0f172a;
+            box-shadow: none;
+            white-space: nowrap;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 26px;
+            color: var(--muted);
+            background: rgba(7, 17, 31, 0.8);
+        }
+
+        @media (max-width: 1050px) {
+            .header-inner,
+            nav ul,
+            .cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero,
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid,
+            .steps-grid,
+            .companies,
+            .faq-grid,
+            .news-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .hero-main h1 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .services-grid,
+            .steps-grid,
+            .companies,
+            .faq-grid,
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="logo" href="/">
+            <img src="/icons/android-chrome-192x192.png" alt="VitaEquip">
+            Vita<span>Equip</span>
+        </a>
+
+        <nav>
+            <ul>
+                <li><a href="/catalog">Каталог</a></li>
+                <li><a href="/about">О нас</a></li>
+                <li><a class="active" href="/services">Услуги</a></li>
+                <li><a href="/operator_guide">Руководство</a></li>
+                <li><a href="/partners">Партнеры</a></li>
+                <li><a href="/contacts">Контакты</a></li>
+            </ul>
+        </nav>
+
+        <div style="display:flex; gap:10px;">
+            <a href="/catalog" class="btn">Каталог</a>
+            <a href="/admin" class="btn btn-secondary">Админ</a>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div class="hero-main">
+            <div class="badge">🚚 Услуги VitaEquip</div>
+
+            <h1>Доставка и сопровождение <span>медицинского оборудования</span></h1>
+
+            <p>
+                VitaEquip предоставляет услуги по доставке, консультации, сопровождению заказов
+                и организации работы с медицинским оборудованием для клиник, лабораторий и медицинских центров.
+            </p>
+
+            <p>
+                Для клиентов предусмотрена доставка по Санкт-Петербургу, отправка в регионы России,
+                самовывоз со склада, а также информационная поддержка при выборе оборудования.
+            </p>
+
+            <div class="hero-actions">
+                <a href="/catalog" class="btn"><i class="fa-solid fa-table-list"></i> Перейти в каталог</a>
+                <a href="/contacts" class="btn btn-secondary">Связаться с нами</a>
+            </div>
+        </div>
+
+        <div class="hero-side">
+            <div class="mini-card">
+                <div class="mini-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <h3>Оперативная доставка</h3>
+                <p>Доставка оборудования по Санкт-Петербургу и отправка в регионы транспортными компаниями.</p>
+            </div>
+
+            <div class="mini-card">
+                <div class="mini-icon"><i class="fa-solid fa-headset"></i></div>
+                <h3>Поддержка клиентов</h3>
+                <p>Помощь при выборе товара, оформлении заказа и уточнении условий поставки.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section panel-card">
+        <h2 class="section-title">Условия доставки</h2>
+        <div class="title-line"></div>
+
+        <p>
+            Мы предоставляем доставку медицинского оборудования по Санкт-Петербургу с использованием
+            собственного автопарка и партнёрских служб доставки. Для заказчиков из других регионов
+            России действуют тарифы транспортных компаний, с которыми сотрудничает VitaEquip.
+        </p>
+
+        <p>
+            Государственным и коммерческим организациям доступно согласование индивидуальных условий
+            поставки. При необходимости заказчик может выбрать самовывоз со склада в Санкт-Петербурге,
+            что позволяет сэкономить время и быстрее получить оборудование.
+        </p>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Преимущества работы с нами</h2>
+        <div class="title-line"></div>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h3>Оперативность</h3>
+                <p>Мы стараемся быстро обрабатывать заказы и организовывать доставку оборудования клиентам.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-clock"></i></div>
+                <h3>Экономия времени</h3>
+                <p>Клиент может заранее выбрать оборудование в каталоге и уточнить условия поставки.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-handshake"></i></div>
+                <h3>Надёжные партнёры</h3>
+                <p>Для перевозки оборудования используются проверенные транспортные компании.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-box-open"></i></div>
+                <h3>Аккуратная упаковка</h3>
+                <p>Медицинская техника требует внимательного отношения при хранении и транспортировке.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-file-contract"></i></div>
+                <h3>Работа с документами</h3>
+                <p>При оформлении заказа учитываются данные клиента, стоимость и состав поставки.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-user-check"></i></div>
+                <h3>Консультация</h3>
+                <p>Пользователь может обратиться за помощью по выбору категории и характеристик товара.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Как проходит доставка</h2>
+        <div class="title-line"></div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Выбор товара</h3>
+                <p>Клиент открывает каталог, выбирает категорию и изучает карточку медицинского оборудования.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Оформление заказа</h3>
+                <p>Формируется заказ, указывается клиент, состав заказа и текущий статус обработки.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Подготовка</h3>
+                <p>Сотрудник проверяет состав заказа, наличие оборудования и условия доставки.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>Передача клиенту</h3>
+                <p>Оборудование доставляется клиенту или передаётся через выбранную транспортную компанию.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Доставка транспортной компанией</h2>
+        <div class="title-line"></div>
+
+        <div class="companies">
+            <div class="company-card">
+                <div class="company-logo"><i class="fa-solid fa-truck"></i></div>
+                <h3>Региональная доставка</h3>
+                <p>Отправка медицинского оборудования в регионы России через транспортные компании.</p>
+            </div>
+
+            <div class="company-card">
+                <div class="company-logo"><i class="fa-solid fa-warehouse"></i></div>
+                <h3>Доставка до терминала</h3>
+                <p>Возможна передача груза до ближайшего терминала выбранной службы доставки.</p>
+            </div>
+
+            <div class="company-card">
+                <div class="company-logo"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>Сохранность груза</h3>
+                <p>При транспортировке учитываются требования к упаковке и обращению с медицинской техникой.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section two-col">
+        <div class="panel-card">
+            <h2 class="section-title">Самовывоз</h2>
+            <div class="title-line"></div>
+
+            <p>
+                Клиент может самостоятельно забрать заказ со склада в Санкт-Петербурге.
+                Такой вариант удобен для организаций, которым необходимо получить оборудование
+                в короткие сроки без ожидания доставки.
+            </p>
+
+            <p>
+                Адрес склада: Волынский пер., 1/36, Санкт-Петербург.
+            </p>
+
+            <a href="/contacts" class="btn">Уточнить детали</a>
+        </div>
+
+        <div class="map-card">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20142.45248558626!2d30.32211954750236!3d59.9403424005204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4696339d6030766f%3A0xa7532a822f5b7e51!2sВолынский%20пер.%2C%201%2F36%2C%20Санкт-Петербург%2C%20191186!5e0!3m2!1sru!2sru!4v1701140864508!5m2!1sru!2sru" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+            <div class="map-label">
+                <b>Склад VitaEquip</b>
+                <span>Волынский пер., 1/36, Санкт-Петербург</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Часто задаваемые вопросы</h2>
+        <div class="title-line"></div>
+
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h3>Каковы сроки доставки?</h3>
+                <p>Сроки зависят от региона и выбранной транспортной компании. Обычно доставка занимает от 2 до 7 рабочих дней.</p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Можно ли оформить самовывоз?</h3>
+                <p>Да, заказ можно забрать со склада в Санкт-Петербурге после согласования с менеджером.</p>
+            </div>
+
+            <div class="faq-card">
+                <h3>Есть ли скидки?</h3>
+                <p>Для постоянных клиентов и организаций могут быть предусмотрены индивидуальные условия сотрудничества.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">Новости и обновления</h2>
+        <div class="title-line"></div>
+
+        <div class="news-grid">
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-building"></i></div>
+                <h3>Развитие логистики</h3>
+                <p>Компания планирует расширять направления поставки оборудования в разные регионы России.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <h3>Выставки и мероприятия</h3>
+                <p>VitaEquip отслеживает современные решения в сфере медицинской техники и оборудования.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div>
+            <h2>Нужно подобрать оборудование?</h2>
+            <p>Перейдите в каталог или свяжитесь с нами для уточнения условий доставки.</p>
+        </div>
+
+        <a href="/catalog" class="btn">Открыть каталог</a>
+    </section>
+</main>
+
+<footer>
+    VitaEquip — услуги и доставка медицинского оборудования
+</footer>
+
+<script src="/public/api-integration.js"></script>
+</body>
+</html>

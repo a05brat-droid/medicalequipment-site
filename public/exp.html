@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бренды</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .filters select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        /* остальные стили */
+        header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.filters {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filters input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 300px;
+}
+
+.brands-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.brand {
+    border: 1px solid #ddd;
+    margin: 10px;
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    position: relative; 
+}
+
+.brand:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.brand img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.brand h3 {
+    margin-top: 0;
+}
+
+
+
+.brand::before {
+    left: 0;
+}
+
+.brand::after {
+    right: 0;
+}
+header { 
+    background-color: #fff; 
+    padding: 20px 0; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    position: relative; /* Для позиционирования линии */
+} 
+ 
+header h1 { 
+    text-align: center; 
+    margin: 0; 
+} 
+ 
+nav ul { 
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    text-align: center; 
+} 
+ 
+nav li { 
+    display: inline-block; 
+    margin: 0 15px; 
+} 
+ 
+.line { /* Новый класс для линии */
+    position: absolute; 
+    bottom: 0; /* Линия внизу шапки */
+    left: 0;
+    width: 100%;
+    height: 1px; /* Толщина линии */
+    background-color: #ddd; /* Цвет линии */
+}
+a {
+    text-decoration: none;
+    color: #5e5d5d;
+}
+    </style>
+</head>
+<body>
+    <header style="display: flex; justify-content: center; align-items: center;"> 
+      <a href="/" ><img src="./icons/android-chrome-192x192.png" alt="иконка" width="60" style="margin-right: 100px;"> </a>
+        <nav> 
+        <ul style="display: flex; list-style: none; margin: 0; padding: 0;"> 
+            <li><a href="/catalog">Каталог</a></li> 
+            <li><a href="/about">О нас</a></li> 
+            <li><a href="/services">Услуги</a></li> 
+            <li><a href="/operator_guide">Руководство</a></li> 
+            <li><a href="/partners">Партнеры</a></li> 
+            <li><a href="/contacts">Контакты</a></li> 
+          </ul> 
+        </nav> 
+        <div class="line"></div>  <!-- Добавляем линию в шапку -->
+      </header> 
+
+    <main class="container">
+        <div class="filters">
+            <input type="text" id="search-input" placeholder="Поиск по брендам..." onkeyup="filterBrands()">
+            <select id="country-select" onchange="filterBrands()">
+                <option value="all">Все страны</option>
+                <option value="Корея">Корея</option>
+                <option value="США">США</option>
+                <option value="Япония">Япония</option>
+                <option value="Беларусь">Беларусь</option>
+                <option value="ОАЭ">ОАЭ</option>
+                <option value="Россия">Россия</option>
+            </select>
+        </div>
+
+        <div class="brands-list" id="brandsList">
+            <div class="brand" data-country="Корея">
+                <img src="https://www.smartworld.it/wp-content/uploads/android/2020/11/samsung-logo.png" alt="Samsung">
+                <div style="margin-top: auto;">Samsung</div>
+            </div>
+            <div class="brand" data-country="Корея">
+                <img src="https://www.keleanz.ru/upload/iblock/ec2/sonoskeyp.jpg" alt="SonoScape">
+                <div style="margin-top: auto;">SonoScape</div>
+            </div>
+            <div class="brand" data-country="США">
+                <img src="https://mma.prnewswire.com/media/485034/Aesculap_Inc_Logo.jpg?p=facebook" alt="Aesculap">
+                <div style="margin-top: auto;">Aesculap</div>
+            </div>
+            <div class="brand" data-country="США">
+                <img src="https://content.protocols.io/7ayecje.jpg" alt="BioLegend">
+                <div style="margin-top: auto;">BioLegend</div>
+            </div>
+            <div class="brand" data-country="США">
+                <img src="https://esk-nsk.ru/image/catalog/456/GEHeathecare.png" alt="GE Healthcare">
+                <div style="margin-top: auto;"></div>GE Healthcare
+            </div>
+            <div class="brand" data-country="США">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/Cordis_logo_2022.jpg" alt="Cordis">
+                <div style="margin-top: auto;"></div>Cordis
+            </div>
+            <div class="brand" data-country="Япония">
+                <img src="https://mma.prnewswire.com/media/485034/Aesculap_Inc_Logo.jpg?p=facebook" alt="Alcon">
+                <div style="margin-top: auto;"></div>Alcon 
+            </div>
+            <div class="brand" data-country="Япония">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="OLYMPUS">
+                <div style="margin-top: auto;">OLYMPUS
+            </div>
+            <div class="brand" data-country="Беларусь">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="REMEZA">
+                <div style="margin-top: auto;">REMEZA
+            </div>
+            <div class="brand" data-country="Беларусь">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="УП РАТОН-МЕДТЕХ">
+                <div style="margin-top: auto;">УП "РАТОН-МЕДТЕХ"
+            </div>
+            <div class="brand" data-country="Беларусь">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="MEDIOLA">
+                <div style="margin-top: auto;">MEDIOLA
+            </div>
+            
+            <div class="brand" data-country="ОАЭ">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="ADSS">
+                <div style="margin-top: auto;">ADSS</div>
+            </div>
+            <div class="brand" data-country="ОАЭ">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="BMI">
+                <div style="margin-top: auto;">BMI</div>
+            </div>
+            
+            <div class="brand" data-country="Россия">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="Севканрентген">
+                <div style="margin-top: auto;">Севканрентген</div>
+            </div>
+            <div class="brand" data-country="Россия">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="Фарм БСК">
+                <div style="margin-top: auto;">Фарм БСК</div>
+            </div>
+            <div class="brand" data-country="Россия">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="Сапфир">
+                <div style="margin-top: auto;">Сапфир</div>
+            </div>
+            <div class="brand" data-country="Россия">
+                <img src="https://placehold.co/150x100/dddddd/333333" alt="Армед">
+                <div style="margin-top: auto;">Армед</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function filterBrands() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const selectedCountry = document.getElementById('country-select').value;
+            const brands = document.querySelectorAll('.brand');
+
+            brands.forEach(brand => {
+                const brandName = brand.textContent.trim().toLowerCase();
+                const brandCountry = brand.getAttribute('data-country').toLowerCase();
+                
+                if ((brandName.includes(searchTerm) || searchTerm === '') && (selectedCountry === 'all' || brandCountry === selectedCountry.toLowerCase())) {
+                    brand.style.display = 'block';
+                } else {
+                    brand.style.display = 'none';
+                }
+            });
+        }
+    </script>
+    <!-- Подключение API интеграции -->
+    <script src="/public/api-integration.js"></script>
+    <footer>
+        <div class="container">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h3>VitaEquip</h3>
+                    <p>Ваш надежный партнер в мире медицинского оборудования</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="/">Главная</a></li>
+                        <li><a href="/catalog">Каталог</a></li>
+                        <li><a href="/about">О нас</a></li>
+                        <li><a href="/services">Услуги</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li>Телефон: +7 (999) 123-45-67</li>
+                        <li>Email: info@vitaequip.ru</li>
+                        <li>Адрес: г. Москва, ул. Примерная, 123</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 20px; border-top: 1px solid #555;">
+                <p>&copy; 2024 VitaEquip. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- Подключение Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</body>
+</html>
+
+
+
+

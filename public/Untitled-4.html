@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru"> 
+<head> 
+    <link rel="shortcut icon" href="/icons/android-chrome-192x192.png" type="image/png"> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Медицинское оборудование - VitaEquip</title> 
+    <link rel="stylesheet" href="style.css">  
+    <style> 
+        body { 
+    font-family: 'Arial', sans-serif; 
+    margin: 0; 
+    background-color: #f4f4f4; 
+    color: #333; 
+} 
+header { 
+    background-color: #fff; 
+    padding: 20px 0; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+} 
+ 
+header h1 { 
+    text-align: center; 
+    margin: 0; 
+} 
+ 
+nav ul { 
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    text-align: center; 
+} 
+ 
+nav li { 
+    display: inline-block; 
+    margin: 0 15px; 
+} 
+h1, h2, h3 { 
+    font-weight: 700; 
+} 
+/*верхняя строчка*/ 
+a { 
+    text-decoration: none; 
+    color: #5e5d5d; 
+} 
+ 
+.btn { 
+    background-color: #007bff; 
+    color: #fff; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+} 
+ 
+.btn:hover { 
+    background-color: #0069d9; 
+} 
+ 
+/* Шапка сайта */ 
+header { 
+    background-color: #fff; 
+    padding: 20px 0; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    position: relative; /* Для позиционирования линии */
+} 
+ 
+header h1 { 
+    text-align: center; 
+    margin: 0; 
+} 
+ 
+nav ul { 
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    text-align: center; 
+} 
+ 
+nav li { 
+    display: inline-block; 
+    margin: 0 15px; 
+} 
+ 
+.line { /* Новый класс для линии */
+    position: absolute; 
+    bottom: 0; /* Линия внизу шапки */
+    left: 0;
+    width: 100%;
+    height: 1px; /* Толщина линии */
+    background-color: #ddd; /* Цвет линии */
+}
+ 
+/* Категории */ 
+.categories { 
+    padding: 40px 30px; 
+    background-color: #fff; 
+} 
+ 
+.category-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px; 
+    padding: 20px; 
+} 
+ 
+.category { 
+    text-align: center; 
+    border: 1px solid #ddd; 
+    padding: 20px; 
+    border-radius: 10px; 
+} 
+ 
+.category img { 
+    width: 100%; 
+    height: 150px; 
+    object-fit: cover; 
+    border-radius: 10px; 
+} 
+ 
+/* Выделенные продукты */ 
+.featured-products { 
+    padding: 40px 0; 
+    background-color: #fff; 
+} 
+ 
+.product-grid { 
+    display: grid;
+    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px; 
+    padding: 20px; 
+} 
+ 
+.product { 
+    text-align: center; 
+    border: 1px solid #ddd; 
+    padding: 20px; 
+    border-radius: 10px; 
+} 
+ 
+.product img { 
+    width: 100%; 
+    height: 500px; 
+    object-fit: cover; 
+    border-radius: 10px; 
+} 
+ 
+/* Футер */ 
+footer { 
+    background-color: #333; 
+    color: #fff; 
+    padding: 20px 0; 
+    text-align: center; 
+} 
+ 
+    </style> 
+</head> 
+<body> 
+    
+    <header style="display: flex; justify-content: center; align-items: center;"> 
+        <a href="/" ><img src="./icons/android-chrome-192x192.png" alt="иконка" width="60" style="margin-right: 100px;"> </a>
+        <nav> 
+        <ul style="display: flex; list-style: none; margin: 0; padding: 0;"> 
+            <li><a href="/catalog">Каталог</a></li> 
+            <li><a href="/about">О нас</a></li> 
+            <li><a href="/services">Услуги</a></li> 
+            <li><a href="/operator_guide">Руководство</a></li> 
+            <li><a href="/partners">Партнеры</a></li> 
+            <li><a href="/contacts">Контакты</a></li> 
+          </ul> 
+        </nav> 
+        <div class="line"></div>  <!-- Добавляем линию в шапку -->
+      </header> 
+ 
+    <main> 
+        <section class="hero"> 
+            <div class="hero-text"> 
+                <h2>Медицинское оборудование высочайшего качества</h2> 
+                <p>Обеспечьте свою клинику, больницу или медицинский центр надежным и современным оборудованием.</p> 
+                <a href="/catalog" class="btn">Просмотреть каталог</a> 
+            </div> 
+            <div class="hero-image"> 
+                <img src="https://mycistit.ru/wp-content/uploads/2022/05/sa-15.jpg" alt="Медицинское оборудование"> 
+            </div> 
+        </section>
+

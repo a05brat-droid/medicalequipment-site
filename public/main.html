@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="shortcut icon" href="./icons/android-chrome-192x192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaEquip — интернет-ресурс для продажи медтехники</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #07111f;
+            --bg-card: #0d1b2e;
+            --bg-soft: #13243a;
+            --blue: #2f80ff;
+            --blue-light: #43a5ff;
+            --green: #19c37d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.18);
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: var(--text-main);
+            background:
+                radial-gradient(circle at top left, rgba(47, 128, 255, 0.20), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(25, 195, 125, 0.10), transparent 35%),
+                var(--bg-main);
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(7, 17, 31, 0.88);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 22px;
+        }
+
+        .logo img {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            box-shadow: 0 0 24px rgba(47, 128, 255, 0.35);
+        }
+
+        .logo span {
+            color: var(--blue-light);
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            color: #fff;
+            background: rgba(47, 128, 255, 0.16);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--blue), #1d64e8);
+            color: #fff;
+            padding: 13px 22px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 12px 28px rgba(47, 128, 255, 0.28);
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+        }
+
+        .btn-secondary {
+            background: rgba(19, 36, 58, 0.88);
+            color: #dbeafe;
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .hero {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 90px 28px 60px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            align-items: center;
+            gap: 46px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(47, 128, 255, 0.14);
+            border: 1px solid rgba(47, 128, 255, 0.28);
+            color: #bfdbfe;
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 58px;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+        }
+
+        .hero h1 span {
+            color: var(--blue-light);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 19px;
+            line-height: 1.65;
+            max-width: 640px;
+            margin: 22px 0 28px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 34px;
+            max-width: 620px;
+        }
+
+        .hero-stat {
+            background: rgba(13, 27, 46, 0.82);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .hero-stat b {
+            display: block;
+            font-size: 26px;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .hero-stat span {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-card {
+            background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(21, 44, 72, 0.82));
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-card::before {
+            content: "";
+            position: absolute;
+            right: -80px;
+            top: -80px;
+            width: 220px;
+            height: 220px;
+            background: rgba(47, 128, 255, 0.18);
+            border-radius: 50%;
+        }
+
+        .hero-card img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 22px;
+            display: block;
+            filter: saturate(1.05) contrast(1.02);
+        }
+
+        .floating-card {
+            position: absolute;
+            left: -28px;
+            bottom: 34px;
+            background: rgba(7, 17, 31, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px 18px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .floating-card b {
+            color: var(--green);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .floating-card span {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 48px 28px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 34px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 36px;
+            color: #fff;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            margin: 12px auto 0;
+            max-width: 720px;
+            line-height: 1.55;
+        }
+
+        .advantages-grid,
+        .category-grid,
+        #featured-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        #main-advantages .advantage-card,
+        #main-categories .main-category-card {
+            background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(21, 44, 72, 0.82));
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+            transition: 0.25s;
+            min-height: 210px;
+        }
+
+        #main-advantages .advantage-card:hover,
+        #main-categories .main-category-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(67, 165, 255, 0.65);
+            box-shadow: 0 18px 42px rgba(47, 128, 255, 0.18);
+        }
+
+        .advantage-icon,
+        .main-category-icon {
+            font-size: 36px;
+            color: var(--blue-light);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        #main-advantages h3,
+        #main-categories h3 {
+            color: #fff;
+            margin: 10px 0;
+            font-size: 19px;
+        }
+
+        #main-advantages p,
+        #main-categories p {
+            color: var(--text-muted);
+            line-height: 1.45;
+            font-size: 14px;
+        }
+
+        .products-section {
+            padding-top: 20px;
+        }
+
+        .products-section .product-card {
+            background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(21, 44, 72, 0.82)) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 22px !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.16) !important;
+        }
+
+        .products-section .product-image {
+            background: rgba(255,255,255,0.06) !important;
+        }
+
+        .products-section .product-info h3 {
+            color: #fff !important;
+        }
+
+        .products-section .manufacturer {
+            color: var(--text-muted) !important;
+        }
+
+        .products-section .product-price-fixed {
+            color: var(--green) !important;
+        }
+
+        .about-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        .about-card {
+            background: rgba(13, 27, 46, 0.86);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 14px 34px rgba(0,0,0,0.16);
+        }
+
+        .about-card h2 {
+            margin-top: 0;
+            font-size: 30px;
+        }
+
+        .about-card p {
+            color: var(--text-muted);
+            line-height: 1.65;
+        }
+
+        .about-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .about-list div {
+            background: rgba(19, 36, 58, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            color: #dbeafe;
+        }
+
+        .cta {
+            margin: 48px auto 70px;
+            max-width: 1224px;
+            background:
+                linear-gradient(135deg, rgba(47, 128, 255, 0.94), rgba(25, 195, 125, 0.75)),
+                var(--blue);
+            border-radius: 28px;
+            padding: 46px;
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: center;
+            box-shadow: 0 18px 45px rgba(47, 128, 255, 0.24);
+        }
+
+        .cta h2 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        .cta p {
+            margin: 0;
+            color: rgba(255,255,255,0.82);
+            line-height: 1.55;
+        }
+
+        .cta .btn {
+            background: #fff;
+            color: #0f172a;
+            box-shadow: none;
+            white-space: nowrap;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 26px;
+            text-align: center;
+            color: var(--text-muted);
+            background: rgba(7, 17, 31, 0.8);
+        }
+
+        #admin-login-form {
+            display: none;
+        }
+
+        .admin-login-mini {
+            background: rgba(19, 36, 58, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            max-width: 760px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .admin-login-mini label {
+            color: #cbd5e1;
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .admin-login-mini input {
+            width: 100%;
+            background: rgba(7, 17, 31, 0.82);
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 12px;
+            padding: 12px;
+            outline: none;
+        }
+
+        #admin-login-error {
+            color: #fecaca;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 950px) {
+            .header-inner,
+            nav ul,
+            .hero-buttons,
+            .cta {
+                flex-direction: column;
+            }
+
+            .header-inner {
+                align-items: flex-start;
+            }
+
+            nav ul {
+                align-items: flex-start;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding-top: 54px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .hero-stats,
+            .about-panel,
+            .admin-login-mini {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-card {
+                position: static;
+                margin-top: 14px;
+            }
+
+            .cta {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="logo" href="/">
+            <img src="./icons/android-chrome-192x192.png" alt="VitaEquip">
+            Vita<span>Equip</span>
+        </a>
+
+        <nav>
+            <ul>
+                <li><a href="/catalog">Каталог</a></li>
+                <li><a href="/about">О нас</a></li>
+                <li><a href="/services">Услуги</a></li>
+                <li><a href="/operator_guide">Руководство</a></li>
+                <li><a href="/partners">Партнеры</a></li>
+                <li><a href="/contacts">Контакты</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <a href="/catalog" class="btn">Каталог</a>
+            <a href="/admin" class="btn btn-secondary">Админ</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div>
+            <div class="hero-badge">
+                <i class="fa-solid fa-heart-pulse"></i>
+                Интернет-ресурс для продажи медтехники
+            </div>
+
+            <h1>Современная <span>медицинская техника</span> для клиник и центров</h1>
+
+            <p>
+                VitaEquip объединяет каталог медицинского оборудования, оформление заказов,
+                работу с клиентами, поставщиками и базой данных Microsoft SQL Server.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="/catalog" class="btn">
+                    <i class="fa-solid fa-table-list"></i>
+                    Перейти в каталог
+                </a>
+
+                <a href="/about" class="btn btn-secondary">
+                    Подробнее о ресурсе
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <b>24/7</b>
+                    <span>доступ к ресурсу</span>
+                </div>
+
+                <div class="hero-stat">
+                    <b>SQL</b>
+                    <span>централизованная база</span>
+                </div>
+
+                <div class="hero-stat">
+                    <b>CRM</b>
+                    <span>панель управления</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-card">
+                <img src="https://mycistit.ru/wp-content/uploads/2022/05/sa-15.jpg" alt="Медицинское оборудование">
+            </div>
+
+            <div class="floating-card">
+                <b>Каталог + заказы + база данных</b>
+                <span>единая система для продажи медтехники</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="about-panel">
+            <div class="about-card">
+                <h2>Что представляет собой VitaEquip</h2>
+                <p>
+                    VitaEquip — интернет-ресурс для продажи медтехники, предназначенный для
+                    просмотра каталога оборудования, оформления заказов и управления данными
+                    через административную панель.
+                </p>
+                <p>
+                    В системе предусмотрено хранение информации о товарах, клиентах, заказах,
+                    поставщиках и оплатах, что делает работу с данными более удобной и наглядной.
+                </p>
+            </div>
+
+            <div class="about-list">
+                <div><i class="fa-solid fa-database"></i> Единая база данных Microsoft SQL Server</div>
+                <div><i class="fa-solid fa-cart-shopping"></i> Оформление и контроль заказов</div>
+                <div><i class="fa-solid fa-boxes-stacked"></i> Управление каталогом медтехники</div>
+                <div><i class="fa-solid fa-chart-line"></i> Статистика и аналитика в админ-панели</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="advantages">
+        <div class="section-header">
+            <h2>Преимущества интернет-ресурса</h2>
+            <p>Основные возможности, которые делают работу с медицинским оборудованием удобнее.</p>
+        </div>
+
+        <div class="advantages-grid" id="main-advantages"></div>
+    </section>
+
+    <section class="categories">
+        <div class="section-header">
+            <h2>Категории оборудования</h2>
+            <p>Каталог разделён на категории для быстрого поиска нужной медтехники.</p>
+        </div>
+
+        <div id="main-categories" class="category-grid"></div>
+    </section>
+
+    <section class="products-section">
+        <div class="section-header">
+            <h2>Популярные товары</h2>
+            <p>Примеры товаров, загружаемых из базы данных интернет-ресурса.</p>
+        </div>
+
+        <div id="featured-products"></div>
+    </section>
+
+    <section>
+        <form id="admin-login-form">
+            <input type="text" id="admin-username" placeholder="Логин">
+            <input type="password" id="admin-password" placeholder="Пароль">
+            <button type="submit">Войти</button>
+            <span id="admin-login-error"></span>
+        </form>
+
+        <div class="admin-login-mini">
+            <div>
+                <label>Логин администратора</label>
+                <input type="text" id="admin-username-mini" placeholder="Введите логин">
+            </div>
+
+            <div>
+                <label>Пароль администратора</label>
+                <input type="password" id="admin-password-mini" placeholder="Введите пароль">
+            </div>
+
+            <button type="button" id="admin-login-mini-btn" class="btn">Войти</button>
+
+            <span id="admin-login-error-mini"></span>
+        </div>
+    </section>
+
+    <div class="cta">
+        <div>
+            <h2>Готовы перейти к каталогу?</h2>
+            <p>
+                Просмотрите медицинское оборудование, доступное в базе данных,
+                и выберите подходящие позиции для организации.
+            </p>
+        </div>
+
+        <a href="/catalog" class="btn">Открыть каталог</a>
+    </div>
+</main>
+
+<footer>
+    VitaEquip — интернет-ресурс для продажи медтехники
+</footer>
+
+<script src="/public/api-integration.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        PageRenderer.initMainPage();
+    });
+
+    async function adminLogin(username, password, errorElement) {
+        errorElement.textContent = '';
+
+        try {
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (data.token) {
+                localStorage.setItem('adminToken', data.token);
+                window.location.href = '/admin';
+            } else {
+                errorElement.textContent = data.error || 'Ошибка входа';
+            }
+        } catch (err) {
+            errorElement.textContent = 'Ошибка сервера';
+        }
+    }
+
+    document.getElementById('admin-login-mini-btn').addEventListener('click', function() {
+        const username = document.getElementById('admin-username-mini').value;
+        const password = document.getElementById('admin-password-mini').value;
+        const errorSpan = document.getElementById('admin-login-error-mini');
+
+        adminLogin(username, password, errorSpan);
+    });
+
+    document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('admin-username').value;
+        const password = document.getElementById('admin-password').value;
+        const errorSpan = document.getElementById('admin-login-error');
+
+        adminLogin(username, password, errorSpan);
+    });
+</script>
+</body>
+</html>

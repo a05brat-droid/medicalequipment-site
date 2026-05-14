@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="shortcut icon" href="../public/icons/android-chrome-192x192.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доставка медицинского оборудования</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        header { 
+    background-color: #fff; 
+    padding: 20px 0; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    position: relative; /* Для позиционирования линии */
+} 
+ 
+header h1 { 
+    text-align: center; 
+    margin: 0; 
+} 
+ 
+nav ul { 
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+    text-align: center; 
+} 
+ 
+nav li { 
+    display: inline-block; 
+    margin: 0 15px; 
+} 
+ 
+.line { /* Новый класс для линии */
+    position: absolute; 
+    bottom: 0; /* Линия внизу шапки */
+    left: 0;
+    width: 100%;
+    height: 1px; /* Толщина линии */
+    background-color: #ddd; /* Цвет линии */
+}
+a {
+    text-decoration: none;
+    color: #5e5d5d;
+}
+
+       
+
+        
+
+       
+
+        .container {
+            padding: 2em;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #007bff;
+            text-align: center;
+            margin-top: 1em;
+            font-size: 2em;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: #007bff;
+            margin: 10px auto;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5em;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            overflow: hidden;
+            position: relative;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            background: #007bff;
+            color: #fff;
+            margin: 0;
+            padding: 1em;
+            font-size: 1.25em;
+        }
+
+        .card p {
+            padding: 1em;
+            margin: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        ul li {
+            background: #e9ecef;
+            margin: 0.5em 0;
+            padding: 1em;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+            transition: background 0.3s, border-left 0.3s;
+        }
+
+        ul li:hover {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .map {
+            margin-top: 20px;
+            width: 100%;
+            height: 400px; /* Adjust height as needed */
+        }
+
+        .transport-companies {
+            display: flex;
+            justify-content: center;
+            gap: 1em;
+            margin-top: 1em;
+            flex-wrap: wrap;
+        }
+
+        .transport-companies img {
+            width: 100px;
+            height: auto;
+            transition: transform 0.3s;
+        }
+
+        .transport-companies img:hover {
+            transform: scale(1.2);
+        }
+
+        footer {
+            background: #343a40;
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+            margin-top: 2em;
+            position: relative;
+        }
+
+        footer .socials {
+            margin-top: 1em;
+        }
+
+        footer .socials a {
+            color: #fff;
+            margin: 0 0.5em;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+
+        footer .socials a:hover {
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav a {
+                margin: 0.5em 0;
+            }
+
+            .transport-companies {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .transport-companies img {
+                width: 150px;
+            }
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/scrollreveal"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            ScrollReveal().reveal('.container', { delay: 200, reset: true });
+            ScrollReveal().reveal('.card', { delay: 400, reset: true, origin: 'bottom' });
+            ScrollReveal().reveal('.map-container', { delay: 600, reset: true, origin: 'bottom' });
+
+            function initMap() {
+                var location = { lat: 59.932845, lng: 30.350128 };
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 14,
+                    center: location
+                });
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: 'Наш склад'
+                });
+                var infoWindow = new google.maps.InfoWindow({
+                    content: '<h3>Наш склад</h3><p>Волынский пер., 1/36, Санкт-Петербург</p>'
+                });
+
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+                });
+            }
+
+            initMap();
+        });
+    </script>
+</head>
+<body>
+    <header style="display: flex; justify-content: center; align-items: center;"> 
+      <a href="/" ><img src="./icons/android-chrome-192x192.png" alt="иконка" width="60" style="margin-right: 100px;"> </a>
+        <nav> 
+        <ul style="display: flex; list-style: none; margin: 0; padding: 0;"> 
+            <li><a href="/catalog">Каталог</a></li> 
+            <li><a href="/about">О нас</a></li> 
+            <li><a href="/services">Услуги</a></li> 
+            <li><a href="/operator_guide">Руководство</a></li> 
+            <li><a href="/partners">Партнеры</a></li> 
+            <li><a href="/contacts">Контакты</a></li> 
+          </ul> 
+        </nav> 
+        <div class="line"></div>  <!-- Добавляем линию в шапку -->
+      </header> 
+    
+    <div class="container" id="home">
+        <h2>Условия доставки</h2>
+        <p>Мы предоставляем бесплатную доставку медицинского оборудования по Санкт-Петербургу с использованием нашего автопарка. Для заказчиков из других регионов России действуют тарифы транспортных компаний, с которыми мы сотрудничаем.</p>
+        <p>Государственным организациям доставка входит в стоимость контракта, что делает сотрудничество с нами более выгодным и удобным.</p>
+        <p>Торгующим организациям предлагается возможность самовывоза заказа со склада в Санкт-Петербурге для экономии времени и средств на доставку.</p>
+
+        <h2>Преимущества работы с нами</h2>
+        <div class="content-grid">
+            <div class="card">
+                <h3>Оперативность доставки</h3>
+                <p>Мы осуществляем доставку по всей России и странам ЕАЭС, обеспечивая оперативность и надежность.</p>
+            </div>
+            <div class="card">
+                <h3>Экономия времени и средств</h3>
+                <p>Бесплатная доставка до ближайшего терминала транспортной компании экономит ресурсы клиентов.</p>
+            </div>
+            <div class="card">
+                <h3>Надежные партнеры</h3>
+                <p>Тщательно выбираем партнеров для погрузочно-разгрузочных работ, обеспечивая сохранность оборудования.</p>
+            </div>
+        </div>
+
+        <h2>Доставка транспортной компанией</h2>
+        <p>Выберите удобную транспортную компанию и рассчитайте стоимость доставки на их сайтах.</p>
+        <div class="transport-companies">
+            <img src="https://avatars.dzeninfra.ru/get-zen_doc/4414226/pub_62f937b7290c116eafbc2343_62f938461d0fab01db8e1c31/scale_1200" alt="Транспортная компания 1">
+            <img src="https://industrialstd.ru/upload/medialibrary/ac0/brcxdfjr68kz1osc8ov9wtlq6fdh7oxg.jpg" alt="Транспортная компания 2">
+            <img src="https://s.alicdn.com/@sc04/kf/H6612af5246d64c57b6e9b8b8f65fc067t.jpg" alt="Транспортная компания 3">
+        </div>
+
+        <h2>Самовывоз</h2>
+        <p>Заберите заказ со склада в Санкт-Петербурге по адресу: Волынский пер., 1/36.</p>
+        <div class="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20142.45248558626!2d30.32211954750236!3d59.9403424005204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4696339d6030766f%3A0xa7532a822f5b7e51!2sВолынский%20пер.%2C%201%2F36%2C%20Санкт-Петербург%2C%20191186!5e0!3m2!1sru!2sru!4v1701140864508!5m2!1sru!2sru" width="1000" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <br>
+        <br>
+        
+
+        <h2>Часто задаваемые вопросы</h2>
+        <ul>
+            <li>
+                <h3>Каковы сроки доставки?</h3>
+                <p>Сроки зависят от региона и выбранной транспортной компании, обычно от 2 до 7 рабочих дней.</p>
+            </li>
+            <li>
+                <h3>Условия возврата и обмена?</h3>
+                <p>Принимаем возврат и осуществляем обмен в соответствии с законодательством. Обратитесь к нашему отделу обслуживания клиентов для подробной информации.</p>
+            </li>
+            <li>
+                <h3>Скидки для постоянных клиентов?</h3>
+                <p>Предоставляем гибкую систему скидок. Уточните детали у нашего менеджера по продажам.</p>
+            </li>
+        </ul>
+
+        <h2>Новости и обновления</h2>
+        <div class="content-grid">
+            <div class="card">
+                <h3>Новый склад в Москве</h3>
+                <p>Открытие нового склада в Москве позволит сократить сроки доставки по Центральной России.</p>
+            </div>
+            <div class="card">
+                <h3>Участие в выставке "МедТех 2024"</h3>
+                <p>Мы примем участие в международной выставке "МедТех 2024" с 15 по 18 сентября в Москве.</p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Интелмед</p>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+    <!-- Подключение API интеграции -->
+    <script src="/public/api-integration.js"></script>
+</body>
+</html>
+

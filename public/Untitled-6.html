@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="shortcut icon" href="/icons/logo.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог - VitaEquip</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #07111f;
+            --card: #0d1b2e;
+            --card2: #13243a;
+            --blue: #2f80ff;
+            --blue2: #43a5ff;
+            --green: #19c37d;
+            --text: #ffffff;
+            --muted: #9fb3cc;
+            --border: rgba(148, 163, 184, 0.18);
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(47, 128, 255, 0.14), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(25, 195, 125, 0.08), transparent 35%),
+                var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .site-header {
+            background: rgba(7, 17, 31, 0.92);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .logo img {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+        }
+
+        .logo span {
+            color: var(--blue2);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 22px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            font-weight: 600;
+            padding: 10px 4px;
+            transition: 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--blue2);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--blue);
+            color: #fff;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(47, 128, 255, 0.28);
+            transition: 0.2s;
+            font-size: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: #1d64e8;
+        }
+
+        .btn-secondary {
+            background: rgba(19, 36, 58, 0.88);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 42px 28px 70px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 28px;
+            margin-bottom: 28px;
+        }
+
+        .hero-main,
+        .mini-card,
+        .panel-card,
+        .category-card,
+        .product-card {
+            background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(13, 27, 46, 0.96));
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-main {
+            padding: 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-main::after {
+            content: "";
+            position: absolute;
+            right: -55px;
+            top: -55px;
+            width: 180px;
+            height: 180px;
+            background: rgba(47, 128, 255, 0.18);
+            border-radius: 50%;
+        }
+
+        .badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(47, 128, 255, 0.16);
+            border: 1px solid rgba(67, 165, 255, 0.35);
+            color: #dbeafe;
+            border-radius: 999px;
+            padding: 9px 14px;
+            font-size: 14px;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-main h1 {
+            margin: 0;
+            font-size: 46px;
+            line-height: 1.12;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-main h1 span {
+            color: var(--blue2);
+        }
+
+        .hero-main p {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.65;
+            max-width: 760px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 26px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-side {
+            display: grid;
+            gap: 18px;
+        }
+
+        .mini-card {
+            padding: 24px;
+        }
+
+        .mini-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(47, 128, 255, 0.18);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blue2);
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .mini-card h3 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .mini-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .section {
+            margin-top: 36px;
+        }
+
+        .panel-card {
+            padding: 34px;
+        }
+
+        .section-title {
+            margin: 0 0 20px;
+            font-size: 32px;
+        }
+
+        .title-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--blue2), var(--green));
+            border-radius: 10px;
+            margin-bottom: 26px;
+        }
+
+        .section-description {
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 26px;
+        }
+
+        #categories-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .category-card {
+            padding: 26px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+            min-height: 150px;
+        }
+
+        .category-card::before {
+            content: "🏥";
+            position: absolute;
+            right: 24px;
+            top: 22px;
+            font-size: 38px;
+            opacity: 0.22;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(67, 165, 255, 0.55);
+        }
+
+        .category-card h3 {
+            margin: 0 0 12px;
+            color: #fff;
+            font-size: 21px;
+            padding-right: 42px;
+        }
+
+        .category-card p {
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 0 0 14px;
+        }
+
+        .category-count {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(47, 128, 255, 0.16);
+            color: #dbeafe;
+            font-size: 13px;
+            border: 1px solid rgba(67, 165, 255, 0.25);
+        }
+
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 26px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            min-width: 280px;
+            max-width: 420px;
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            background: #081524;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px 14px 44px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: rgba(67, 165, 255, 0.55);
+            box-shadow: 0 0 0 3px rgba(47, 128, 255, 0.12);
+        }
+
+        #products-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .product-card {
+            padding: 22px;
+            transition: 0.2s;
+            overflow: hidden;
+            min-height: 430px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(67, 165, 255, 0.55);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 210px;
+            background: #081524;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .no-image {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-info h3 {
+            margin: 0 0 12px;
+            color: #ffffff;
+            font-size: 21px;
+            line-height: 1.35;
+        }
+
+        .manufacturer {
+            color: #b8c7dc;
+            margin: 0 0 14px;
+            font-size: 15px;
+        }
+
+        .price {
+            color: var(--green);
+            font-weight: 800;
+            font-size: 20px;
+            margin: auto 0 18px;
+        }
+
+        .details-btn {
+            width: 100%;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .details-btn:hover {
+            background: #1d64e8;
+            transform: translateY(-2px);
+        }
+
+        .loading,
+        #products-container > p,
+        #categories-container > p {
+            color: var(--muted);
+            background: rgba(13, 27, 46, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+        }
+
+        /* =========================
+           МОДАЛЬНОЕ ОКНО ТОВАРА
+           ========================= */
+
+        .product-modal {
+            position: fixed !important;
+            inset: 0 !important;
+            background: rgba(2, 6, 23, 0.78) !important;
+            z-index: 1000 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 24px !important;
+            backdrop-filter: blur(8px) !important;
+        }
+
+        .product-modal .modal-content {
+            max-width: 980px !important;
+            width: 100% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            padding: 34px !important;
+            position: relative !important;
+            background: linear-gradient(145deg, #132844, #0b1b31) !important;
+            border: 1px solid rgba(67, 165, 255, 0.35) !important;
+            border-radius: 28px !important;
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.42),
+                0 0 50px rgba(47, 128, 255, 0.18) !important;
+        }
+
+        .product-modal .close {
+            position: absolute !important;
+            top: 16px !important;
+            right: 24px !important;
+            color: #cfe4ff !important;
+            font-size: 34px !important;
+            cursor: pointer !important;
+            line-height: 1 !important;
+            opacity: 1 !important;
+            text-shadow: 0 0 12px rgba(67, 165, 255, 0.45) !important;
+        }
+
+        .product-modal .close:hover {
+            color: #43a5ff !important;
+        }
+
+        .product-modal .product-details {
+            display: grid !important;
+            grid-template-columns: 0.9fr 1.1fr !important;
+            gap: 30px !important;
+            align-items: start !important;
+        }
+
+        .product-modal .product-images {
+            display: grid !important;
+            gap: 14px !important;
+        }
+
+        .product-modal .product-images img {
+            width: 100% !important;
+            max-height: 340px !important;
+            object-fit: contain !important;
+            background: #f8fbff !important;
+            border: 1px solid rgba(67, 165, 255, 0.28) !important;
+            border-radius: 18px !important;
+            padding: 12px !important;
+        }
+
+        .product-modal .product-info-modal h2 {
+            margin: 0 0 22px !important;
+            color: #2f80ff !important;
+            font-size: 32px !important;
+            line-height: 1.2 !important;
+            font-weight: 800 !important;
+            text-shadow:
+                0 0 12px rgba(47, 128, 255, 0.40),
+                0 0 28px rgba(47, 128, 255, 0.18) !important;
+        }
+
+        .product-modal .product-info-modal p {
+            color: #dcecff !important;
+            font-size: 17px !important;
+            line-height: 1.65 !important;
+            margin: 12px 0 !important;
+            font-weight: 500 !important;
+        }
+
+        .product-modal .product-info-modal strong {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+        }
+
+        .product-modal .product-info-modal p:nth-last-child(2) {
+            color: #19c37d !important;
+            font-size: 20px !important;
+            font-weight: 800 !important;
+        }
+
+        .cta {
+            margin-top: 40px;
+            background: linear-gradient(135deg, #2f80ff, #19c37d);
+            border-radius: 26px;
+            padding: 38px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 18px 45px rgba(47, 128, 255, 0.24);
+        }
+
+        .cta h2 {
+            margin: 0 0 8px;
+        }
+
+        .cta p {
+            margin: 0;
+            color: rgba(255,255,255,0.86);
+        }
+
+        .cta .btn {
+            background: #fff;
+            color: #0f172a;
+            box-shadow: none;
+            white-space: nowrap;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 26px;
+            color: var(--muted);
+            background: rgba(7, 17, 31, 0.8);
+        }
+
+        @media (max-width: 1050px) {
+            .header-inner,
+            nav ul,
+            .cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            #categories-container,
+            #products-container {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .product-modal .product-details {
+                grid-template-columns: 1fr !important;
+            }
+
+            .hero-main h1 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            #categories-container,
+            #products-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="logo" href="/">
+            <img src="/icons/android-chrome-192x192.png" alt="VitaEquip">
+            Vita<span>Equip</span>
+        </a>
+
+        <nav>
+            <ul>
+                <li><a class="active" href="/catalog">Каталог</a></li>
+                <li><a href="/about">О нас</a></li>
+                <li><a href="/services">Услуги</a></li>
+                <li><a href="/operator_guide">Руководство</a></li>
+                <li><a href="/partners">Партнеры</a></li>
+                <li><a href="/contacts">Контакты</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-buttons">
+            <a href="/" class="btn btn-secondary">Главная</a>
+            <a href="/admin" class="btn">Админ</a>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div class="hero-main">
+            <div class="badge">📦 Каталог VitaEquip</div>
+
+            <h1>Каталог <span>медицинского оборудования</span></h1>
+
+            <p>
+                В каталоге представлены товары для медицинских организаций:
+                диагностическое, лабораторное и хирургическое оборудование.
+            </p>
+
+            <p>
+                Данные о товарах, категориях, изображениях и стоимости загружаются из базы данных,
+                поэтому каталог связан с административной панелью и актуальными записями системы.
+            </p>
+
+            <div class="hero-actions">
+                <button class="btn" onclick="scrollToCatalog()">
+                    <i class="fa-solid fa-arrow-down"></i>
+                    Перейти к товарам
+                </button>
+
+                <a href="/contacts" class="btn btn-secondary">Связаться</a>
+            </div>
+        </div>
+
+        <div class="hero-side">
+            <div class="mini-card">
+                <div class="mini-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h3>Категории товаров</h3>
+                <p>Оборудование разделено по категориям для удобного просмотра и выбора.</p>
+            </div>
+
+            <div class="mini-card">
+                <div class="mini-icon"><i class="fa-solid fa-database"></i></div>
+                <h3>Данные из SQL Server</h3>
+                <p>Карточки товаров отображают информацию, сохранённую в базе данных проекта.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section panel-card">
+        <h2 class="section-title">Категории</h2>
+        <div class="title-line"></div>
+
+        <p class="section-description">
+            Выберите категорию, чтобы отфильтровать товары и быстрее найти нужное оборудование.
+        </p>
+
+        <div id="categories-container">
+            <div class="loading">Загрузка категорий...</div>
+        </div>
+    </section>
+
+    <section id="catalog" class="section panel-card">
+        <div class="catalog-header">
+            <div>
+                <h2 class="section-title">Наши товары</h2>
+                <div class="title-line"></div>
+            </div>
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="catalog-search" placeholder="Поиск по товарам...">
+            </div>
+        </div>
+
+        <p class="section-description">
+            Откройте карточку товара, чтобы посмотреть подробные характеристики, производителя, цену и описание.
+        </p>
+
+        <div id="products-container">
+            <div class="loading">Загрузка товаров...</div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div>
+            <h2>Не нашли нужное оборудование?</h2>
+            <p>Свяжитесь с нами, и специалист поможет подобрать подходящую медицинскую технику.</p>
+        </div>
+
+        <a href="/contacts" class="btn">Написать нам</a>
+    </section>
+</main>
+
+<footer>
+    VitaEquip — каталог медицинского оборудования
+</footer>
+
+<script src="/public/api-integration.js"></script>
+
+<script>
+    let allCatalogProducts = [];
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        await PageRenderer.initCatalogPage();
+
+        setTimeout(() => {
+            saveCurrentProductsForSearch();
+        }, 700);
+
+        const searchInput = document.getElementById('catalog-search');
+
+        searchInput.addEventListener('input', function() {
+            filterCatalogProducts(this.value);
+        });
+    });
+
+    function scrollToCatalog() {
+        document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function saveCurrentProductsForSearch() {
+        const result = await window.medicalAPI.getProducts(1, 1000);
+        allCatalogProducts = result.products || result.data || [];
+    }
+
+    async function filterCatalogProducts(value) {
+        const text = value.toLowerCase().trim();
+
+        if (!allCatalogProducts.length) {
+            await saveCurrentProductsForSearch();
+        }
+
+        const filtered = allCatalogProducts.filter(product => {
+            return String(product.name || '').toLowerCase().includes(text) ||
+                   String(product.manufacturer || '').toLowerCase().includes(text) ||
+                   String(product.description || '').toLowerCase().includes(text);
+        });
+
+        PageRenderer.renderProducts(filtered, 'products-container');
+    }
+</script>
+</body>
+</html>
