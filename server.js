@@ -7,7 +7,7 @@ const fs = require('fs');
 const cors = require('cors');
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
-const sql = require('mssql');
+const sqlite3 = require('sqlite3').verbose();
 const crypto = require('crypto');
 
 const app = express();
@@ -17,10 +17,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'medicalequipmentstore_jwt_secret';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'medicalequipmentstore_secret';
 
 const uploadsDir = path.join(__dirname, 'uploads');
+const dbDir = path.join(__dirname, 'data');
+const dbPath = path.join(dbDir, 'medicalequipment.sqlite');
 
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
 app.use('/uploads', express.static(uploadsDir));
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -38,9 +39,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024
-    },
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
         const allowed = ['.jpg', '.jpeg', '.png', '.webp'];
         const ext = path.extname(file.originalname).toLowerCase();
@@ -53,32 +52,33 @@ const upload = multer({
     }
 });
 
-const dbConfig = {
-    user: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || '',
-    server: process.env.DB_SERVER || 'localhost',
-    database: process.env.DB_DATABASE || process.env.DB_NAME || 'MedicalEquipmentStore',
-    port: Number(process.env.DB_PORT || 1433),
-    options: {
-        encrypt: process.env.DB_ENCRYPT === 'true',
-        trustServerCertificate: process.env.DB_TRUST_CERT !== 'false'
-    },
-    pool: {
-        max: 10,
-        min: 0,
-        idleTimeoutMillis: 30000
-    }
-};
+const db = new sqlite3.Database(dbPath);
 
-let pool;
+function dbRun(query, params = []) {
+    return new Promise((resolve, reject) => {
+        db.run(query, params, function (err) {
+            if (err) reject(err);
+            else resolve(this);
+        });
+    });
+}
 
-async function getPool() {
-    if (pool) {
-        return pool;
-    }
+function dbGet(query, params = []) {
+    return new Promise((resolve, reject) => {
+        db.get(query, params, function (err, row) {
+            if (err) reject(err);
+            else resolve(row);
+        });
+    });
+}
 
-    pool = await sql.connect(dbConfig);
-    return pool;
+function dbAll(query, params = []) {
+    return new Promise((resolve, reject) => {
+        db.all(query, params, function (err, rows) {
+            if (err) reject(err);
+            else resolve(rows);
+        });
+    });
 }
 
 function sha1(text) {
@@ -131,6 +131,223 @@ app.use(session({
     saveUninitialized: false
 }));
 
+async function initDatabase() {
+    await dbRun(`PRAGMA foreign_keys = ON`);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS USERS (
+            USER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            FULL_NAME TEXT NOT NULL,
+            PHONE TEXT NOT NULL,
+            EMAIL TEXT NOT NULL UNIQUE,
+            LOGIN TEXT NOT NULL UNIQUE,
+            PASSWORD TEXT NOT NULL
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS CUSTOMERS (
+            CUSTOMER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            USER_ID INTEGER NOT NULL UNIQUE,
+            DELIVERY_ADDRESS TEXT NOT NULL,
+            FOREIGN KEY (USER_ID) REFERENCES USERS(USER_ID) ON DELETE CASCADE
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS PRODUCT_CATEGORIES (
+            CATEGORY_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            NAME TEXT NOT NULL UNIQUE
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS PRODUCTS (
+            PRODUCT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            CATEGORY_ID INTEGER NOT NULL,
+            NAME TEXT NOT NULL,
+            CURRENT_SALE_PRICE REAL NOT NULL,
+            CURRENT_PURCHASE_PRICE REAL NOT NULL DEFAULT 0,
+            DESCRIPTION TEXT,
+            IMAGE TEXT,
+            MANUFACTURER TEXT,
+            EXECUTION_TYPE TEXT,
+            SYSTEM_CLASS TEXT,
+            MONITOR_SIZE TEXT,
+            ACTIVE_PORTS TEXT,
+            WEIGHT TEXT,
+            FOREIGN KEY (CATEGORY_ID) REFERENCES PRODUCT_CATEGORIES(CATEGORY_ID)
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS ORDER_STATUSES (
+            ORDER_STATUS_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            NAME TEXT NOT NULL UNIQUE
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS ORDERS (
+            ORDER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            CUSTOMER_ID INTEGER NOT NULL,
+            ORDER_DATE TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            ORDER_STATUS_ID INTEGER NOT NULL DEFAULT 1,
+            FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS(CUSTOMER_ID),
+            FOREIGN KEY (ORDER_STATUS_ID) REFERENCES ORDER_STATUSES(ORDER_STATUS_ID)
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS ORDER_ITEMS (
+            ORDER_ID INTEGER NOT NULL,
+            PRODUCT_ID INTEGER NOT NULL,
+            SALE_PRICE_AT_TIME REAL NOT NULL,
+            QUANTITY INTEGER NOT NULL,
+            PRIMARY KEY (ORDER_ID, PRODUCT_ID),
+            FOREIGN KEY (ORDER_ID) REFERENCES ORDERS(ORDER_ID) ON DELETE CASCADE,
+            FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID)
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS SUPPLIERS (
+            SUPPLIER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            NAME TEXT NOT NULL,
+            LEGAL_ADDRESS TEXT NOT NULL
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS SUPPLIES (
+            SUPPLY_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            SUPPLIER_ID INTEGER NOT NULL,
+            SUPPLY_DATE TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (SUPPLIER_ID) REFERENCES SUPPLIERS(SUPPLIER_ID) ON DELETE CASCADE
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS SUPPLY_ITEMS (
+            SUPPLY_ID INTEGER NOT NULL,
+            PRODUCT_ID INTEGER NOT NULL,
+            QUANTITY INTEGER NOT NULL,
+            PURCHASE_PRICE_AT_TIME REAL NOT NULL,
+            PRIMARY KEY (SUPPLY_ID, PRODUCT_ID),
+            FOREIGN KEY (SUPPLY_ID) REFERENCES SUPPLIES(SUPPLY_ID) ON DELETE CASCADE,
+            FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID)
+        )
+    `);
+
+    await dbRun(`
+        CREATE TABLE IF NOT EXISTS PAYMENTS (
+            PAYMENT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            ORDER_ID INTEGER NOT NULL,
+            PAYMENT_METHOD TEXT,
+            PAYMENT_STATUS TEXT,
+            FOREIGN KEY (ORDER_ID) REFERENCES ORDERS(ORDER_ID) ON DELETE CASCADE
+        )
+    `);
+
+    await seedDatabase();
+}
+
+async function seedDatabase() {
+    const admin = await dbGet(`SELECT USER_ID FROM USERS WHERE LOGIN = ?`, ['admin']);
+
+    if (!admin) {
+        await dbRun(
+            `INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?, ?, ?)`,
+            ['Администратор системы', '+79990000001', 'admin@mail.ru', 'admin', sha1('admin')]
+        );
+    }
+
+    const categoriesCount = await dbGet(`SELECT COUNT(*) AS count FROM PRODUCT_CATEGORIES`);
+
+    if (categoriesCount.count === 0) {
+        const categories = [
+            'Диагностическое оборудование',
+            'Лабораторное оборудование',
+            'Хирургическое оборудование'
+        ];
+
+        for (const name of categories) {
+            await dbRun(`INSERT INTO PRODUCT_CATEGORIES (NAME) VALUES (?)`, [name]);
+        }
+    }
+
+    const statusesCount = await dbGet(`SELECT COUNT(*) AS count FROM ORDER_STATUSES`);
+
+    if (statusesCount.count === 0) {
+        const statuses = ['Новый', 'В обработке', 'Оплачен', 'Отправлен', 'Доставлен', 'Отменён'];
+
+        for (const name of statuses) {
+            await dbRun(`INSERT INTO ORDER_STATUSES (NAME) VALUES (?)`, [name]);
+        }
+    }
+
+    const productsCount = await dbGet(`SELECT COUNT(*) AS count FROM PRODUCTS`);
+
+    if (productsCount.count === 0) {
+        await dbRun(`
+            INSERT INTO PRODUCTS 
+            (CATEGORY_ID, NAME, CURRENT_SALE_PRICE, CURRENT_PURCHASE_PRICE, DESCRIPTION, IMAGE, MANUFACTURER, EXECUTION_TYPE, SYSTEM_CLASS, MONITOR_SIZE, ACTIVE_PORTS, WEIGHT)
+            VALUES
+            (1, 'УЗИ аппарат Samsung HS70A', 3500000, 2900000, 'Современный УЗИ аппарат для диагностических исследований.', '/uploads/ultrasound_devices/uzi-apparat-samsung-hs70.jpg', 'Samsung', 'Портативный', 'Премиум', '17"', 'USB, HDMI, VGA', '234'),
+            (1, 'Рентгеновский аппарат Carestream DRX-Revolution', 6200000, 5100000, 'Мобильная цифровая рентгеновская система.', '/uploads/xray_equipment/mobileart-evolution.png', 'Carestream', 'Мобильный', 'Профессиональный', '19"', 'USB, LAN', '380'),
+            (2, 'Лабораторный микроскоп', 75000, 55000, 'Микроскоп для лабораторной диагностики.', '/uploads/laboratory_equipment/laboratornyy-mikroskop.jpg', 'Olympus', 'Настольный', 'Базовый', '—', '—', '8'),
+            (3, 'Хирургический стол', 180000, 130000, 'Стол для хирургических кабинетов и операционных.', '/uploads/surgical_equipment/hirurgicheskiy-stol.jpg', 'Armed', 'Стационарный', 'Стандарт', '—', '—', '120')
+        `);
+    }
+
+    const customersCount = await dbGet(`SELECT COUNT(*) AS count FROM CUSTOMERS`);
+
+    if (customersCount.count === 0) {
+        await dbRun(
+            `INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?, ?, ?)`,
+            ['Петров Петр Олегович', '+79990000002', 'client1@mail.ru', 'client1', sha1('client1')]
+        );
+        const user1 = await dbGet(`SELECT USER_ID FROM USERS WHERE LOGIN = ?`, ['client1']);
+        await dbRun(`INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS) VALUES (?, ?)`, [user1.USER_ID, 'г. Москва, ул. Ленина, д. 10']);
+
+        await dbRun(
+            `INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?, ?, ?)`,
+            ['Смирнова Анна Олеговна', '+79990000003', 'client2@mail.ru', 'client2', sha1('client2')]
+        );
+        const user2 = await dbGet(`SELECT USER_ID FROM USERS WHERE LOGIN = ?`, ['client2']);
+        await dbRun(`INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS) VALUES (?, ?)`, [user2.USER_ID, 'г. Санкт-Петербург, Невский пр., д. 25']);
+    }
+
+    const suppliersCount = await dbGet(`SELECT COUNT(*) AS count FROM SUPPLIERS`);
+
+    if (suppliersCount.count === 0) {
+        await dbRun(`
+            INSERT INTO SUPPLIERS (NAME, LEGAL_ADDRESS)
+            VALUES
+            ('Samsung Medical', 'Республика Корея, Сеул'),
+            ('Carestream Health', 'США, Нью-Йорк'),
+            ('Armed', 'Россия, Москва')
+        `);
+    }
+
+    const ordersCount = await dbGet(`SELECT COUNT(*) AS count FROM ORDERS`);
+
+    if (ordersCount.count === 0) {
+        const customer = await dbGet(`SELECT CUSTOMER_ID FROM CUSTOMERS ORDER BY CUSTOMER_ID LIMIT 1`);
+        if (customer) {
+            const order = await dbRun(
+                `INSERT INTO ORDERS (CUSTOMER_ID, ORDER_DATE, ORDER_STATUS_ID) VALUES (?, ?, ?)`,
+                [customer.CUSTOMER_ID, '2026-05-08', 2]
+            );
+
+            await dbRun(
+                `INSERT INTO ORDER_ITEMS (ORDER_ID, PRODUCT_ID, SALE_PRICE_AT_TIME, QUANTITY) VALUES (?, ?, ?, ?)`,
+                [order.lastID, 2, 6200000, 1]
+            );
+        }
+    }
+}
+
 function sendPublicPage(pageName) {
     return (req, res) => {
         const filePath = path.join(__dirname, 'public', pageName);
@@ -159,7 +376,7 @@ app.get('/api/info', (req, res) => {
         success: true,
         data: {
             name: 'MedicalEquipmentStore API',
-            database: 'SQL Server',
+            database: 'SQLite',
             version: '1.0.0'
         }
     });
@@ -167,14 +384,12 @@ app.get('/api/info', (req, res) => {
 
 app.get('/api/health', async (req, res) => {
     try {
-        const db = await getPool();
-        await db.request().query('SELECT 1 AS ok');
+        await dbGet('SELECT 1 AS ok');
         res.json({ success: true, database: 'connected' });
     } catch (error) {
         res.status(500).json({ success: false, database: 'disconnected', error: error.message });
     }
 });
-
 
 app.get('/api/pages', (req, res) => {
     res.json({
@@ -197,7 +412,7 @@ app.get('/api/about', (req, res) => {
         data: {
             whoWeAre: [
                 'VitaEquip — интернет-ресурс для продажи медтехники, предназначенный для просмотра каталога оборудования, оформления заказов и взаимодействия с клиентами.',
-                'Интернет-ресурс объединяет пользовательскую часть, административную панель и базу данных Microsoft SQL Server для хранения информации о товарах, клиентах, заказах и поставщиках.'
+                'Интернет-ресурс объединяет пользовательскую часть, административную панель и базу данных для хранения информации о товарах, клиентах, заказах и поставщиках.'
             ],
             advantages: [
                 { title: 'Качественное оборудование', text: 'В каталоге представлены категории медицинской техники для диагностики, лабораторной и хирургической деятельности.' },
@@ -209,7 +424,7 @@ app.get('/api/about', (req, res) => {
                 'Быстрый доступ к каталогу медицинского оборудования.',
                 'Возможность оформления заказа через интернет-ресурс.',
                 'Контроль статусов заказов и оплат.',
-                'Структурированное хранение данных в Microsoft SQL Server.',
+                'Структурированное хранение данных в базе данных.',
                 'Возможность дальнейшего расширения функциональности.'
             ]
         }
@@ -254,24 +469,36 @@ app.post('/api/feedback', (req, res) => {
     });
 });
 
-app.get('/api/uploads', (req, res) => {
-    if (!fs.existsSync(uploadsDir)) {
-        return res.json([]);
+function getFilesRecursive(dir, base = '') {
+    if (!fs.existsSync(dir)) return [];
+
+    let result = [];
+
+    for (const item of fs.readdirSync(dir)) {
+        const fullPath = path.join(dir, item);
+        const relativePath = path.join(base, item).replace(/\\/g, '/');
+
+        if (fs.statSync(fullPath).isDirectory()) {
+            result = result.concat(getFilesRecursive(fullPath, relativePath));
+        } else {
+            result.push(relativePath);
+        }
     }
 
-    const files = fs.readdirSync(uploadsDir).filter(Boolean);
-    res.json(files);
+    return result;
+}
+
+app.get('/api/uploads', (req, res) => {
+    res.json(getFilesRecursive(uploadsDir));
 });
 
 app.get('/api/categories', async (req, res) => {
     try {
-        const db = await getPool();
-
-        const result = await db.request().query(`
+        const rows = await dbAll(`
             SELECT
                 c.CATEGORY_ID AS id,
                 c.NAME AS name,
-                CAST(NULL AS NVARCHAR(255)) AS description,
+                NULL AS description,
                 COUNT(p.PRODUCT_ID) AS product_count
             FROM PRODUCT_CATEGORIES c
             LEFT JOIN PRODUCTS p ON p.CATEGORY_ID = c.CATEGORY_ID
@@ -279,40 +506,29 @@ app.get('/api/categories', async (req, res) => {
             ORDER BY c.NAME
         `);
 
-        res.json({
-            success: true,
-            data: result.recordset
-        });
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Ошибка /api/categories:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки категорий'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки категорий' });
     }
 });
 
 app.get('/api/products', async (req, res) => {
     try {
-        const db = await getPool();
-
         const page = Math.max(parseInt(req.query.page || '1', 10), 1);
         const limit = Math.max(parseInt(req.query.limit || '10', 10), 1);
         const offset = (page - 1) * limit;
         const categoryId = req.query.category_id ? Number(req.query.category_id) : null;
 
         let whereSql = '';
-        const request = db.request();
+        let params = [];
 
         if (categoryId) {
-            request.input('categoryId', sql.Int, categoryId);
-            whereSql = 'WHERE p.CATEGORY_ID = @categoryId';
+            whereSql = 'WHERE p.CATEGORY_ID = ?';
+            params.push(categoryId);
         }
 
-        request.input('offset', sql.Int, offset);
-        request.input('limit', sql.Int, limit);
-
-        const dataQuery = `
+        const products = await dbAll(`
             SELECT
                 p.PRODUCT_ID AS id,
                 p.CATEGORY_ID AS category_id,
@@ -332,58 +548,36 @@ app.get('/api/products', async (req, res) => {
             JOIN PRODUCT_CATEGORIES c ON c.CATEGORY_ID = p.CATEGORY_ID
             ${whereSql}
             ORDER BY p.PRODUCT_ID DESC
-            OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
-        `;
+            LIMIT ? OFFSET ?
+        `, [...params, limit, offset]);
 
-        const countRequest = db.request();
-        if (categoryId) {
-            countRequest.input('categoryId', sql.Int, categoryId);
-        }
-
-        const countQuery = `
+        const totalRow = await dbGet(`
             SELECT COUNT(*) AS total
             FROM PRODUCTS p
-            ${whereSql};
-        `;
-
-        const [dataResult, countResult] = await Promise.all([
-            request.query(dataQuery),
-            countRequest.query(countQuery)
-        ]);
-
-        const products = dataResult.recordset.map(p => ({
-            ...p,
-            images: p.image ? [p.image] : []
-        }));
-
-        const total = countResult.recordset[0].total;
+            ${whereSql}
+        `, params);
 
         res.json({
             success: true,
             data: {
-                products,
-                total,
+                products: products.map(p => ({
+                    ...p,
+                    images: p.image ? [p.image] : []
+                })),
+                total: totalRow.total,
                 page,
-                totalPages: Math.max(Math.ceil(total / limit), 1)
+                totalPages: Math.max(Math.ceil(totalRow.total / limit), 1)
             }
         });
     } catch (error) {
         console.error('Ошибка /api/products:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки товаров'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки товаров' });
     }
 });
 
 app.get('/api/products/:id', async (req, res) => {
     try {
-        const db = await getPool();
-        const request = db.request();
-
-        request.input('id', sql.Int, Number(req.params.id));
-
-        const result = await request.query(`
+        const product = await dbGet(`
             SELECT
                 p.PRODUCT_ID AS id,
                 p.CATEGORY_ID AS category_id,
@@ -401,17 +595,12 @@ app.get('/api/products/:id', async (req, res) => {
                 p.WEIGHT AS weight
             FROM PRODUCTS p
             JOIN PRODUCT_CATEGORIES c ON c.CATEGORY_ID = p.CATEGORY_ID
-            WHERE p.PRODUCT_ID = @id
-        `);
+            WHERE p.PRODUCT_ID = ?
+        `, [Number(req.params.id)]);
 
-        if (!result.recordset.length) {
-            return res.status(404).json({
-                success: false,
-                error: 'Товар не найден'
-            });
+        if (!product) {
+            return res.status(404).json({ success: false, error: 'Товар не найден' });
         }
-
-        const product = result.recordset[0];
 
         res.json({
             success: true,
@@ -422,33 +611,19 @@ app.get('/api/products/:id', async (req, res) => {
         });
     } catch (error) {
         console.error('Ошибка /api/products/:id:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки товара'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки товара' });
     }
 });
 
 app.post('/api/upload-image', adminAuth, upload.single('image'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({
-                success: false,
-                error: 'Файл не выбран'
-            });
-        }
-
-        res.json({
-            success: true,
-            filePath: '/uploads/' + req.file.filename
-        });
-    } catch (error) {
-        console.error('Ошибка /api/upload-image:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки изображения'
-        });
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: 'Файл не выбран' });
     }
+
+    res.json({
+        success: true,
+        filePath: '/uploads/' + req.file.filename
+    });
 });
 
 app.post('/api/admin/login', async (req, res) => {
@@ -456,32 +631,19 @@ app.post('/api/admin/login', async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(400).json({
-                success: false,
-                error: 'Введите логин и пароль'
-            });
+            return res.status(400).json({ success: false, error: 'Введите логин и пароль' });
         }
 
-        const db = await getPool();
-        const request = db.request();
-
-        request.input('login', sql.NVarChar(50), username);
-        request.input('password', sql.Char(40), sha1(password));
-
-        const result = await request.query(`
+        const user = await dbGet(`
             SELECT USER_ID, FULL_NAME, LOGIN
             FROM USERS
-            WHERE LOGIN = @login AND PASSWORD = @password
-        `);
+            WHERE LOGIN = ? AND PASSWORD = ?
+        `, [username, sha1(password)]);
 
-        if (!result.recordset.length) {
-            return res.status(401).json({
-                success: false,
-                error: 'Неверный логин или пароль'
-            });
+        if (!user) {
+            return res.status(401).json({ success: false, error: 'Неверный логин или пароль' });
         }
 
-        const user = result.recordset[0];
         const role = user.LOGIN === 'admin' ? 'admin' : 'user';
 
         if (role !== 'admin') {
@@ -492,11 +654,7 @@ app.post('/api/admin/login', async (req, res) => {
         }
 
         const token = jwt.sign(
-            {
-                userId: user.USER_ID,
-                login: user.LOGIN,
-                role
-            },
+            { userId: user.USER_ID, login: user.LOGIN, role },
             JWT_SECRET,
             { expiresIn: '8h' }
         );
@@ -513,10 +671,7 @@ app.post('/api/admin/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Ошибка /api/admin/login:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка авторизации'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка авторизации' });
     }
 });
 
@@ -537,29 +692,10 @@ app.post('/api/products', adminAuth, async (req, res) => {
         } = req.body;
 
         if (!name || !category_id || !price) {
-            return res.status(400).json({
-                success: false,
-                error: 'Заполните название, категорию и цену'
-            });
+            return res.status(400).json({ success: false, error: 'Заполните название, категорию и цену' });
         }
 
-        const db = await getPool();
-        const request = db.request();
-
-        request.input('categoryId', sql.Int, Number(category_id));
-        request.input('name', sql.NVarChar(150), name);
-        request.input('manufacturer', sql.NVarChar(150), manufacturer || null);
-        request.input('executionType', sql.NVarChar(100), execution_type || null);
-        request.input('systemClass', sql.NVarChar(100), system_class || null);
-        request.input('monitorSize', sql.NVarChar(100), monitor_size || null);
-        request.input('activePorts', sql.NVarChar(200), active_ports || null);
-        request.input('weight', sql.NVarChar(50), weight || null);
-        request.input('salePrice', sql.Decimal(10, 2), Number(price));
-        request.input('purchasePrice', sql.Decimal(10, 2), Number(req.body.purchase_price || price));
-        request.input('description', sql.NVarChar(sql.MAX), description || null);
-        request.input('image', sql.NVarChar(255), image || null);
-
-        await request.query(`
+        await dbRun(`
             INSERT INTO PRODUCTS (
                 CATEGORY_ID,
                 NAME,
@@ -574,32 +710,26 @@ app.post('/api/products', adminAuth, async (req, res) => {
                 ACTIVE_PORTS,
                 WEIGHT
             )
-            VALUES (
-                @categoryId,
-                @name,
-                @salePrice,
-                @purchasePrice,
-                @description,
-                @image,
-                @manufacturer,
-                @executionType,
-                @systemClass,
-                @monitorSize,
-                @activePorts,
-                @weight
-            )
-        `);
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            Number(category_id),
+            name,
+            Number(price),
+            Number(req.body.purchase_price || price),
+            description || null,
+            image || null,
+            manufacturer || null,
+            execution_type || null,
+            system_class || null,
+            monitor_size || null,
+            active_ports || null,
+            weight || null
+        ]);
 
-        res.json({
-            success: true,
-            message: 'Товар добавлен'
-        });
+        res.json({ success: true, message: 'Товар добавлен' });
     } catch (error) {
         console.error('Ошибка POST /api/products:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка добавления товара'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка добавления товара' });
     }
 });
 
@@ -620,125 +750,71 @@ app.put('/api/products/:id', adminAuth, async (req, res) => {
         } = req.body;
 
         if (!name || !category_id || !price) {
-            return res.status(400).json({
-                success: false,
-                error: 'Заполните название, категорию и цену'
-            });
+            return res.status(400).json({ success: false, error: 'Заполните название, категорию и цену' });
         }
 
-        const db = await getPool();
-        const request = db.request();
-
-        request.input('id', sql.Int, Number(req.params.id));
-        request.input('categoryId', sql.Int, Number(category_id));
-        request.input('name', sql.NVarChar(150), name);
-        request.input('manufacturer', sql.NVarChar(150), manufacturer || null);
-        request.input('executionType', sql.NVarChar(100), execution_type || null);
-        request.input('systemClass', sql.NVarChar(100), system_class || null);
-        request.input('monitorSize', sql.NVarChar(100), monitor_size || null);
-        request.input('activePorts', sql.NVarChar(200), active_ports || null);
-        request.input('weight', sql.NVarChar(50), weight || null);
-        request.input('salePrice', sql.Decimal(10, 2), Number(price));
-        request.input('purchasePrice', sql.Decimal(10, 2), Number(req.body.purchase_price || price));
-        request.input('description', sql.NVarChar(sql.MAX), description || null);
-        request.input('image', sql.NVarChar(255), image || null);
-
-        await request.query(`
+        await dbRun(`
             UPDATE PRODUCTS
-            SET CATEGORY_ID = @categoryId,
-                NAME = @name,
-                CURRENT_SALE_PRICE = @salePrice,
-                CURRENT_PURCHASE_PRICE = @purchasePrice,
-                DESCRIPTION = @description,
-                IMAGE = @image,
-                MANUFACTURER = @manufacturer,
-                EXECUTION_TYPE = @executionType,
-                SYSTEM_CLASS = @systemClass,
-                MONITOR_SIZE = @monitorSize,
-                ACTIVE_PORTS = @activePorts,
-                WEIGHT = @weight
-            WHERE PRODUCT_ID = @id
-        `);
+            SET CATEGORY_ID = ?,
+                NAME = ?,
+                CURRENT_SALE_PRICE = ?,
+                CURRENT_PURCHASE_PRICE = ?,
+                DESCRIPTION = ?,
+                IMAGE = ?,
+                MANUFACTURER = ?,
+                EXECUTION_TYPE = ?,
+                SYSTEM_CLASS = ?,
+                MONITOR_SIZE = ?,
+                ACTIVE_PORTS = ?,
+                WEIGHT = ?
+            WHERE PRODUCT_ID = ?
+        `, [
+            Number(category_id),
+            name,
+            Number(price),
+            Number(req.body.purchase_price || price),
+            description || null,
+            image || null,
+            manufacturer || null,
+            execution_type || null,
+            system_class || null,
+            monitor_size || null,
+            active_ports || null,
+            weight || null,
+            Number(req.params.id)
+        ]);
 
-        res.json({
-            success: true,
-            message: 'Товар обновлён'
-        });
+        res.json({ success: true, message: 'Товар обновлён' });
     } catch (error) {
         console.error('Ошибка PUT /api/products/:id:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка обновления товара'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка обновления товара' });
     }
 });
 
 app.delete('/api/products/:id', adminAuth, async (req, res) => {
-    const productId = Number(req.params.id);
-
     try {
-        const db = await getPool();
+        const productId = Number(req.params.id);
+        const product = await dbGet(`SELECT IMAGE FROM PRODUCTS WHERE PRODUCT_ID = ?`, [productId]);
 
-        const productResult = await db.request()
-            .input('id', sql.Int, productId)
-            .query(`
-                SELECT IMAGE
-                FROM PRODUCTS
-                WHERE PRODUCT_ID = @id
-            `);
+        await dbRun(`DELETE FROM ORDER_ITEMS WHERE PRODUCT_ID = ?`, [productId]);
+        await dbRun(`DELETE FROM SUPPLY_ITEMS WHERE PRODUCT_ID = ?`, [productId]);
+        await dbRun(`DELETE FROM PRODUCTS WHERE PRODUCT_ID = ?`, [productId]);
 
-        const imagePath = productResult.recordset.length
-            ? productResult.recordset[0].IMAGE
-            : null;
-
-        const tx = new sql.Transaction(db);
-        await tx.begin();
-
-        try {
-            await new sql.Request(tx)
-                .input('id', sql.Int, productId)
-                .query('DELETE FROM ORDER_ITEMS WHERE PRODUCT_ID = @id');
-
-            await new sql.Request(tx)
-                .input('id', sql.Int, productId)
-                .query('DELETE FROM SUPPLY_ITEMS WHERE PRODUCT_ID = @id');
-
-            await new sql.Request(tx)
-                .input('id', sql.Int, productId)
-                .query('DELETE FROM PRODUCTS WHERE PRODUCT_ID = @id');
-
-            await tx.commit();
-        } catch (err) {
-            await tx.rollback();
-            throw err;
+        if (product && product.IMAGE && product.IMAGE.startsWith('/uploads/')) {
+            const fullImagePath = path.join(__dirname, product.IMAGE.replace(/^\//, ''));
+            if (fs.existsSync(fullImagePath)) fs.unlinkSync(fullImagePath);
         }
 
-        if (imagePath && imagePath.startsWith('/uploads/')) {
-            const fullImagePath = path.join(__dirname, imagePath.replace(/^\//, ''));
-
-            if (fs.existsSync(fullImagePath)) {
-                fs.unlinkSync(fullImagePath);
-            }
-        }
-
-        res.json({
-            success: true,
-            message: 'Товар удалён'
-        });
+        res.json({ success: true, message: 'Товар удалён' });
     } catch (error) {
         console.error('Ошибка DELETE /api/products/:id:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка удаления товара'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления товара' });
     }
 });
 
 app.get('/api/customers', async (req, res) => {
     try {
-        const db = await getPool();
-
-        const result = await db.request().query(`
+        const rows = await dbAll(`
             SELECT
                 c.CUSTOMER_ID,
                 c.USER_ID,
@@ -752,16 +828,10 @@ app.get('/api/customers', async (req, res) => {
             ORDER BY u.FULL_NAME
         `);
 
-        res.json({
-            success: true,
-            data: result.recordset
-        });
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Ошибка GET /api/customers:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки клиентов'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки клиентов' });
     }
 });
 
@@ -770,62 +840,26 @@ app.post('/api/customers', adminAuth, async (req, res) => {
         const { full_name, phone, email, login, password, delivery_address } = req.body;
 
         if (!full_name || !phone || !email || !login || !password || !delivery_address) {
-            return res.status(400).json({
-                success: false,
-                error: 'Заполните все обязательные поля'
-            });
+            return res.status(400).json({ success: false, error: 'Заполните все обязательные поля' });
         }
 
-        const db = await getPool();
-        const tx = new sql.Transaction(db);
+        const result = await dbRun(`
+            INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD)
+            VALUES (?, ?, ?, ?, ?)
+        `, [full_name, phone, email, login, sha1(password)]);
 
-        await tx.begin();
+        await dbRun(`
+            INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS)
+            VALUES (?, ?)
+        `, [result.lastID, delivery_address]);
 
-        try {
-            const userReq = new sql.Request(tx);
-            userReq.input('fullName', sql.NVarChar(150), full_name);
-            userReq.input('phone', sql.NVarChar(20), phone);
-            userReq.input('email', sql.NVarChar(100), email);
-            userReq.input('login', sql.NVarChar(50), login);
-            userReq.input('password', sql.Char(40), sha1(password));
-
-            const userResult = await userReq.query(`
-                INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD)
-                OUTPUT INSERTED.USER_ID
-                VALUES (@fullName, @phone, @email, @login, @password)
-            `);
-
-            const userId = userResult.recordset[0].USER_ID;
-
-            const customerReq = new sql.Request(tx);
-            customerReq.input('userId', sql.Int, userId);
-            customerReq.input('address', sql.NVarChar(250), delivery_address);
-
-            await customerReq.query(`
-                INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS)
-                VALUES (@userId, @address)
-            `);
-
-            await tx.commit();
-
-            res.json({
-                success: true,
-                message: 'Клиент добавлен'
-            });
-        } catch (err) {
-            await tx.rollback();
-            throw err;
-        }
+        res.json({ success: true, message: 'Клиент добавлен' });
     } catch (error) {
         console.error('Ошибка POST /api/customers:', error);
-
         const duplicate = String(error.message || '').includes('UNIQUE');
-
         res.status(500).json({
             success: false,
-            error: duplicate
-                ? 'Клиент с таким логином или email уже существует'
-                : (error.originalError?.info?.message || error.message || 'Ошибка добавления клиента')
+            error: duplicate ? 'Клиент с таким логином или email уже существует' : 'Ошибка добавления клиента'
         });
     }
 });
@@ -836,179 +870,84 @@ app.put('/api/customers/:id', adminAuth, async (req, res) => {
         const userId = Number(req.params.id);
 
         if (!full_name || !phone || !email || !login || !delivery_address) {
-            return res.status(400).json({
-                success: false,
-                error: 'Заполните все обязательные поля'
-            });
+            return res.status(400).json({ success: false, error: 'Заполните все обязательные поля' });
         }
 
-        const db = await getPool();
-        const tx = new sql.Transaction(db);
-
-        await tx.begin();
-
-        try {
-            const userReq = new sql.Request(tx);
-            userReq.input('userId', sql.Int, userId);
-            userReq.input('fullName', sql.NVarChar(150), full_name);
-            userReq.input('phone', sql.NVarChar(20), phone);
-            userReq.input('email', sql.NVarChar(100), email);
-            userReq.input('login', sql.NVarChar(50), login);
-
-            if (password && password.trim() !== '') {
-                userReq.input('password', sql.Char(40), sha1(password));
-
-                await userReq.query(`
-                    UPDATE USERS
-                    SET FULL_NAME = @fullName,
-                        PHONE = @phone,
-                        EMAIL = @email,
-                        LOGIN = @login,
-                        PASSWORD = @password
-                    WHERE USER_ID = @userId
-                `);
-            } else {
-                await userReq.query(`
-                    UPDATE USERS
-                    SET FULL_NAME = @fullName,
-                        PHONE = @phone,
-                        EMAIL = @email,
-                        LOGIN = @login
-                    WHERE USER_ID = @userId
-                `);
-            }
-
-            const customerReq = new sql.Request(tx);
-            customerReq.input('userId', sql.Int, userId);
-            customerReq.input('address', sql.NVarChar(250), delivery_address);
-
-            await customerReq.query(`
-                UPDATE CUSTOMERS
-                SET DELIVERY_ADDRESS = @address
-                WHERE USER_ID = @userId
-            `);
-
-            await tx.commit();
-
-            res.json({
-                success: true,
-                message: 'Клиент обновлён'
-            });
-        } catch (err) {
-            await tx.rollback();
-            throw err;
+        if (password && password.trim() !== '') {
+            await dbRun(`
+                UPDATE USERS
+                SET FULL_NAME = ?, PHONE = ?, EMAIL = ?, LOGIN = ?, PASSWORD = ?
+                WHERE USER_ID = ?
+            `, [full_name, phone, email, login, sha1(password), userId]);
+        } else {
+            await dbRun(`
+                UPDATE USERS
+                SET FULL_NAME = ?, PHONE = ?, EMAIL = ?, LOGIN = ?
+                WHERE USER_ID = ?
+            `, [full_name, phone, email, login, userId]);
         }
+
+        await dbRun(`
+            UPDATE CUSTOMERS
+            SET DELIVERY_ADDRESS = ?
+            WHERE USER_ID = ?
+        `, [delivery_address, userId]);
+
+        res.json({ success: true, message: 'Клиент обновлён' });
     } catch (error) {
         console.error('Ошибка PUT /api/customers/:id:', error);
-
         const duplicate = String(error.message || '').includes('UNIQUE');
-
         res.status(500).json({
             success: false,
-            error: duplicate
-                ? 'Клиент с таким логином или email уже существует'
-                : (error.originalError?.info?.message || error.message || 'Ошибка обновления клиента')
+            error: duplicate ? 'Клиент с таким логином или email уже существует' : 'Ошибка обновления клиента'
         });
     }
 });
 
 app.delete('/api/customers/:id', adminAuth, async (req, res) => {
-    const userId = Number(req.params.id);
-
     try {
-        const db = await getPool();
-        const tx = new sql.Transaction(db);
+        const userId = Number(req.params.id);
+        const customer = await dbGet(`SELECT CUSTOMER_ID FROM CUSTOMERS WHERE USER_ID = ?`, [userId]);
 
-        await tx.begin();
+        if (customer) {
+            const orders = await dbAll(`SELECT ORDER_ID FROM ORDERS WHERE CUSTOMER_ID = ?`, [customer.CUSTOMER_ID]);
 
-        try {
-            const customerResult = await new sql.Request(tx)
-                .input('userId', sql.Int, userId)
-                .query('SELECT CUSTOMER_ID FROM CUSTOMERS WHERE USER_ID = @userId');
-
-            if (customerResult.recordset.length) {
-                const customerId = customerResult.recordset[0].CUSTOMER_ID;
-
-                await new sql.Request(tx)
-                    .input('customerId', sql.Int, customerId)
-                    .query(`
-                        DELETE oi
-                        FROM ORDER_ITEMS oi
-                        JOIN ORDERS o ON o.ORDER_ID = oi.ORDER_ID
-                        WHERE o.CUSTOMER_ID = @customerId
-                    `);
-
-                await new sql.Request(tx)
-                    .input('customerId', sql.Int, customerId)
-                    .query(`
-                        DELETE p
-                        FROM PAYMENTS p
-                        JOIN ORDERS o ON o.ORDER_ID = p.ORDER_ID
-                        WHERE o.CUSTOMER_ID = @customerId
-                    `);
-
-                await new sql.Request(tx)
-                    .input('customerId', sql.Int, customerId)
-                    .query('DELETE FROM ORDERS WHERE CUSTOMER_ID = @customerId');
-
-                await new sql.Request(tx)
-                    .input('userId', sql.Int, userId)
-                    .query('DELETE FROM CUSTOMERS WHERE USER_ID = @userId');
+            for (const order of orders) {
+                await dbRun(`DELETE FROM ORDER_ITEMS WHERE ORDER_ID = ?`, [order.ORDER_ID]);
+                await dbRun(`DELETE FROM PAYMENTS WHERE ORDER_ID = ?`, [order.ORDER_ID]);
             }
 
-            await new sql.Request(tx)
-                .input('userId', sql.Int, userId)
-                .query('DELETE FROM USERS WHERE USER_ID = @userId');
-
-            await tx.commit();
-        } catch (err) {
-            await tx.rollback();
-            throw err;
+            await dbRun(`DELETE FROM ORDERS WHERE CUSTOMER_ID = ?`, [customer.CUSTOMER_ID]);
+            await dbRun(`DELETE FROM CUSTOMERS WHERE USER_ID = ?`, [userId]);
         }
 
-        res.json({
-            success: true,
-            message: 'Клиент удалён'
-        });
+        await dbRun(`DELETE FROM USERS WHERE USER_ID = ?`, [userId]);
+
+        res.json({ success: true, message: 'Клиент удалён' });
     } catch (error) {
         console.error('Ошибка DELETE /api/customers/:id:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка удаления клиента'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления клиента' });
     }
 });
 
 app.get('/api/order-statuses', async (req, res) => {
     try {
-        const db = await getPool();
-
-        const result = await db.request().query(`
-            SELECT
-                ORDER_STATUS_ID AS id,
-                NAME AS name
+        const rows = await dbAll(`
+            SELECT ORDER_STATUS_ID AS id, NAME AS name
             FROM ORDER_STATUSES
             ORDER BY ORDER_STATUS_ID
         `);
 
-        res.json({
-            success: true,
-            data: result.recordset
-        });
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Ошибка GET /api/order-statuses:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки статусов заказов'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки статусов заказов' });
     }
 });
 
 app.get('/api/orders', async (req, res) => {
     try {
-        const db = await getPool();
-
-        const result = await db.request().query(`
+        const rows = await dbAll(`
             SELECT
                 o.ORDER_ID,
                 o.CUSTOMER_ID,
@@ -1016,32 +955,20 @@ app.get('/api/orders', async (req, res) => {
                 o.ORDER_STATUS_ID,
                 s.NAME AS ORDER_STATUS,
                 u.FULL_NAME AS CUSTOMER_NAME,
-                ISNULL(SUM(oi.SALE_PRICE_AT_TIME * oi.QUANTITY), 0) AS TOTAL_SUM
+                IFNULL(SUM(oi.SALE_PRICE_AT_TIME * oi.QUANTITY), 0) AS TOTAL_SUM
             FROM ORDERS o
             JOIN CUSTOMERS c ON c.CUSTOMER_ID = o.CUSTOMER_ID
             JOIN USERS u ON u.USER_ID = c.USER_ID
             JOIN ORDER_STATUSES s ON s.ORDER_STATUS_ID = o.ORDER_STATUS_ID
             LEFT JOIN ORDER_ITEMS oi ON oi.ORDER_ID = o.ORDER_ID
-            GROUP BY
-                o.ORDER_ID,
-                o.CUSTOMER_ID,
-                o.ORDER_DATE,
-                o.ORDER_STATUS_ID,
-                s.NAME,
-                u.FULL_NAME
+            GROUP BY o.ORDER_ID, o.CUSTOMER_ID, o.ORDER_DATE, o.ORDER_STATUS_ID, s.NAME, u.FULL_NAME
             ORDER BY o.ORDER_ID DESC
         `);
 
-        res.json({
-            success: true,
-            data: result.recordset
-        });
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Ошибка GET /api/orders:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки заказов'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки заказов' });
     }
 });
 
@@ -1050,66 +977,31 @@ app.post('/api/orders', adminAuth, async (req, res) => {
         const { customer_id, order_status_id } = req.body;
 
         if (!customer_id) {
-            return res.status(400).json({
-                success: false,
-                error: 'Не выбран клиент'
-            });
+            return res.status(400).json({ success: false, error: 'Не выбран клиент' });
         }
 
-        const db = await getPool();
+        const customer = await dbGet(`SELECT CUSTOMER_ID FROM CUSTOMERS WHERE CUSTOMER_ID = ?`, [Number(customer_id)]);
 
-        const checkCustomer = await db.request()
-            .input('customerId', sql.Int, Number(customer_id))
-            .query(`
-                SELECT CUSTOMER_ID
-                FROM CUSTOMERS
-                WHERE CUSTOMER_ID = @customerId
-            `);
-
-        if (!checkCustomer.recordset.length) {
-            return res.status(400).json({
-                success: false,
-                error: 'Клиент не найден'
-            });
+        if (!customer) {
+            return res.status(400).json({ success: false, error: 'Клиент не найден' });
         }
 
-        const finalStatusId = Number(order_status_id || 1);
+        const statusId = Number(order_status_id || 1);
+        const status = await dbGet(`SELECT ORDER_STATUS_ID FROM ORDER_STATUSES WHERE ORDER_STATUS_ID = ?`, [statusId]);
 
-        const checkStatus = await db.request()
-            .input('statusId', sql.Int, finalStatusId)
-            .query(`
-                SELECT ORDER_STATUS_ID
-                FROM ORDER_STATUSES
-                WHERE ORDER_STATUS_ID = @statusId
-            `);
-
-        if (!checkStatus.recordset.length) {
-            return res.status(400).json({
-                success: false,
-                error: 'Статус заказа не найден'
-            });
+        if (!status) {
+            return res.status(400).json({ success: false, error: 'Статус заказа не найден' });
         }
 
-        const result = await db.request()
-            .input('customerId', sql.Int, Number(customer_id))
-            .input('statusId', sql.Int, finalStatusId)
-            .query(`
-                INSERT INTO ORDERS (CUSTOMER_ID, ORDER_STATUS_ID)
-                OUTPUT INSERTED.ORDER_ID
-                VALUES (@customerId, @statusId)
-            `);
+        const result = await dbRun(`
+            INSERT INTO ORDERS (CUSTOMER_ID, ORDER_STATUS_ID)
+            VALUES (?, ?)
+        `, [Number(customer_id), statusId]);
 
-        res.json({
-            success: true,
-            order_id: result.recordset[0].ORDER_ID,
-            message: 'Заказ создан'
-        });
+        res.json({ success: true, order_id: result.lastID, message: 'Заказ создан' });
     } catch (error) {
         console.error('Ошибка создания заказа:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка создания заказа'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка создания заказа' });
     }
 });
 
@@ -1119,135 +1011,70 @@ app.post('/api/orders/:id/items', adminAuth, async (req, res) => {
         const { product_id, quantity } = req.body;
 
         if (!orderId || orderId <= 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'Некорректный ID заказа'
-            });
+            return res.status(400).json({ success: false, error: 'Некорректный ID заказа' });
         }
 
         if (!product_id || !quantity || Number(quantity) <= 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'Не выбран товар или указано неверное количество'
-            });
+            return res.status(400).json({ success: false, error: 'Не выбран товар или указано неверное количество' });
         }
 
-        const db = await getPool();
-        const tx = new sql.Transaction(db);
+        const order = await dbGet(`SELECT ORDER_ID FROM ORDERS WHERE ORDER_ID = ?`, [orderId]);
+        if (!order) return res.status(404).json({ success: false, error: 'Заказ не найден' });
 
-        await tx.begin();
+        const product = await dbGet(`
+            SELECT PRODUCT_ID, CURRENT_SALE_PRICE
+            FROM PRODUCTS
+            WHERE PRODUCT_ID = ?
+        `, [Number(product_id)]);
 
-        try {
-            const orderReq = new sql.Request(tx);
-            orderReq.input('orderId', sql.Int, orderId);
+        if (!product) return res.status(404).json({ success: false, error: 'Товар не найден' });
 
-            const orderCheck = await orderReq.query(`
-                SELECT ORDER_ID
-                FROM ORDERS
-                WHERE ORDER_ID = @orderId
-            `);
+        const exists = await dbGet(`
+            SELECT ORDER_ID, PRODUCT_ID
+            FROM ORDER_ITEMS
+            WHERE ORDER_ID = ? AND PRODUCT_ID = ?
+        `, [orderId, Number(product_id)]);
 
-            if (!orderCheck.recordset.length) {
-                throw new Error('ORDER_NOT_FOUND');
-            }
-
-            const productReq = new sql.Request(tx);
-            productReq.input('productId', sql.Int, Number(product_id));
-
-            const product = await productReq.query(`
-                SELECT PRODUCT_ID, CURRENT_SALE_PRICE
-                FROM PRODUCTS
-                WHERE PRODUCT_ID = @productId
-            `);
-
-            if (!product.recordset.length) {
-                throw new Error('PRODUCT_NOT_FOUND');
-            }
-
-            const salePrice = Number(product.recordset[0].CURRENT_SALE_PRICE);
-
-            const itemReq = new sql.Request(tx);
-            itemReq.input('orderId', sql.Int, orderId);
-            itemReq.input('productId', sql.Int, Number(product_id));
-            itemReq.input('salePrice', sql.Decimal(10, 2), salePrice);
-            itemReq.input('quantity', sql.Int, Number(quantity));
-
-            await itemReq.query(`
-                MERGE ORDER_ITEMS AS target
-                USING (
-                    SELECT
-                        @orderId AS ORDER_ID,
-                        @productId AS PRODUCT_ID
-                ) AS source
-                ON target.ORDER_ID = source.ORDER_ID
-                   AND target.PRODUCT_ID = source.PRODUCT_ID
-                WHEN MATCHED THEN
-                    UPDATE SET QUANTITY = target.QUANTITY + @quantity
-                WHEN NOT MATCHED THEN
-                    INSERT (ORDER_ID, PRODUCT_ID, SALE_PRICE_AT_TIME, QUANTITY)
-                    VALUES (@orderId, @productId, @salePrice, @quantity);
-            `);
-
-            await tx.commit();
-
-            res.json({
-                success: true,
-                message: 'Товар добавлен в заказ'
-            });
-        } catch (err) {
-            await tx.rollback();
-            throw err;
+        if (exists) {
+            await dbRun(`
+                UPDATE ORDER_ITEMS
+                SET QUANTITY = QUANTITY + ?
+                WHERE ORDER_ID = ? AND PRODUCT_ID = ?
+            `, [Number(quantity), orderId, Number(product_id)]);
+        } else {
+            await dbRun(`
+                INSERT INTO ORDER_ITEMS (ORDER_ID, PRODUCT_ID, SALE_PRICE_AT_TIME, QUANTITY)
+                VALUES (?, ?, ?, ?)
+            `, [orderId, Number(product_id), Number(product.CURRENT_SALE_PRICE), Number(quantity)]);
         }
+
+        res.json({ success: true, message: 'Товар добавлен в заказ' });
     } catch (error) {
         console.error('Ошибка добавления товара в заказ:', error);
-
-        let message = 'Ошибка добавления товара в заказ';
-
-        if (error.message === 'ORDER_NOT_FOUND') {
-            message = 'Заказ не найден';
-        } else if (error.message === 'PRODUCT_NOT_FOUND') {
-            message = 'Товар не найден';
-        } else if (error.originalError?.info?.message) {
-            message = error.originalError.info.message;
-        }
-
-        res.status(500).json({
-            success: false,
-            error: message
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка добавления товара в заказ' });
     }
 });
 
 app.get('/api/orders/:id/items', async (req, res) => {
     try {
-        const db = await getPool();
+        const rows = await dbAll(`
+            SELECT
+                oi.ORDER_ID,
+                oi.PRODUCT_ID,
+                p.NAME AS PRODUCT_NAME,
+                oi.SALE_PRICE_AT_TIME,
+                oi.QUANTITY,
+                oi.SALE_PRICE_AT_TIME * oi.QUANTITY AS TOTAL_SUM
+            FROM ORDER_ITEMS oi
+            JOIN PRODUCTS p ON p.PRODUCT_ID = oi.PRODUCT_ID
+            WHERE oi.ORDER_ID = ?
+            ORDER BY p.NAME
+        `, [Number(req.params.id)]);
 
-        const result = await db.request()
-            .input('orderId', sql.Int, Number(req.params.id))
-            .query(`
-                SELECT
-                    oi.ORDER_ID,
-                    oi.PRODUCT_ID,
-                    p.NAME AS PRODUCT_NAME,
-                    oi.SALE_PRICE_AT_TIME,
-                    oi.QUANTITY,
-                    oi.SALE_PRICE_AT_TIME * oi.QUANTITY AS TOTAL_SUM
-                FROM ORDER_ITEMS oi
-                JOIN PRODUCTS p ON p.PRODUCT_ID = oi.PRODUCT_ID
-                WHERE oi.ORDER_ID = @orderId
-                ORDER BY p.NAME
-            `);
-
-        res.json({
-            success: true,
-            data: result.recordset
-        });
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Ошибка GET /api/orders/:id/items:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки состава заказа'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки состава заказа' });
     }
 });
 
@@ -1257,130 +1084,55 @@ app.put('/api/orders/:id/status', adminAuth, async (req, res) => {
         const orderId = Number(req.params.id);
 
         if (!order_status_id) {
-            return res.status(400).json({
-                success: false,
-                error: 'Не выбран новый статус'
-            });
+            return res.status(400).json({ success: false, error: 'Не выбран новый статус' });
         }
 
-        const db = await getPool();
+        const order = await dbGet(`SELECT ORDER_ID FROM ORDERS WHERE ORDER_ID = ?`, [orderId]);
+        if (!order) return res.status(400).json({ success: false, error: 'Заказ не найден' });
 
-        const checkOrder = await db.request()
-            .input('orderId', sql.Int, orderId)
-            .query(`
-                SELECT ORDER_ID
-                FROM ORDERS
-                WHERE ORDER_ID = @orderId
-            `);
+        const status = await dbGet(`SELECT ORDER_STATUS_ID FROM ORDER_STATUSES WHERE ORDER_STATUS_ID = ?`, [Number(order_status_id)]);
+        if (!status) return res.status(400).json({ success: false, error: 'Статус не найден' });
 
-        if (!checkOrder.recordset.length) {
-            return res.status(400).json({
-                success: false,
-                error: 'Заказ не найден'
-            });
-        }
+        await dbRun(`
+            UPDATE ORDERS
+            SET ORDER_STATUS_ID = ?
+            WHERE ORDER_ID = ?
+        `, [Number(order_status_id), orderId]);
 
-        const checkStatus = await db.request()
-            .input('statusId', sql.Int, Number(order_status_id))
-            .query(`
-                SELECT ORDER_STATUS_ID
-                FROM ORDER_STATUSES
-                WHERE ORDER_STATUS_ID = @statusId
-            `);
-
-        if (!checkStatus.recordset.length) {
-            return res.status(400).json({
-                success: false,
-                error: 'Статус не найден'
-            });
-        }
-
-        await db.request()
-            .input('orderId', sql.Int, orderId)
-            .input('statusId', sql.Int, Number(order_status_id))
-            .query(`
-                UPDATE ORDERS
-                SET ORDER_STATUS_ID = @statusId
-                WHERE ORDER_ID = @orderId
-            `);
-
-        res.json({
-            success: true,
-            message: 'Статус заказа обновлён'
-        });
+        res.json({ success: true, message: 'Статус заказа обновлён' });
     } catch (error) {
         console.error('Ошибка PUT /api/orders/:id/status:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка обновления статуса заказа'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка обновления статуса заказа' });
     }
 });
 
 app.delete('/api/orders/:id', adminAuth, async (req, res) => {
-    const orderId = Number(req.params.id);
-
     try {
-        const db = await getPool();
-        const tx = new sql.Transaction(db);
+        const orderId = Number(req.params.id);
 
-        await tx.begin();
+        await dbRun(`DELETE FROM ORDER_ITEMS WHERE ORDER_ID = ?`, [orderId]);
+        await dbRun(`DELETE FROM PAYMENTS WHERE ORDER_ID = ?`, [orderId]);
+        await dbRun(`DELETE FROM ORDERS WHERE ORDER_ID = ?`, [orderId]);
 
-        try {
-            await new sql.Request(tx)
-                .input('orderId', sql.Int, orderId)
-                .query('DELETE FROM ORDER_ITEMS WHERE ORDER_ID = @orderId');
-
-            await new sql.Request(tx)
-                .input('orderId', sql.Int, orderId)
-                .query('DELETE FROM PAYMENTS WHERE ORDER_ID = @orderId');
-
-            await new sql.Request(tx)
-                .input('orderId', sql.Int, orderId)
-                .query('DELETE FROM ORDERS WHERE ORDER_ID = @orderId');
-
-            await tx.commit();
-        } catch (err) {
-            await tx.rollback();
-            throw err;
-        }
-
-        res.json({
-            success: true,
-            message: 'Заказ удалён'
-        });
+        res.json({ success: true, message: 'Заказ удалён' });
     } catch (error) {
         console.error('Ошибка DELETE /api/orders/:id:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка удаления заказа'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления заказа' });
     }
 });
 
 app.get('/api/suppliers', async (req, res) => {
     try {
-        const db = await getPool();
-
-        const result = await db.request().query(`
-            SELECT
-                SUPPLIER_ID,
-                NAME,
-                LEGAL_ADDRESS
+        const rows = await dbAll(`
+            SELECT SUPPLIER_ID, NAME, LEGAL_ADDRESS
             FROM SUPPLIERS
             ORDER BY NAME
         `);
 
-        res.json({
-            success: true,
-            data: result.recordset
-        });
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Ошибка GET /api/suppliers:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка загрузки поставщиков'
-        });
+        res.status(500).json({ success: false, error: 'Ошибка загрузки поставщиков' });
     }
 });
 
@@ -1389,35 +1141,20 @@ app.post('/api/suppliers', adminAuth, async (req, res) => {
         const { name, legal_address } = req.body;
 
         if (!name || !legal_address) {
-            return res.status(400).json({
-                success: false,
-                error: 'Заполните название и юридический адрес'
-            });
+            return res.status(400).json({ success: false, error: 'Заполните название и юридический адрес' });
         }
 
-        const db = await getPool();
+        await dbRun(`
+            INSERT INTO SUPPLIERS (NAME, LEGAL_ADDRESS)
+            VALUES (?, ?)
+        `, [name, legal_address]);
 
-        await db.request()
-            .input('name', sql.NVarChar(150), name)
-            .input('address', sql.NVarChar(250), legal_address)
-            .query(`
-                INSERT INTO SUPPLIERS (NAME, LEGAL_ADDRESS)
-                VALUES (@name, @address)
-            `);
-
-        res.json({
-            success: true,
-            message: 'Поставщик добавлен'
-        });
+        res.json({ success: true, message: 'Поставщик добавлен' });
     } catch (error) {
         console.error('Ошибка POST /api/suppliers:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка добавления поставщика'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка добавления поставщика' });
     }
 });
-
 
 app.put('/api/suppliers/:id', adminAuth, async (req, res) => {
     try {
@@ -1428,131 +1165,82 @@ app.put('/api/suppliers/:id', adminAuth, async (req, res) => {
             return res.status(400).json({ success: false, error: 'Заполните все обязательные поля' });
         }
 
-        const db = await getPool();
-        await db.request()
-            .input('id', sql.Int, supplierId)
-            .input('name', sql.NVarChar(150), name)
-            .input('address', sql.NVarChar(250), legal_address)
-            .query(`
-                UPDATE SUPPLIERS
-                SET NAME = @name,
-                    LEGAL_ADDRESS = @address
-                WHERE SUPPLIER_ID = @id
-            `);
+        await dbRun(`
+            UPDATE SUPPLIERS
+            SET NAME = ?, LEGAL_ADDRESS = ?
+            WHERE SUPPLIER_ID = ?
+        `, [name, legal_address, supplierId]);
 
         res.json({ success: true, message: 'Поставщик обновлён' });
     } catch (error) {
         console.error('Ошибка PUT /api/suppliers/:id:', error);
-        res.status(500).json({ success: false, error: error.originalError?.info?.message || error.message || 'Ошибка обновления поставщика' });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка обновления поставщика' });
     }
 });
 
 app.delete('/api/suppliers/:id', adminAuth, async (req, res) => {
-    const supplierId = Number(req.params.id);
-
     try {
-        const db = await getPool();
-        const tx = new sql.Transaction(db);
+        const supplierId = Number(req.params.id);
 
-        await tx.begin();
+        const supplies = await dbAll(`SELECT SUPPLY_ID FROM SUPPLIES WHERE SUPPLIER_ID = ?`, [supplierId]);
 
-        try {
-            await new sql.Request(tx)
-                .input('supplierId', sql.Int, supplierId)
-                .query(`
-                    DELETE si
-                    FROM SUPPLY_ITEMS si
-                    JOIN SUPPLIES s ON s.SUPPLY_ID = si.SUPPLY_ID
-                    WHERE s.SUPPLIER_ID = @supplierId
-                `);
-
-            await new sql.Request(tx)
-                .input('supplierId', sql.Int, supplierId)
-                .query('DELETE FROM SUPPLIES WHERE SUPPLIER_ID = @supplierId');
-
-            await new sql.Request(tx)
-                .input('supplierId', sql.Int, supplierId)
-                .query('DELETE FROM SUPPLIERS WHERE SUPPLIER_ID = @supplierId');
-
-            await tx.commit();
-        } catch (err) {
-            await tx.rollback();
-            throw err;
+        for (const supply of supplies) {
+            await dbRun(`DELETE FROM SUPPLY_ITEMS WHERE SUPPLY_ID = ?`, [supply.SUPPLY_ID]);
         }
+
+        await dbRun(`DELETE FROM SUPPLIES WHERE SUPPLIER_ID = ?`, [supplierId]);
+        await dbRun(`DELETE FROM SUPPLIERS WHERE SUPPLIER_ID = ?`, [supplierId]);
 
         res.json({ success: true, message: 'Поставщик удалён' });
     } catch (error) {
         console.error('Ошибка DELETE /api/suppliers/:id:', error);
-        res.status(500).json({ success: false, error: error.originalError?.info?.message || error.message || 'Ошибка удаления поставщика' });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления поставщика' });
     }
 });
 
 app.get('/api/stats/summary', async (req, res) => {
     try {
-        const db = await getPool();
+        const productsRes = await dbGet(`SELECT COUNT(*) AS count FROM PRODUCTS`);
+        const customersRes = await dbGet(`SELECT COUNT(*) AS count FROM CUSTOMERS`);
+        const ordersRes = await dbGet(`SELECT COUNT(*) AS count FROM ORDERS`);
+        const suppliersRes = await dbGet(`SELECT COUNT(*) AS count FROM SUPPLIERS`);
 
-        const productsRes = await db.request().query(`
-            SELECT COUNT(*) AS count
-            FROM PRODUCTS
+        const totalOrdersSumRes = await dbGet(`
+            SELECT IFNULL(SUM(SALE_PRICE_AT_TIME * QUANTITY), 0) AS total_sum
+            FROM ORDER_ITEMS
         `);
 
-        const customersRes = await db.request().query(`
-            SELECT COUNT(*) AS count
-            FROM CUSTOMERS
-        `);
-
-        const ordersRes = await db.request().query(`
-            SELECT COUNT(*) AS count
-            FROM ORDERS
-        `);
-
-        const suppliersRes = await db.request().query(`
-            SELECT COUNT(*) AS count
-            FROM SUPPLIERS
-        `);
-
-        const totalOrdersSumRes = await db.request().query(`
-            SELECT ISNULL(SUM(oi.SALE_PRICE_AT_TIME * oi.QUANTITY), 0) AS total_sum
-            FROM ORDER_ITEMS oi
-        `);
-
-        const monthlyRes = await db.request().query(`
+        const monthlyRows = await dbAll(`
             SELECT
-                YEAR(o.ORDER_DATE) AS order_year,
-                MONTH(o.ORDER_DATE) AS order_month,
-                ISNULL(SUM(oi.SALE_PRICE_AT_TIME * oi.QUANTITY), 0) AS total_sum
+                strftime('%Y', o.ORDER_DATE) AS order_year,
+                strftime('%m', o.ORDER_DATE) AS order_month,
+                IFNULL(SUM(oi.SALE_PRICE_AT_TIME * oi.QUANTITY), 0) AS total_sum
             FROM ORDERS o
             LEFT JOIN ORDER_ITEMS oi ON oi.ORDER_ID = o.ORDER_ID
-            GROUP BY YEAR(o.ORDER_DATE), MONTH(o.ORDER_DATE)
-            ORDER BY YEAR(o.ORDER_DATE), MONTH(o.ORDER_DATE)
+            GROUP BY strftime('%Y', o.ORDER_DATE), strftime('%m', o.ORDER_DATE)
+            ORDER BY strftime('%Y', o.ORDER_DATE), strftime('%m', o.ORDER_DATE)
         `);
 
-        const monthlySales = monthlyRes.recordset.map(item => {
-            const month = String(item.order_month).padStart(2, '0');
-            return {
-                month_key: `${item.order_year}-${month}`,
-                month_label: `${month}.${item.order_year}`,
-                total_sum: item.total_sum
-            };
-        });
+        const monthlySales = monthlyRows.map(item => ({
+            month_key: `${item.order_year}-${item.order_month}`,
+            month_label: `${item.order_month}.${item.order_year}`,
+            total_sum: item.total_sum
+        }));
 
         res.json({
             success: true,
             data: {
-                products_count: productsRes.recordset[0].count,
-                customers_count: customersRes.recordset[0].count,
-                orders_count: ordersRes.recordset[0].count,
-                suppliers_count: suppliersRes.recordset[0].count,
-                total_orders_sum: totalOrdersSumRes.recordset[0].total_sum,
+                products_count: productsRes.count,
+                customers_count: customersRes.count,
+                orders_count: ordersRes.count,
+                suppliers_count: suppliersRes.count,
+                total_orders_sum: totalOrdersSumRes.total_sum,
                 monthly_sales: monthlySales
             }
         });
     } catch (error) {
         console.error('Ошибка /api/stats/summary:', error);
-        res.status(500).json({
-            success: false,
-            error: error.originalError?.info?.message || error.message || 'Ошибка загрузки статистики'
-        });
+        res.status(500).json({ success: false, error: error.message || 'Ошибка загрузки статистики' });
     }
 });
 
@@ -1560,17 +1248,11 @@ app.use((err, req, res, next) => {
     console.error('Глобальная ошибка:', err);
 
     if (err instanceof multer.MulterError) {
-        return res.status(400).json({
-            success: false,
-            error: err.message
-        });
+        return res.status(400).json({ success: false, error: err.message });
     }
 
     if (err.message === 'Разрешены только изображения JPG, JPEG, PNG и WEBP') {
-        return res.status(400).json({
-            success: false,
-            error: err.message
-        });
+        return res.status(400).json({ success: false, error: err.message });
     }
 
     res.status(500).json({
@@ -1579,12 +1261,14 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, async () => {
-    try {
-        await getPool();
-        console.log(`Сервер запущен: http://localhost:${PORT}`);
-    } catch (error) {
-        console.error('Не удалось подключиться к SQL Server:', error.message);
-        console.log(`Сервер запущен без подключения к БД на http://localhost:${PORT}`);
-    }
-});
+initDatabase()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Сервер запущен на порту ${PORT}`);
+            console.log(`База SQLite: ${dbPath}`);
+        });
+    })
+    .catch(error => {
+        console.error('Ошибка инициализации базы данных:', error);
+        process.exit(1);
+    });
