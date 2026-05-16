@@ -686,6 +686,222 @@
                 flex-direction: column;
             }
         }
+        /*
+   MOBILE + TABLET ADAPTIVE
+ */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        height: auto;
+        position: relative;
+        padding-bottom: 90px;
+    }
+
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        height: auto;
+        padding: 18px;
+    }
+
+    .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .topbar-search {
+        width: 100%;
+    }
+
+    .content {
+        padding: 18px;
+    }
+
+    .dashboard-grid,
+    .dashboard-row,
+    .dashboard-row-three,
+    .quick-actions,
+    .card-grid,
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .item-card {
+        flex-direction: column;
+    }
+
+    .item-info {
+        flex-direction: column;
+    }
+
+    .item-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .item-actions button {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .chart {
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+
+    .chart-item {
+        min-width: 90px;
+    }
+
+    .mini-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .section-header button {
+        width: 100%;
+    }
+
+    .sidebar-bottom {
+        position: relative;
+        margin-top: 20px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}
+
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    #auth-section {
+        margin: 20px;
+        padding: 22px;
+    }
+
+    .content {
+        padding: 14px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .dashboard-value {
+        font-size: 28px;
+    }
+
+    .panel-card,
+    .form-card,
+    .dashboard-card,
+    .stat-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .admin-nav button {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .brand {
+        margin-bottom: 18px;
+    }
+
+    .brand-title {
+        font-size: 16px;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 16px;
+    }
+
+    .item-thumb {
+        width: 100%;
+        height: auto;
+        max-height: 240px;
+    }
+
+    .topbar {
+        padding: 14px;
+    }
+
+    .admin-user {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .topbar-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .topbar-actions button {
+        width: 100%;
+    }
+
+    .quick-action {
+        width: 100%;
+    }
+
+    .chart {
+        min-height: 220px;
+    }
+
+    .chart-bar {
+        width: 36px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .section-title {
+        font-size: 21px;
+    }
+
+    .dashboard-value {
+        font-size: 24px;
+    }
+
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+
+    .brand-title {
+        font-size: 15px;
+    }
+
+    .admin-nav button {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .item-actions button {
+        width: 100%;
+    }
+}
     </style>
 </head>
 

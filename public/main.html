@@ -26,6 +26,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -35,10 +39,15 @@
                 radial-gradient(circle at bottom right, rgba(25, 195, 125, 0.10), transparent 35%),
                 var(--bg-main);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         a {
             text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
         }
 
         .site-header {
@@ -67,12 +76,14 @@
             color: #fff;
             font-weight: 800;
             font-size: 22px;
+            flex-shrink: 0;
         }
 
         .logo img {
             width: 46px;
             height: 46px;
             border-radius: 12px;
+            object-fit: cover;
             box-shadow: 0 0 24px rgba(47, 128, 255, 0.35);
         }
 
@@ -80,7 +91,18 @@
             color: var(--blue-light);
         }
 
-        nav ul {
+        .menu-toggle {
+            display: none;
+            background: rgba(19, 36, 58, 0.92);
+            color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-menu ul {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -89,15 +111,16 @@
             margin: 0;
         }
 
-        nav a {
+        .nav-menu a {
             color: #cbd5e1;
             padding: 10px 14px;
             border-radius: 12px;
             font-size: 15px;
             transition: 0.2s;
+            white-space: nowrap;
         }
 
-        nav a:hover {
+        .nav-menu a:hover {
             color: #fff;
             background: rgba(47, 128, 255, 0.16);
         }
@@ -106,6 +129,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .btn {
@@ -122,6 +146,7 @@
             font-weight: 700;
             box-shadow: 0 12px 28px rgba(47, 128, 255, 0.28);
             transition: 0.2s;
+            text-align: center;
         }
 
         .btn:hover {
@@ -364,7 +389,7 @@
             color: var(--text-muted) !important;
         }
 
-        .products-section .product-price-fixed {
+        .products-section .price {
             color: var(--green) !important;
         }
 
@@ -404,6 +429,11 @@
             border-radius: 18px;
             padding: 18px;
             color: #dbeafe;
+        }
+
+        .about-list i {
+            color: var(--blue-light);
+            margin-right: 8px;
         }
 
         .cta {
@@ -479,42 +509,137 @@
             border-radius: 12px;
             padding: 12px;
             outline: none;
+            font-size: 16px;
         }
 
-        #admin-login-error {
+        #admin-login-error,
+        #admin-login-error-mini {
             color: #fecaca;
             grid-column: 1 / -1;
         }
 
-        @media (max-width: 950px) {
-            .header-inner,
-            nav ul,
-            .hero-buttons,
-            .cta {
-                flex-direction: column;
-            }
-
+        @media (max-width: 1150px) {
             .header-inner {
-                align-items: flex-start;
+                flex-wrap: wrap;
             }
 
-            nav ul {
-                align-items: flex-start;
+            .nav-menu {
+                order: 3;
+                width: 100%;
+            }
+
+            .nav-menu ul {
+                justify-content: center;
+                flex-wrap: wrap;
             }
 
             .hero {
                 grid-template-columns: 1fr;
-                padding-top: 54px;
+                padding-top: 56px;
             }
 
             .hero h1 {
-                font-size: 40px;
+                font-size: 46px;
             }
 
-            .hero-stats,
-            .about-panel,
-            .admin-login-mini {
+            .about-panel {
                 grid-template-columns: 1fr;
+            }
+
+            .floating-card {
+                left: 18px;
+                bottom: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: 12px 16px;
+                gap: 12px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin-left: auto;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                order: 3;
+            }
+
+            .nav-menu.open {
+                display: block;
+            }
+
+            .nav-menu ul {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 13px 14px;
+                background: rgba(19, 36, 58, 0.8);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+            }
+
+            .header-actions {
+                display: none;
+                width: 100%;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .header-actions.open {
+                display: grid;
+            }
+
+            .hero {
+                padding: 42px 16px 34px;
+                gap: 26px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+                letter-spacing: -0.6px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                padding: 12px;
+                border-radius: 22px;
+            }
+
+            .hero-card img {
+                height: 280px;
+                border-radius: 18px;
             }
 
             .floating-card {
@@ -522,8 +647,101 @@
                 margin-top: 14px;
             }
 
+            section {
+                padding: 34px 16px;
+            }
+
+            .section-header h2 {
+                font-size: 28px;
+            }
+
+            .about-card {
+                padding: 22px;
+                border-radius: 20px;
+            }
+
+            .about-card h2 {
+                font-size: 26px;
+            }
+
+            .admin-login-mini {
+                grid-template-columns: 1fr;
+                padding: 18px;
+            }
+
+            .admin-login-mini .btn {
+                width: 100%;
+            }
+
             .cta {
-                align-items: flex-start;
+                margin: 34px 16px 48px;
+                padding: 28px;
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .cta h2 {
+                font-size: 28px;
+            }
+
+            .cta .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .hero-badge {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .header-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card img {
+                height: 220px;
+            }
+
+            .section-header h2 {
+                font-size: 24px;
+            }
+
+            .about-card h2 {
+                font-size: 23px;
+            }
+
+            .about-list div {
+                font-size: 14px;
+            }
+
+            #main-advantages .advantage-card,
+            #main-categories .main-category-card {
+                min-height: auto;
+                padding: 22px 18px;
+            }
+
+            .cta {
+                border-radius: 20px;
+            }
+
+            .cta h2 {
+                font-size: 24px;
+            }
+
+            footer {
+                font-size: 14px;
+                padding: 22px 12px;
             }
         }
     </style>
@@ -537,7 +755,11 @@
             Vita<span>Equip</span>
         </a>
 
-        <nav>
+        <button class="menu-toggle" type="button" id="menuToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="nav-menu" id="navMenu">
             <ul>
                 <li><a href="/catalog">Каталог</a></li>
                 <li><a href="/about">О нас</a></li>
@@ -548,7 +770,7 @@
             </ul>
         </nav>
 
-        <div class="header-actions">
+        <div class="header-actions" id="headerActions">
             <a href="/catalog" class="btn">Каталог</a>
             <a href="/admin" class="btn btn-secondary">Админ</a>
         </div>
@@ -567,7 +789,7 @@
 
             <p>
                 VitaEquip объединяет каталог медицинского оборудования, оформление заказов,
-                работу с клиентами, поставщиками и базой данных Microsoft SQL Server.
+                работу с клиентами, поставщиками и базой данных.
             </p>
 
             <div class="hero-buttons">
@@ -627,7 +849,7 @@
             </div>
 
             <div class="about-list">
-                <div><i class="fa-solid fa-database"></i> Единая база данных Microsoft SQL Server</div>
+                <div><i class="fa-solid fa-database"></i> Единая база данных</div>
                 <div><i class="fa-solid fa-cart-shopping"></i> Оформление и контроль заказов</div>
                 <div><i class="fa-solid fa-boxes-stacked"></i> Управление каталогом медтехники</div>
                 <div><i class="fa-solid fa-chart-line"></i> Статистика и аналитика в админ-панели</div>
@@ -709,6 +931,23 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         PageRenderer.initMainPage();
+    });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const headerActions = document.getElementById('headerActions');
+
+    menuToggle.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+        headerActions.classList.toggle('open');
+
+        const icon = menuToggle.querySelector('i');
+
+        if (navMenu.classList.contains('open')) {
+            icon.className = 'fa-solid fa-xmark';
+        } else {
+            icon.className = 'fa-solid fa-bars';
+        }
     });
 
     async function adminLogin(username, password, errorElement) {

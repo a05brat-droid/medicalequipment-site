@@ -26,6 +26,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -34,10 +38,15 @@
                 radial-gradient(circle at bottom right, rgba(25, 195, 125, 0.08), transparent 35%),
                 var(--bg);
             color: var(--text);
+            overflow-x: hidden;
         }
 
         a {
             text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
         }
 
         .site-header {
@@ -66,19 +75,32 @@
             color: #fff;
             font-size: 22px;
             font-weight: 800;
+            flex-shrink: 0;
         }
 
         .logo img {
             width: 46px;
             height: 46px;
             border-radius: 12px;
+            object-fit: cover;
         }
 
         .logo span {
             color: var(--blue2);
         }
 
-        nav ul {
+        .menu-toggle {
+            display: none;
+            background: rgba(19, 36, 58, 0.95);
+            color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-menu ul {
             display: flex;
             gap: 22px;
             list-style: none;
@@ -86,16 +108,23 @@
             margin: 0;
         }
 
-        nav a {
+        .nav-menu a {
             color: #cbd5e1;
             font-weight: 600;
             padding: 10px 4px;
             transition: 0.2s;
+            white-space: nowrap;
         }
 
-        nav a:hover,
-        nav a.active {
+        .nav-menu a:hover,
+        .nav-menu a.active {
             color: var(--blue2);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .btn {
@@ -110,6 +139,9 @@
             font-weight: 700;
             box-shadow: 0 12px 28px rgba(47, 128, 255, 0.28);
             transition: 0.2s;
+            border: 0;
+            cursor: pointer;
+            text-align: center;
         }
 
         .btn:hover {
@@ -455,6 +487,8 @@
             text-align: center;
             font-weight: 800;
             color: var(--blue2);
+            min-width: 0;
+            word-break: break-word;
         }
 
         .cta {
@@ -493,12 +527,20 @@
             background: rgba(7, 17, 31, 0.8);
         }
 
-        @media (max-width: 1050px) {
-            .header-inner,
-            nav ul,
-            .cta {
-                flex-direction: column;
-                align-items: flex-start;
+        @media (max-width: 1150px) {
+            .header-inner {
+                flex-wrap: wrap;
+            }
+
+            .nav-menu {
+                order: 3;
+                width: 100%;
+            }
+
+            .nav-menu ul {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 14px;
             }
 
             .hero,
@@ -506,27 +548,201 @@
                 grid-template-columns: 1fr;
             }
 
-            .cards-grid,
-            .steps-grid {
-                grid-template-columns: 1fr 1fr;
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .stats-grid,
+            .steps-grid,
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .brands {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(3, 1fr);
             }
 
             .hero-main h1 {
-                font-size: 36px;
+                font-size: 38px;
+            }
+
+            .image-card {
+                min-height: 380px;
             }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: 12px 16px;
+                gap: 12px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .logo img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .menu-toggle {
+                display: block;
+                margin-left: auto;
+            }
+
+            .header-actions {
+                width: 100%;
+                display: none;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .header-actions.open {
+                display: grid;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                order: 3;
+            }
+
+            .nav-menu.open {
+                display: block;
+            }
+
+            .nav-menu ul {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 13px 14px;
+                background: rgba(19, 36, 58, 0.8);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+            }
+
+            .container {
+                padding: 28px 16px 46px;
+            }
+
+            .hero-main,
+            .panel-card,
+            .brand-panel {
+                padding: 24px;
+                border-radius: 22px;
+            }
+
+            .hero-main h1 {
+                font-size: 31px;
+            }
+
+            .hero-main p,
+            .panel-card p,
+            .brand-panel p {
+                font-size: 15px;
+            }
+
+            .badge {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .hero-actions .btn {
+                width: 100%;
+            }
+
             .cards-grid,
             .steps-grid,
             .stats-grid,
             .brands {
                 grid-template-columns: 1fr;
+            }
+
+            .section-title,
+            .panel-card h2 {
+                font-size: 27px;
+            }
+
+            .image-card {
+                min-height: 300px;
+            }
+
+            .image-label {
+                left: 14px;
+                right: 14px;
+                bottom: 14px;
+                padding: 16px;
+            }
+
+            .cta {
+                padding: 26px;
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .cta .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .hero-main,
+            .mini-card,
+            .panel-card,
+            .info-card,
+            .step-card,
+            .stat-card,
+            .brand-panel,
+            .cta {
+                border-radius: 18px;
+            }
+
+            .hero-main {
+                padding: 20px;
+            }
+
+            .hero-main h1 {
+                font-size: 27px;
+            }
+
+            .hero-main::after {
+                width: 130px;
+                height: 130px;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .header-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card b {
+                font-size: 30px;
+            }
+
+            .image-card {
+                min-height: 250px;
+            }
+
+            footer {
+                font-size: 14px;
+                padding: 22px 12px;
             }
         }
     </style>
@@ -540,7 +756,11 @@
             Vita<span>Equip</span>
         </a>
 
-        <nav>
+        <button class="menu-toggle" type="button" id="menuToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="nav-menu" id="navMenu">
             <ul>
                 <li><a href="/catalog">Каталог</a></li>
                 <li><a class="active" href="/about">О нас</a></li>
@@ -551,7 +771,7 @@
             </ul>
         </nav>
 
-        <div style="display:flex; gap:10px;">
+        <div class="header-actions" id="headerActions">
             <a href="/catalog" class="btn">Каталог</a>
             <a href="/admin" class="btn btn-secondary">Админ</a>
         </div>
@@ -571,8 +791,8 @@
             </p>
 
             <p>
-                Проект объединяет пользовательскую часть, базу данных Microsoft SQL Server и инструменты
-                управления товарами, клиентами, заказами, поставщиками и статистикой.
+                Проект объединяет пользовательскую часть, базу данных и инструменты управления товарами,
+                клиентами, заказами, поставщиками и статистикой.
             </p>
 
             <div class="hero-actions">
@@ -764,5 +984,24 @@
 <footer>
     VitaEquip — интернет-ресурс для продажи медтехники
 </footer>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const headerActions = document.getElementById('headerActions');
+
+    menuToggle.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+        headerActions.classList.toggle('open');
+
+        const icon = menuToggle.querySelector('i');
+
+        if (navMenu.classList.contains('open')) {
+            icon.className = 'fa-solid fa-xmark';
+        } else {
+            icon.className = 'fa-solid fa-bars';
+        }
+    });
+</script>
 </body>
 </html>
