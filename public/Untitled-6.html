@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <link rel="shortcut icon" href="/icons/logo.png" type="image/png">
+    <link rel="shortcut icon" href="/icons/android-chrome-192x192.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог - VitaEquip</title>
@@ -44,10 +44,6 @@
         a {
             text-decoration: none;
         }
-
-        /* =========================
-           HEADER
-        ========================= */
 
         .site-header {
             background: rgba(7, 17, 31, 0.92);
@@ -140,19 +136,11 @@
             box-shadow: none;
         }
 
-        /* =========================
-           CONTAINER
-        ========================= */
-
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 42px 28px 70px;
         }
-
-        /* =========================
-           HERO
-        ========================= */
 
         .hero {
             display: grid;
@@ -267,10 +255,6 @@
             line-height: 1.55;
         }
 
-        /* =========================
-           SECTION
-        ========================= */
-
         .section {
             margin-top: 36px;
         }
@@ -297,10 +281,6 @@
             line-height: 1.7;
             margin-bottom: 26px;
         }
-
-        /* =========================
-           CATEGORIES
-        ========================= */
 
         #categories-container {
             display: grid;
@@ -355,10 +335,6 @@
             font-size: 13px;
             border: 1px solid rgba(67, 165, 255, 0.25);
         }
-
-        /* =========================
-           PRODUCTS
-        ========================= */
 
         .catalog-header {
             display: flex;
@@ -489,9 +465,16 @@
             transform: translateY(-2px);
         }
 
-        /* =========================
-           MODAL
-        ========================= */
+        .loading,
+        #products-container > p,
+        #categories-container > p {
+            color: var(--muted);
+            background: rgba(13, 27, 46, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+        }
 
         .product-modal {
             position: fixed !important;
@@ -515,6 +498,9 @@
             background: linear-gradient(145deg, #132844, #0b1b31) !important;
             border: 1px solid rgba(67, 165, 255, 0.35) !important;
             border-radius: 28px !important;
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.42),
+                0 0 50px rgba(47, 128, 255, 0.18) !important;
         }
 
         .product-modal .close {
@@ -524,12 +510,25 @@
             color: #cfe4ff !important;
             font-size: 34px !important;
             cursor: pointer !important;
+            line-height: 1 !important;
+            opacity: 1 !important;
+            text-shadow: 0 0 12px rgba(67, 165, 255, 0.45) !important;
+        }
+
+        .product-modal .close:hover {
+            color: #43a5ff !important;
         }
 
         .product-modal .product-details {
             display: grid !important;
             grid-template-columns: 0.9fr 1.1fr !important;
             gap: 30px !important;
+            align-items: start !important;
+        }
+
+        .product-modal .product-images {
+            display: grid !important;
+            gap: 14px !important;
         }
 
         .product-modal .product-images img {
@@ -537,13 +536,31 @@
             max-height: 340px !important;
             object-fit: contain !important;
             background: #f8fbff !important;
+            border: 1px solid rgba(67, 165, 255, 0.28) !important;
             border-radius: 18px !important;
             padding: 12px !important;
         }
 
-        /* =========================
-           CTA
-        ========================= */
+        .product-modal .product-info-modal h2 {
+            margin: 0 0 22px !important;
+            color: #2f80ff !important;
+            font-size: 32px !important;
+            line-height: 1.2 !important;
+            font-weight: 800 !important;
+        }
+
+        .product-modal .product-info-modal p {
+            color: #dcecff !important;
+            font-size: 17px !important;
+            line-height: 1.65 !important;
+            margin: 12px 0 !important;
+            font-weight: 500 !important;
+        }
+
+        .product-modal .product-info-modal strong {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+        }
 
         .cta {
             margin-top: 40px;
@@ -554,6 +571,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 24px;
+            box-shadow: 0 18px 45px rgba(47, 128, 255, 0.24);
         }
 
         .cta h2 {
@@ -569,6 +587,7 @@
             background: #fff;
             color: #0f172a;
             box-shadow: none;
+            white-space: nowrap;
         }
 
         footer {
@@ -579,12 +598,7 @@
             background: rgba(7, 17, 31, 0.8);
         }
 
-        /* =========================
-           ADAPTIVE
-        ========================= */
-
         @media (max-width: 1050px) {
-
             .header-inner {
                 flex-direction: column;
                 align-items: stretch;
@@ -615,10 +629,14 @@
             .hero-main h1 {
                 font-size: 36px;
             }
+
+            .cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
 
         @media (max-width: 850px) {
-
             .container {
                 padding: 30px 20px 60px;
             }
@@ -647,15 +665,9 @@
             .hero-actions .btn {
                 width: 100%;
             }
-
-            .cta {
-                flex-direction: column;
-                align-items: flex-start;
-            }
         }
 
         @media (max-width: 650px) {
-
             .container {
                 padding: 24px 14px 50px;
             }
@@ -676,6 +688,7 @@
             nav ul {
                 width: 100%;
                 justify-content: center;
+                gap: 10px;
             }
 
             .header-buttons {
@@ -731,10 +744,8 @@
 </head>
 
 <body>
-
 <header class="site-header">
     <div class="header-inner">
-
         <a class="logo" href="/">
             <img src="/icons/android-chrome-192x192.png" alt="VitaEquip">
             Vita<span>Equip</span>
@@ -755,23 +766,15 @@
             <a href="/" class="btn btn-secondary">Главная</a>
             <a href="/admin" class="btn">Админ</a>
         </div>
-
     </div>
 </header>
 
 <main class="container">
-
     <section class="hero">
-
         <div class="hero-main">
+            <div class="badge">📦 Каталог VitaEquip</div>
 
-            <div class="badge">
-                📦 Каталог VitaEquip
-            </div>
-
-            <h1>
-                Каталог <span>медицинского оборудования</span>
-            </h1>
+            <h1>Каталог <span>медицинского оборудования</span></h1>
 
             <p>
                 В каталоге представлены товары для медицинских организаций:
@@ -784,22 +787,16 @@
             </p>
 
             <div class="hero-actions">
-
                 <button class="btn" onclick="scrollToCatalog()">
                     <i class="fa-solid fa-arrow-down"></i>
                     Перейти к товарам
                 </button>
 
-                <a href="/contacts" class="btn btn-secondary">
-                    Связаться
-                </a>
-
+                <a href="/contacts" class="btn btn-secondary">Связаться</a>
             </div>
-
         </div>
 
         <div class="hero-side">
-
             <div class="mini-card">
                 <div class="mini-icon">
                     <i class="fa-solid fa-layer-group"></i>
@@ -817,24 +814,85 @@
                     <i class="fa-solid fa-database"></i>
                 </div>
 
-                <h3>Данные из SQL Server</h3>
+                <h3>Данные из базы</h3>
 
                 <p>
                     Карточки товаров отображают информацию, сохранённую в базе данных проекта.
                 </p>
             </div>
-
         </div>
-
     </section>
 
+    <section class="section panel-card">
+        <h2 class="section-title">Категории</h2>
+        <div class="title-line"></div>
+
+        <p class="section-description">
+            Выберите категорию, чтобы отфильтровать товары и быстрее найти нужное оборудование.
+        </p>
+
+        <div id="categories-container">
+            <div class="loading">Загрузка категорий...</div>
+        </div>
+    </section>
+
+    <section id="catalog" class="section panel-card">
+        <div class="catalog-header">
+            <div>
+                <h2 class="section-title">Наши товары</h2>
+                <div class="title-line"></div>
+            </div>
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="catalog-search" placeholder="Поиск по товарам...">
+            </div>
+        </div>
+
+        <p class="section-description">
+            Откройте карточку товара, чтобы посмотреть подробные характеристики, производителя, цену и описание.
+        </p>
+
+        <div id="products-container">
+            <div class="loading">Загрузка товаров...</div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div>
+            <h2>Не нашли нужное оборудование?</h2>
+            <p>Свяжитесь с нами, и специалист поможет подобрать подходящую медицинскую технику.</p>
+        </div>
+
+        <a href="/contacts" class="btn">Написать нам</a>
+    </section>
 </main>
 
 <footer>
     VitaEquip — каталог медицинского оборудования
 </footer>
 
+<script src="/public/api-integration.js"></script>
+
 <script>
+    let allCatalogProducts = [];
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (window.PageRenderer && typeof PageRenderer.initCatalogPage === 'function') {
+            await PageRenderer.initCatalogPage();
+        }
+
+        await saveCurrentProductsForSearch();
+
+        const searchInput = document.getElementById('catalog-search');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                filterCatalogProducts(this.value);
+            });
+        }
+    });
+
     function scrollToCatalog() {
         const catalog = document.getElementById('catalog');
 
@@ -842,6 +900,33 @@
             catalog.scrollIntoView({
                 behavior: 'smooth'
             });
+        }
+    }
+
+    async function saveCurrentProductsForSearch() {
+        if (!window.medicalAPI || typeof window.medicalAPI.getProducts !== 'function') {
+            return;
+        }
+
+        const result = await window.medicalAPI.getProducts(1, 1000);
+        allCatalogProducts = result.products || result.data || [];
+    }
+
+    async function filterCatalogProducts(value) {
+        const text = value.toLowerCase().trim();
+
+        if (!allCatalogProducts.length) {
+            await saveCurrentProductsForSearch();
+        }
+
+        const filtered = allCatalogProducts.filter(product => {
+            return String(product.name || '').toLowerCase().includes(text) ||
+                   String(product.manufacturer || '').toLowerCase().includes(text) ||
+                   String(product.description || '').toLowerCase().includes(text);
+        });
+
+        if (window.PageRenderer && typeof PageRenderer.renderProducts === 'function') {
+            PageRenderer.renderProducts(filtered, 'products-container');
         }
     }
 </script>
