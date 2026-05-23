@@ -321,24 +321,28 @@
         .category-grid,
         #featured-products {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         #main-advantages .advantage-card,
-        #main-categories .main-category-card {
+        #main-categories .main-category-card,
+        #featured-products .product-card {
             background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(21, 44, 72, 0.82));
             border: 1px solid var(--border);
             border-radius: 22px;
             padding: 28px 24px;
-            text-align: center;
+            text-align: left;
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
             transition: 0.25s;
-            min-height: 210px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         #main-advantages .advantage-card:hover,
-        #main-categories .main-category-card:hover {
+        #main-categories .main-category-card:hover,
+        #featured-products .product-card:hover {
             transform: translateY(-6px);
             border-color: rgba(67, 165, 255, 0.65);
             box-shadow: 0 18px 42px rgba(47, 128, 255, 0.18);
@@ -353,44 +357,47 @@
         }
 
         #main-advantages h3,
-        #main-categories h3 {
+        #main-categories h3,
+        #featured-products .product-card h3 {
             color: #fff;
             margin: 10px 0;
-            font-size: 19px;
+            font-size: 20px;
         }
 
         #main-advantages p,
-        #main-categories p {
+        #main-categories p,
+        #featured-products .product-card p {
             color: var(--text-muted);
-            line-height: 1.45;
+            line-height: 1.5;
             font-size: 14px;
+            margin-bottom: 14px;
         }
 
         .products-section {
             padding-top: 20px;
         }
 
-        .products-section .product-card {
-            background: linear-gradient(145deg, rgba(19, 36, 58, 0.98), rgba(21, 44, 72, 0.82)) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 22px !important;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.16) !important;
+        #featured-products .product-card .product-image-container {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
         }
 
-        .products-section .product-image {
-            background: rgba(255,255,255,0.06) !important;
+        #featured-products .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .products-section .product-info h3 {
-            color: #fff !important;
-        }
-
-        .products-section .manufacturer {
-            color: var(--text-muted) !important;
-        }
-
-        .products-section .price {
-            color: var(--green) !important;
+        #featured-products .product-card .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--green);
+            margin-top: auto;
+            display: block;
         }
 
         .about-panel {
@@ -429,19 +436,20 @@
             border-radius: 18px;
             padding: 18px;
             color: #dbeafe;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .about-list i {
             color: var(--blue-light);
-            margin-right: 8px;
+            font-size: 18px;
         }
 
         .cta {
             margin: 48px auto 70px;
             max-width: 1224px;
-            background:
-                linear-gradient(135deg, rgba(47, 128, 255, 0.94), rgba(25, 195, 125, 0.75)),
-                var(--blue);
+            background: linear-gradient(135deg, rgba(47, 128, 255, 0.94), rgba(25, 195, 125, 0.75));
             border-radius: 28px;
             padding: 46px;
             display: flex;
@@ -458,7 +466,7 @@
 
         .cta p {
             margin: 0;
-            color: rgba(255,255,255,0.82);
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.55;
         }
 
@@ -485,19 +493,19 @@
             background: rgba(19, 36, 58, 0.88);
             border: 1px solid var(--border);
             border-radius: 18px;
-            padding: 20px;
+            padding: 24px;
             max-width: 760px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr auto;
-            gap: 12px;
+            gap: 16px;
             align-items: end;
         }
 
         .admin-login-mini label {
             color: #cbd5e1;
             font-size: 13px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: block;
         }
 
@@ -507,15 +515,23 @@
             border: 1px solid var(--border);
             color: #fff;
             border-radius: 12px;
-            padding: 12px;
+            padding: 13px 16px;
             outline: none;
-            font-size: 16px;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .admin-login-mini input:focus {
+            border-color: var(--blue-light);
+            box-shadow: 0 0 12px rgba(47, 128, 255, 0.25);
         }
 
         #admin-login-error,
         #admin-login-error-mini {
-            color: #fecaca;
+            color: #ff4d5e;
             grid-column: 1 / -1;
+            font-size: 14px;
+            margin-top: 4px;
         }
 
         @media (max-width: 1150px) {
@@ -799,6 +815,7 @@
                 </a>
 
                 <a href="/about" class="btn btn-secondary">
+                    <i class="fa-solid fa-circle-info"></i>
                     Подробнее о ресурсе
                 </a>
             </div>
@@ -894,12 +911,12 @@
 
         <div class="admin-login-mini">
             <div>
-                <label>Логин администратора</label>
+                <label for="admin-username-mini">Логин администратора</label>
                 <input type="text" id="admin-username-mini" placeholder="Введите логин">
             </div>
 
             <div>
-                <label>Пароль администратора</label>
+                <label for="admin-password-mini">Пароль администратора</label>
                 <input type="password" id="admin-password-mini" placeholder="Введите пароль">
             </div>
 
