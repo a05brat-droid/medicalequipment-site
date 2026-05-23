@@ -71,7 +71,7 @@
             }
         }
 
-        /* --- ШАПКА САЙТА --- */
+        /* --- ШАПКА САЙТА (ИСПРАВЛЕННЫЙ ДЕСКТОП) --- */
         .site-header {
             background: rgba(7, 17, 31, 0.85);
             border-bottom: 1px solid var(--border);
@@ -129,7 +129,7 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
-            z-index: 101; /* Чтобы кнопка была поверх шторки */
+            z-index: 101;
         }
         .menu-toggle:hover {
             background: var(--blue);
@@ -175,11 +175,17 @@
             color: var(--blue2);
         }
 
+        /* Кнопки для ПК */
         .header-actions {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
+        }
+
+        /* Кнопки дубликаты внутри мобильного меню (по умолчанию скрыты на ПК) */
+        .mobile-actions {
+            display: none;
         }
 
         /* --- КНОПКИ --- */
@@ -696,7 +702,7 @@
         }
 
 
-        /* --- МЕДИА ЗАПРОСЫ (Полностью исправленный адаптив) --- */
+        /* --- МЕДИА ЗАПРОСЫ (Полная гармония ПК и мобильного адаптива) --- */
         
         @media (max-width: 1100px) {
             .hero {
@@ -719,7 +725,7 @@
 
         @media (max-width: 768px) {
             body.menu-open {
-                overflow: hidden; /* Запрещаем скролл сайта при открытом меню */
+                overflow: hidden;
             }
 
             .header-inner {
@@ -727,11 +733,16 @@
                 position: relative;
             }
 
-            .menu-toggle {
-                display: block; /* Показываем бургер */
+            /* Прячем ПК-версию кнопок */
+            .header-actions {
+                display: none !important; 
             }
 
-            /* Превращаем меню в красивую полноэкранную шторку */
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Мобильная шторка */
             .nav-menu {
                 display: none;
                 position: fixed;
@@ -783,27 +794,22 @@
                 padding-left: 28px;
             }
 
-            /* Прячем десктопные кнопки из шапки */
-            .header-actions {
-                display: none;
+            /* Включаем блок мобильных кнопок в самом низу шторки */
+            .mobile-actions {
+                display: flex;
                 width: 100%;
                 flex-direction: column;
                 gap: 12px;
-                margin-top: auto; /* Прижимает кнопки к низу шторки */
-            }
-            
-            /* Показываем их ТОЛЬКО внутри открытой шторки */
-            .nav-menu.open .header-actions {
-                display: flex;
+                margin-top: auto; 
             }
 
-            .header-actions .btn {
+            .mobile-actions .btn {
                 width: 100%;
                 padding: 16px;
                 font-size: 16px;
             }
 
-            /* Остальной контент страницы */
+            /* Контент */
             .container {
                 padding: 24px 16px 48px;
             }
@@ -886,11 +892,17 @@
                 <li><a href="/partners">Партнеры</a></li>
                 <li><a href="/contacts">Контакты</a></li>
             </ul>
-            <div class="header-actions" id="headerActions">
+            
+            <div class="mobile-actions">
                 <a href="/catalog" class="btn">Каталог</a>
                 <a href="/admin" class="btn btn-secondary">Админ</a>
             </div>
         </nav>
+
+        <div class="header-actions">
+            <a href="/catalog" class="btn">Каталог</a>
+            <a href="/admin" class="btn btn-secondary">Админ</a>
+        </div>
     </div>
 </header>
 
@@ -1116,7 +1128,7 @@
         }
     });
 
-    // Анимация появления элементов при доскролле (Intersection Observer)
+    // Анимация появления элементов при доскролле
     const fadeBlocks = document.querySelectorAll('.fade-in');
     
     const observerOptions = {
