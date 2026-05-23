@@ -686,222 +686,237 @@
                 flex-direction: column;
             }
         }
-        /*
-   MOBILE + TABLET ADAPTIVE
- */
 
-@media (max-width: 900px) {
+        @media (max-width: 900px) {
+            .sidebar {
+                height: auto;
+                position: relative;
+                padding-bottom: 90px;
+            }
 
-    .sidebar {
-        height: auto;
-        position: relative;
-        padding-bottom: 90px;
-    }
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
 
-    .admin-layout {
-        grid-template-columns: 1fr;
-    }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+                height: auto;
+                padding: 18px;
+            }
 
-    .topbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
-        height: auto;
-        padding: 18px;
-    }
+            .topbar-actions {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
 
-    .topbar-actions {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
+            .topbar-search {
+                width: 100%;
+            }
 
-    .topbar-search {
-        width: 100%;
-    }
+            .content {
+                padding: 18px;
+            }
 
-    .content {
-        padding: 18px;
-    }
+            .dashboard-grid,
+            .dashboard-row,
+            .dashboard-row-three,
+            .quick-actions,
+            .card-grid,
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
 
-    .dashboard-grid,
-    .dashboard-row,
-    .dashboard-row-three,
-    .quick-actions,
-    .card-grid,
-    .form-grid {
-        grid-template-columns: 1fr !important;
-    }
+            .item-card {
+                flex-direction: column;
+            }
 
-    .item-card {
-        flex-direction: column;
-    }
+            .item-info {
+                flex-direction: column;
+            }
 
-    .item-info {
-        flex-direction: column;
-    }
+            .item-actions {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
 
-    .item-actions {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
+            .item-actions button {
+                flex: 1;
+                min-width: 120px;
+            }
 
-    .item-actions button {
-        flex: 1;
-        min-width: 120px;
-    }
+            .chart {
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
 
-    .chart {
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
+            .chart-item {
+                min-width: 90px;
+            }
 
-    .chart-item {
-        min-width: 90px;
-    }
+            .mini-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
 
-    .mini-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
 
-    .section-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
+            .section-header button {
+                width: 100%;
+            }
 
-    .section-header button {
-        width: 100%;
-    }
+            .sidebar-bottom {
+                position: relative;
+                margin-top: 20px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+        }
 
-    .sidebar-bottom {
-        position: relative;
-        margin-top: 20px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-}
+        @media (max-width: 600px) {
+            body {
+                overflow-x: hidden;
+            }
 
-@media (max-width: 600px) {
+            #auth-section {
+                margin: 20px;
+                padding: 22px;
+            }
 
-    body {
-        overflow-x: hidden;
-    }
+            .content {
+                padding: 14px;
+            }
 
-    #auth-section {
-        margin: 20px;
-        padding: 22px;
-    }
+            .section-title {
+                font-size: 24px;
+            }
 
-    .content {
-        padding: 14px;
-    }
+            .dashboard-value {
+                font-size: 28px;
+            }
 
-    .section-title {
-        font-size: 24px;
-    }
+            .panel-card,
+            .form-card,
+            .dashboard-card,
+            .stat-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
 
-    .dashboard-value {
-        font-size: 28px;
-    }
+            .admin-nav button {
+                font-size: 14px;
+                padding: 12px;
+            }
 
-    .panel-card,
-    .form-card,
-    .dashboard-card,
-    .stat-card {
-        padding: 16px;
-        border-radius: 16px;
-    }
+            .brand {
+                margin-bottom: 18px;
+            }
 
-    .admin-nav button {
-        font-size: 14px;
-        padding: 12px;
-    }
+            .brand-title {
+                font-size: 16px;
+            }
 
-    .brand {
-        margin-bottom: 18px;
-    }
+            input,
+            select,
+            textarea,
+            button {
+                font-size: 16px;
+            }
 
-    .brand-title {
-        font-size: 16px;
-    }
+            .item-thumb {
+                width: 100%;
+                height: auto;
+                max-height: 240px;
+            }
 
-    input,
-    select,
-    textarea,
-    button {
-        font-size: 16px;
-    }
+            .topbar {
+                padding: 14px;
+            }
 
-    .item-thumb {
-        width: 100%;
-        height: auto;
-        max-height: 240px;
-    }
+            .admin-user {
+                width: 100%;
+                justify-content: center;
+            }
 
-    .topbar {
-        padding: 14px;
-    }
+            .topbar-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
 
-    .admin-user {
-        width: 100%;
-        justify-content: center;
-    }
+            .topbar-actions button, .topbar-actions a {
+                width: 100%;
+                text-align: center;
+            }
 
-    .topbar-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
+            .quick-action {
+                width: 100%;
+            }
 
-    .topbar-actions button {
-        width: 100%;
-    }
+            .chart {
+                min-height: 220px;
+            }
 
-    .quick-action {
-        width: 100%;
-    }
+            .chart-bar {
+                width: 36px;
+            }
+        }
 
-    .chart {
-        min-height: 220px;
-    }
+        @media (max-width: 400px) {
+            .section-title {
+                font-size: 21px;
+            }
 
-    .chart-bar {
-        width: 36px;
-    }
-}
+            .dashboard-value {
+                font-size: 24px;
+            }
 
-@media (max-width: 400px) {
+            .brand-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
 
-    .section-title {
-        font-size: 21px;
-    }
+            .brand-title {
+                font-size: 15px;
+            }
 
-    .dashboard-value {
-        font-size: 24px;
-    }
+            .admin-nav button {
+                padding: 10px;
+                font-size: 13px;
+            }
 
-    .brand-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
-
-    .brand-title {
-        font-size: 15px;
-    }
-
-    .admin-nav button {
-        padding: 10px;
-        font-size: 13px;
-    }
-
-    .item-actions button {
-        width: 100%;
-    }
-}
+            .item-actions button {
+                width: 100%;
+            }
+        }
+        
+        /* Дополнительный вспомогательный стиль для кнопки-ссылки в топбаре */
+        .topbar-actions .main-site-btn {
+            background: linear-gradient(135deg, var(--green), #119a62);
+            color: #fff;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(25, 195, 125, 0.2);
+        }
+        .topbar-actions .main-site-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -955,6 +970,7 @@
                     <input class="topbar-search" id="global-search" type="text" placeholder="Поиск по панели...">
 
                     <div class="topbar-actions">
+                        <a href="/" class="main-site-btn">🏠 На сайт</a>
                         <button id="logout-btn" class="secondary-btn">Выйти</button>
                         <div class="admin-user">
                             <div class="admin-avatar">👤</div>
@@ -973,7 +989,6 @@
                                 <h1 class="section-title">Панель управления</h1>
                                 <div class="section-subtitle">Общая информация об интернет-ресурсе</div>
                             </div>
-
                             <button id="overview-refresh-btn">Обновить данные</button>
                         </div>
 
@@ -1052,87 +1067,70 @@
 
                         <div class="form-card">
                             <h3>Форма товара</h3>
-
                             <div id="form-error" class="error"></div>
                             <div id="form-success" class="success"></div>
-
                             <div class="search-row">
                                 <div class="form-group">
                                     <label>Поиск товара</label>
                                     <input type="text" id="product-search" placeholder="Введите название товара">
                                 </div>
                             </div>
-
                             <form id="product-form">
                                 <input type="hidden" id="product-id">
-
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label>Название</label>
                                         <input type="text" id="product-name" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Производитель</label>
                                         <input type="text" id="product-manufacturer">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Категория</label>
                                         <select id="product-category" required></select>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Тип исполнения</label>
                                         <input type="text" id="product-execution-type">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Класс системы</label>
                                         <input type="text" id="product-system-class">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Размер монитора</label>
                                         <input type="text" id="product-monitor-size">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Активные порты</label>
                                         <input type="text" id="product-active-ports">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Вес</label>
                                         <input type="text" id="product-weight" placeholder="Например: 8.5">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Цена</label>
                                         <input type="number" id="product-price" min="0" step="0.01" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Изображение</label>
                                         <input type="file" id="product-image-file" accept=".jpg,.jpeg,.png,.webp">
                                     </div>
                                 </div>
-
                                 <div class="form-group">
                                     <label>Описание</label>
                                     <textarea id="product-description"></textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label>Путь к изображению</label>
                                     <input type="text" id="product-image" class="readonly-input" readonly>
                                 </div>
-
                                 <div class="form-group">
                                     <label>Предпросмотр</label>
                                     <div id="image-preview"></div>
                                 </div>
-
                                 <button type="submit">Сохранить</button>
                                 <button type="button" id="cancel-edit-btn" class="secondary-btn hidden">Отмена</button>
                             </form>
@@ -1154,45 +1152,36 @@
 
                         <div class="form-card">
                             <h3>Форма клиента</h3>
-
                             <div id="customer-error" class="error"></div>
                             <div id="customer-success" class="success"></div>
-
                             <form id="customer-form">
                                 <input type="hidden" id="customer-id">
-
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label>ФИО</label>
                                         <input type="text" id="customer-full-name" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Телефон</label>
                                         <input type="text" id="customer-phone" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Email</label>
                                         <input type="email" id="customer-email" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Логин</label>
                                         <input type="text" id="customer-login" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Пароль</label>
                                         <input type="password" id="customer-password" placeholder="При редактировании можно оставить пустым">
                                     </div>
-
                                     <div class="form-group">
                                         <label>Адрес доставки</label>
                                         <input type="text" id="customer-address" required>
                                     </div>
                                 </div>
-
                                 <button type="submit">Сохранить клиента</button>
                                 <button type="button" id="cancel-customer-edit-btn" class="secondary-btn hidden">Отмена</button>
                             </form>
@@ -1214,51 +1203,42 @@
 
                         <div class="form-card">
                             <h3>Новый заказ</h3>
-
                             <div id="order-error" class="error"></div>
                             <div id="order-success" class="success"></div>
-
                             <form id="order-form">
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label>Клиент</label>
                                         <select id="order-customer" required></select>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Статус заказа</label>
                                         <select id="order-status" required></select>
                                     </div>
                                 </div>
-
                                 <button type="submit">Создать заказ</button>
                             </form>
                         </div>
 
                         <div class="form-card">
                             <h3>Добавить товар в заказ</h3>
-
                             <div id="order-item-error" class="error"></div>
                             <div id="order-item-success" class="success"></div>
-
                             <form id="order-item-form">
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label>ID заказа</label>
                                         <input type="number" id="order-item-order-id" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Товар</label>
                                         <select id="order-item-product" required></select>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Количество</label>
                                         <input type="number" id="order-item-quantity" min="1" value="1" required>
                                     </div>
                                 </div>
-
                                 <button type="submit">Добавить товар в заказ</button>
                             </form>
                         </div>
@@ -1279,25 +1259,20 @@
 
                         <div class="form-card">
                             <h3>Форма поставщика</h3>
-
                             <div id="supplier-error" class="error"></div>
                             <div id="supplier-success" class="success"></div>
-
                             <form id="supplier-form">
                                 <input type="hidden" id="supplier-id">
-
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label>Название поставщика</label>
                                         <input type="text" id="supplier-name" required>
                                     </div>
-
                                     <div class="form-group">
                                         <label>Юридический адрес</label>
                                         <input type="text" id="supplier-address" required>
                                     </div>
                                 </div>
-
                                 <button type="submit" id="supplier-submit-btn">Сохранить поставщика</button>
                                 <button type="button" id="cancel-supplier-edit-btn" class="secondary-btn hidden">Отмена</button>
                             </form>
@@ -1315,7 +1290,6 @@
                                 <h1 class="section-title">Статистика</h1>
                                 <div class="section-subtitle">Аналитика по товарам, клиентам и заказам</div>
                             </div>
-
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <button type="button" id="refresh-stats-btn">Обновить</button>
                                 <button type="button" id="download-stats-chart-btn" class="success-btn">Скачать PNG</button>
@@ -1353,1149 +1327,343 @@
 </div>
 
 <script src="/public/api-integration.js"></script>
-
 <script>
-let adminToken = localStorage.getItem('adminToken') || '';
+    let adminToken = localStorage.getItem('adminToken') || '';
+    const noImage = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+            <rect width="100%" height="100%" fill="#f1f5f9"/>
+            <text x="50%" y="50%" text-anchor="middle" fill="#64748b" font-size="14" font-family="Arial">
+                Нет фото
+            </text>
+        </svg>
+    `);
 
-const noImage = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="140" height="140">
-        <rect width="100%" height="100%" fill="#f1f5f9"/>
-        <text x="50%" y="50%" text-anchor="middle" fill="#64748b" font-size="14" font-family="Arial">
-            Нет фото
-        </text>
-    </svg>
-`);
-
-function authHeaders(extra = {}) {
-    return {
-        ...extra,
-        'Authorization': 'Bearer ' + adminToken
-    };
-}
-
-function showAuthError(msg) {
-    document.getElementById('auth-error').textContent = msg || '';
-}
-
-function showFormError(msg) {
-    document.getElementById('form-error').textContent = msg || '';
-}
-
-function showFormSuccess(msg) {
-    document.getElementById('form-success').textContent = msg || '';
-}
-
-function showSupplierError(msg) {
-    document.getElementById('supplier-error').textContent = msg || '';
-}
-
-function showSupplierSuccess(msg) {
-    document.getElementById('supplier-success').textContent = msg || '';
-}
-
-function showCustomerError(msg) {
-    document.getElementById('customer-error').textContent = msg || '';
-}
-
-function showCustomerSuccess(msg) {
-    document.getElementById('customer-success').textContent = msg || '';
-}
-
-function showOrderError(msg) {
-    document.getElementById('order-error').textContent = msg || '';
-}
-
-function showOrderSuccess(msg) {
-    document.getElementById('order-success').textContent = msg || '';
-}
-
-function showOrderItemError(msg) {
-    document.getElementById('order-item-error').textContent = msg || '';
-}
-
-function showOrderItemSuccess(msg) {
-    document.getElementById('order-item-success').textContent = msg || '';
-}
-
-function clearFormMessages() {
-    showFormError('');
-    showFormSuccess('');
-}
-
-function clearSupplierMessages() {
-    showSupplierError('');
-    showSupplierSuccess('');
-}
-
-function clearCustomerMessages() {
-    showCustomerError('');
-    showCustomerSuccess('');
-}
-
-function clearOrderMessages() {
-    showOrderError('');
-    showOrderSuccess('');
-    showOrderItemError('');
-    showOrderItemSuccess('');
-}
-
-function setAuthState(isAuth) {
-    document.getElementById('auth-section').classList.toggle('hidden', isAuth);
-    document.getElementById('admin-panel').classList.toggle('hidden', !isAuth);
-}
-
-function clearProductForm() {
-    document.getElementById('product-form').reset();
-    document.getElementById('product-id').value = '';
-    document.getElementById('product-image').value = '';
-    document.getElementById('image-preview').innerHTML = '';
-    document.getElementById('cancel-edit-btn').classList.add('hidden');
-    clearFormMessages();
-}
-
-function clearCustomerForm() {
-    document.getElementById('customer-form').reset();
-    document.getElementById('customer-id').value = '';
-    document.getElementById('cancel-customer-edit-btn').classList.add('hidden');
-    clearCustomerMessages();
-}
-
-function clearSupplierForm() {
-    document.getElementById('supplier-form').reset();
-    document.getElementById('supplier-id').value = '';
-    document.getElementById('cancel-supplier-edit-btn').classList.add('hidden');
-    document.getElementById('supplier-submit-btn').textContent = 'Сохранить поставщика';
-    clearSupplierMessages();
-}
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-function formatMoney(value) {
-    const num = Number(value || 0);
-    return num.toLocaleString('ru-RU') + ' ₽';
-}
-
-function getImageSrc(image) {
-    if (!image) return noImage;
-
-    const img = String(image).trim();
-
-    if (!img || img === 'null' || img === 'undefined') return noImage;
-
-    if (img.startsWith('http://') || img.startsWith('https://')) return img;
-
-    if (img.startsWith('/uploads/')) return img;
-
-    if (img.startsWith('uploads/')) return '/' + img;
-
-    if (img.startsWith('/public/')) return img;
-
-    return '/uploads/' + img.replace(/^\/+/, '');
-}
-
-function switchSection(sectionId) {
-    document.querySelectorAll('.admin-section').forEach(section => {
-        section.classList.remove('active');
-    });
-
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    document.getElementById(sectionId).classList.add('active');
-    document.querySelector(`.nav-btn[data-section="${sectionId}"]`).classList.add('active');
-
-    clearFormMessages();
-    clearSupplierMessages();
-    clearCustomerMessages();
-    clearOrderMessages();
-}
-
-async function loginAdmin() {
-    showAuthError('');
-
-    const username = document.getElementById('admin-username').value.trim();
-    const password = document.getElementById('admin-password').value.trim();
-
-    if (!username || !password) {
-        return showAuthError('Введите логин и пароль');
+    function authHeaders(extra = {}) {
+        return { ...extra, 'Authorization': 'Bearer ' + adminToken };
     }
 
-    const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
+    function showAuthError(msg) { document.getElementById('auth-error').textContent = msg || ''; }
+    function showFormError(msg) { document.getElementById('form-error').textContent = msg || ''; }
+    function showFormSuccess(msg) { document.getElementById('form-success').textContent = msg || ''; }
+    function showSupplierError(msg) { document.getElementById('supplier-error').textContent = msg || ''; }
+    function showSupplierSuccess(msg) { document.getElementById('supplier-success').textContent = msg || ''; }
+    function showCustomerError(msg) { document.getElementById('customer-error').textContent = msg || ''; }
+    function showCustomerSuccess(msg) { document.getElementById('customer-success').textContent = msg || ''; }
+    function showOrderError(msg) { document.getElementById('order-error').textContent = msg || ''; }
+    function showOrderSuccess(msg) { document.getElementById('order-success').textContent = msg || ''; }
+    function showOrderItemError(msg) { document.getElementById('order-item-error').textContent = msg || ''; }
+    function showOrderItemSuccess(msg) { document.getElementById('order-item-success').textContent = msg || ''; }
 
-    const data = await res.json();
+    function clearFormMessages() { showFormError(''); showFormSuccess(''); }
+    function clearSupplierMessages() { showSupplierError(''); showSupplierSuccess(''); }
+    function clearCustomerMessages() { showCustomerError(''); showCustomerSuccess(''); }
+    function clearOrderMessages() { showOrderError(''); showOrderSuccess(''); showOrderItemError(''); showOrderItemSuccess(''); }
 
-    if (data.success && data.token) {
-        adminToken = data.token;
-        localStorage.setItem('adminToken', adminToken);
-        setAuthState(true);
-        await initializeAdminPanel();
-    } else {
-        showAuthError(data.error || 'Ошибка авторизации');
-    }
-}
-
-async function initializeAdminPanel() {
-    await Promise.all([
-        loadCategories(),
-        loadProducts(),
-        loadCustomers(),
-        loadCustomersForOrders(),
-        loadOrderStatuses(),
-        loadProductsForOrderItems(),
-        loadOrders(),
-        loadSuppliers(),
-        loadOverview(),
-        loadStats()
-    ]);
-}
-
-async function loadCategories() {
-    const select = document.getElementById('product-category');
-    select.innerHTML = '';
-
-    const cats = await window.medicalAPI.getCategories();
-
-    cats.forEach(cat => {
-        const opt = document.createElement('option');
-        opt.value = cat.id;
-        opt.textContent = cat.name;
-        select.appendChild(opt);
-    });
-}
-
-async function loadProductsForOrderItems() {
-    const select = document.getElementById('order-item-product');
-    select.innerHTML = '';
-
-    const result = await window.medicalAPI.getProducts(1, 1000);
-    const products = result.products || result.data || [];
-
-    products.forEach(product => {
-        const option = document.createElement('option');
-        option.value = product.id;
-        option.textContent = `${product.name} (${formatMoney(product.price)})`;
-        select.appendChild(option);
-    });
-}
-
-async function loadProducts() {
-    const list = document.getElementById('products-list');
-    list.innerHTML = 'Загрузка...';
-
-    const result = await window.medicalAPI.getProducts(1, 1000);
-    const products = result.products || result.data || [];
-    const searchValue = (document.getElementById('product-search')?.value || '').toLowerCase();
-
-    const filteredProducts = products.filter(p =>
-        String(p.name || '').toLowerCase().includes(searchValue)
-    );
-
-    if (!filteredProducts.length) {
-        list.innerHTML = '<div class="empty-text">Товары не найдены</div>';
-        return;
+    function setAuthState(isAuth) {
+        document.getElementById('auth-section').classList.toggle('hidden', isAuth);
+        document.getElementById('admin-panel').classList.toggle('hidden', !isAuth);
     }
 
-    list.innerHTML = filteredProducts.map(p => {
-        const manufacturerText = p.manufacturer ? p.manufacturer : 'Не указан';
-        const imageSrc = getImageSrc(p.image);
+    function clearProductForm() {
+        document.getElementById('product-form').reset();
+        document.getElementById('product-id').value = '';
+        document.getElementById('product-image').value = '';
+        document.getElementById('image-preview').innerHTML = '';
+        document.getElementById('cancel-edit-btn').classList.add('hidden');
+        clearFormMessages();
+    }
 
-        return `
-            <div class="item-card">
-                <div class="item-info">
-                    <img 
-                        src="${escapeHtml(imageSrc)}" 
-                        alt="${escapeHtml(p.name)}" 
-                        class="item-thumb"
-                        onerror="this.onerror=null;this.src='${noImage}';"
-                    >
+    function clearCustomerForm() {
+        document.getElementById('customer-form').reset();
+        document.getElementById('customer-id').value = '';
+        document.getElementById('cancel-customer-edit-btn').classList.add('hidden');
+        clearCustomerMessages();
+    }
 
-                    <div>
-                        <b>${escapeHtml(p.name)}</b><br>
-                        <small>Производитель: ${escapeHtml(manufacturerText)}</small><br>
-                        <small>Категория: ${escapeHtml(p.category_name || p.category_id || 'Не указана')}</small><br>
-                        <small>Цена: ${formatMoney(p.price)}</small>
-                    </div>
-                </div>
+    function clearSupplierForm() {
+        document.getElementById('supplier-form').reset();
+        document.getElementById('supplier-id').value = '';
+        document.getElementById('cancel-supplier-edit-btn').classList.add('hidden');
+        document.getElementById('supplier-submit-btn').textContent = 'Сохранить поставщика';
+        clearSupplierMessages();
+    }
 
-                <div class="item-actions">
-                    <button onclick="editProduct(${p.id})">✏️</button>
-                    <button class="danger-btn" onclick="deleteProduct(${p.id})">🗑️</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
 
-async function saveProduct(e) {
-    e.preventDefault();
-    clearFormMessages();
+    function formatMoney(value) {
+        const num = Number(value || 0);
+        return num.toLocaleString('ru-RU') + ' ₽';
+    }
 
-    const id = document.getElementById('product-id').value;
-    let imagePath = document.getElementById('product-image').value;
-    const imageFile = document.getElementById('product-image-file').files[0];
+    function getImageSrc(image) {
+        if (!image) return noImage;
+        const img = String(image).trim();
+        if (!img || img === 'null' || img === 'undefined') return noImage;
+        if (img.startsWith('http://') || img.startsWith('https://')) return img;
+        if (img.startsWith('/uploads/')) return img;
+        if (img.startsWith('uploads/')) return '/' + img;
+        if (img.startsWith('/public/')) return img;
+        return '/uploads/' + img.replace(/^\/+/, '');
+    }
 
-    if (imageFile) {
-        const formData = new FormData();
-        formData.append('image', imageFile);
-
-        const uploadRes = await fetch('/api/upload-image', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + adminToken
-            },
-            body: formData
+    function switchSection(sectionId) {
+        document.querySelectorAll('.admin-section').forEach(section => {
+            section.classList.remove('active');
         });
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById(sectionId).classList.add('active');
+        document.querySelector(`.nav-btn[data-section="${sectionId}"]`).classList.add('active');
+        clearFormMessages();
+        clearCustomerMessages();
+        clearSupplierMessages();
+        clearOrderMessages();
+    }
 
-        const uploadData = await uploadRes.json();
-
-        if (!uploadData.success) {
-            return showFormError(uploadData.error || 'Ошибка загрузки изображения');
+    // Инициализация событий и обработчиков после загрузки DOM
+    document.addEventListener('DOMContentLoaded', () => {
+        if (adminToken) {
+            setAuthState(true);
+            loadOverview();
         }
 
-        imagePath = uploadData.filePath;
-        document.getElementById('product-image').value = imagePath;
-    }
+        document.getElementById('login-btn').onclick = async function() {
+            const u = document.getElementById('admin-username').value.trim();
+            const p = document.getElementById('admin-password').value.trim();
+            showAuthError('');
 
-    const data = {
-        name: document.getElementById('product-name').value.trim(),
-        manufacturer: document.getElementById('product-manufacturer').value.trim(),
-        category_id: +document.getElementById('product-category').value,
-        execution_type: document.getElementById('product-execution-type').value.trim(),
-        system_class: document.getElementById('product-system-class').value.trim(),
-        monitor_size: document.getElementById('product-monitor-size').value.trim(),
-        active_ports: document.getElementById('product-active-ports').value.trim(),
-        weight: document.getElementById('product-weight').value.trim(),
-        price: document.getElementById('product-price').value.trim(),
-        description: document.getElementById('product-description').value.trim(),
-        image: imagePath || null
-    };
+            if(!u || !p) {
+                showAuthError('Заполните все поля');
+                return;
+            }
+            try {
+                const res = await apiLogin(u, p);
+                if(res && res.token) {
+                    adminToken = res.token;
+                    localStorage.setItem('adminToken', adminToken);
+                    setAuthState(true);
+                    await loadOverview();
+                } else {
+                    showAuthError('Неверный логин или пароль');
+                }
+            } catch(e) {
+                showAuthError('Ошибка авторизации: ' + e.message);
+            }
+        };
 
-    const url = id ? `/api/products/${id}` : '/api/products';
-    const method = id ? 'PUT' : 'POST';
+        document.getElementById('logout-btn').onclick = function() {
+            adminToken = '';
+            localStorage.removeItem('adminToken');
+            setAuthState(false);
+            showAuthError('');
+        };
 
-    const res = await fetch(url, {
-        method,
-        headers: authHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(data)
+        document.getElementById('product-form').onsubmit = async function(e) {
+            e.preventDefault();
+            clearFormMessages();
+            
+            const pId = document.getElementById('product-id').value;
+            const data = {
+                name: document.getElementById('product-name').value.trim(),
+                manufacturer: document.getElementById('product-manufacturer').value.trim(),
+                category_id: document.getElementById('product-category').value,
+                execution_type: document.getElementById('product-execution-type').value.trim(),
+                system_class: document.getElementById('product-system-class').value.trim(),
+                monitor_size: document.getElementById('product-monitor-size').value.trim(),
+                active_ports: document.getElementById('product-active-ports').value.trim(),
+                weight: document.getElementById('product-weight').value.trim(),
+                price: parseFloat(document.getElementById('product-price').value),
+                description: document.getElementById('product-description').value.trim(),
+                image: document.getElementById('product-image').value.trim()
+            };
+
+            const fileInput = document.getElementById('product-image-file');
+            if(fileInput.files.length > 0) {
+                try {
+                    const uploadRes = await apiUploadImage(fileInput.files[0], authHeaders());
+                    if(uploadRes && uploadRes.filePath) {
+                        data.image = uploadRes.filePath;
+                    }
+                } catch(err) {
+                    showFormError('Ошибка загрузки файла: ' + err.message);
+                    return;
+                }
+            }
+
+            try {
+                let res;
+                if(pId) {
+                    res = await apiUpdateProduct(pId, data, authHeaders());
+                    showFormSuccess('Товар успешно обновлен');
+                } else {
+                    res = await apiCreateProduct(data, authHeaders());
+                    showFormSuccess('Товар успешно создан');
+                }
+                clearProductForm();
+                await loadProducts();
+            } catch(err) {
+                showFormError('Ошибка сохранения: ' + err.message);
+            }
+        };
+
+        document.getElementById('product-image-file').onchange = function() {
+            const file = this.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image-preview').innerHTML = `<img src="${e.target.result}" alt="Предпросмотр">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        document.getElementById('customer-form').onsubmit = async function(e) {
+            e.preventDefault();
+            clearCustomerMessages();
+
+            const cId = document.getElementById('customer-id').value;
+            const data = {
+                full_name: document.getElementById('customer-full-name').value.trim(),
+                phone: document.getElementById('customer-phone').value.trim(),
+                email: document.getElementById('customer-email').value.trim(),
+                login: document.getElementById('customer-login').value.trim(),
+                address: document.getElementById('customer-address').value.trim()
+            };
+
+            const pwd = document.getElementById('customer-password').value;
+            if(pwd) data.password = pwd;
+
+            try {
+                if(cId) {
+                    await apiUpdateCustomer(cId, data, authHeaders());
+                    showCustomerSuccess('Данные клиента успешно обновлены');
+                } else {
+                    if(!pwd) {
+                        showCustomerError('Пароль обязателен для нового клиента');
+                        return;
+                    }
+                    await apiCreateCustomer(data, authHeaders());
+                    showCustomerSuccess('Клиент успешно добавлен');
+                }
+                clearCustomerForm();
+                await loadCustomers();
+            } catch(err) {
+                showCustomerError('Ошибка: ' + err.message);
+            }
+        };
+
+        document.getElementById('order-form').onsubmit = async function(e) {
+            e.preventDefault();
+            clearOrderMessages();
+
+            const data = {
+                customer_id: document.getElementById('order-customer').value,
+                status: document.getElementById('order-status').value
+            };
+
+            try {
+                await apiCreateOrder(data, authHeaders());
+                showOrderSuccess('Заказ успешно создан');
+                document.getElementById('order-form').reset();
+                await loadOrders();
+            } catch(err) {
+                showOrderError('Ошибка: ' + err.message);
+            }
+        };
+
+        document.getElementById('order-item-form').onsubmit = async function(e) {
+            e.preventDefault();
+            clearOrderMessages();
+
+            const orderId = document.getElementById('order-item-order-id').value;
+            const data = {
+                product_id: document.getElementById('order-item-product').value,
+                quantity: parseInt(document.getElementById('order-item-quantity').value)
+            };
+
+            try {
+                await apiAddOrderItem(orderId, data, authHeaders());
+                showOrderItemSuccess('Товар успешно добавлен в заказ');
+                document.getElementById('order-item-form').reset();
+                document.getElementById('order-item-quantity').value = '1';
+                await loadOrders();
+            } catch(err) {
+                showOrderItemError('Ошибка: ' + err.message);
+            }
+        };
+
+        document.getElementById('supplier-form').onsubmit = async function(e) {
+            e.preventDefault();
+            clearSupplierMessages();
+
+            const sId = document.getElementById('supplier-id').value;
+            const data = {
+                name: document.getElementById('supplier-name').value.trim(),
+                legal_address: document.getElementById('supplier-address').value.trim()
+            };
+
+            try {
+                if(sId) {
+                    await apiUpdateSupplier(sId, data, authHeaders());
+                    showSupplierSuccess('Данные поставщика обновлены');
+                } else {
+                    await apiCreateSupplier(data, authHeaders());
+                    showSupplierSuccess('Поставщик успешно добавлен');
+                }
+                clearSupplierForm();
+                await loadSuppliers();
+            } catch(err) {
+                showSupplierError('Ошибка: ' + err.message);
+            }
+        };
+
+        document.getElementById('cancel-edit-btn').onclick = function() { clearProductForm(); };
+        document.getElementById('cancel-customer-edit-btn').onclick = function() { clearCustomerForm(); };
+        document.getElementById('cancel-supplier-edit-btn').onclick = function() { clearSupplierForm(); };
+
+        document.getElementById('refresh-stats-btn').onclick = async function() {
+            await loadStats();
+            await loadOverview();
+        };
+
+        document.getElementById('overview-refresh-btn').onclick = async function() {
+            await loadOverview();
+            await loadStats();
+        };
+
+        document.getElementById('download-stats-chart-btn').onclick = function() {
+            if(typeof downloadStatsChart === 'function') {
+                downloadStatsChart();
+            }
+        };
+
+        document.getElementById('product-search').addEventListener('input', loadProducts);
+
+        document.getElementById('global-search').addEventListener('input', function () {
+            const value = this.value.toLowerCase().trim();
+            if (!value) return;
+
+            if (value.includes('товар')) switchSection('products-section');
+            if (value.includes('клиент')) switchSection('customers-section');
+            if (value.includes('заказ')) switchSection('orders-section');
+            if (value.includes('постав')) switchSection('suppliers-section');
+            if (value.includes('стат')) switchSection('stats-section');
+        });
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                switchSection(this.dataset.section);
+            });
+        });
     });
-
-    const resp = await res.json();
-
-    if (resp.success) {
-        showFormSuccess(id ? 'Товар обновлён!' : 'Товар добавлен!');
-        clearProductForm();
-        await loadProducts();
-        await loadOverview();
-        await loadStats();
-        await loadProductsForOrderItems();
-    } else {
-        showFormError(resp.error || 'Ошибка сохранения');
-    }
-}
-
-window.editProduct = async function(id) {
-    clearFormMessages();
-
-    const product = await window.medicalAPI.getProductById(id);
-
-    if (!product) {
-        return showFormError('Товар не найден');
-    }
-
-    document.getElementById('product-id').value = product.id;
-    document.getElementById('product-name').value = product.name || '';
-    document.getElementById('product-manufacturer').value = product.manufacturer || '';
-    document.getElementById('product-category').value = product.category_id || '';
-    document.getElementById('product-execution-type').value = product.execution_type || '';
-    document.getElementById('product-system-class').value = product.system_class || '';
-    document.getElementById('product-monitor-size').value = product.monitor_size || '';
-    document.getElementById('product-active-ports').value = product.active_ports || '';
-    document.getElementById('product-weight').value = product.weight || '';
-    document.getElementById('product-price').value = product.price || '';
-    document.getElementById('product-description').value = product.description || '';
-    document.getElementById('product-image').value = product.image || '';
-
-    const preview = document.getElementById('image-preview');
-    preview.innerHTML = '';
-
-    if (product.image) {
-        preview.innerHTML = `
-            <img 
-                src="${escapeHtml(getImageSrc(product.image))}" 
-                alt="preview"
-                onerror="this.onerror=null;this.src='${noImage}';"
-            >
-        `;
-    }
-
-    document.getElementById('cancel-edit-btn').classList.remove('hidden');
-    switchSection('products-section');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-window.deleteProduct = async function(id) {
-    if (!confirm('Удалить товар?')) return;
-
-    const res = await fetch(`/api/products/${id}`, {
-        method: 'DELETE',
-        headers: authHeaders()
-    });
-
-    const resp = await res.json();
-
-    if (resp.success) {
-        await loadProducts();
-        await loadOverview();
-        await loadStats();
-        await loadProductsForOrderItems();
-    } else {
-        showFormError(resp.error || 'Ошибка удаления');
-    }
-};
-
-async function saveCustomer(e) {
-    e.preventDefault();
-    clearCustomerMessages();
-
-    const id = document.getElementById('customer-id').value;
-
-    const data = {
-        full_name: document.getElementById('customer-full-name').value.trim(),
-        phone: document.getElementById('customer-phone').value.trim(),
-        email: document.getElementById('customer-email').value.trim(),
-        login: document.getElementById('customer-login').value.trim(),
-        password: document.getElementById('customer-password').value.trim(),
-        delivery_address: document.getElementById('customer-address').value.trim()
-    };
-
-    const url = id ? `/api/customers/${id}` : '/api/customers';
-    const method = id ? 'PUT' : 'POST';
-
-    const res = await fetch(url, {
-        method,
-        headers: authHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-        showCustomerSuccess(id ? 'Клиент обновлён' : 'Клиент добавлен');
-        clearCustomerForm();
-        await loadCustomers();
-        await loadOverview();
-        await loadStats();
-        await loadCustomersForOrders();
-    } else {
-        showCustomerError(result.error || 'Ошибка сохранения клиента');
-    }
-}
-
-window.editCustomer = function(id, fullName, phone, email, login, address) {
-    clearCustomerMessages();
-
-    document.getElementById('customer-id').value = id;
-    document.getElementById('customer-full-name').value = fullName || '';
-    document.getElementById('customer-phone').value = phone || '';
-    document.getElementById('customer-email').value = email || '';
-    document.getElementById('customer-login').value = login || '';
-    document.getElementById('customer-password').value = '';
-    document.getElementById('customer-address').value = address || '';
-
-    document.getElementById('cancel-customer-edit-btn').classList.remove('hidden');
-
-    switchSection('customers-section');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-window.deleteCustomer = async function(id) {
-    if (!confirm('Удалить клиента?')) return;
-
-    const res = await fetch(`/api/customers/${id}`, {
-        method: 'DELETE',
-        headers: authHeaders()
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-        await loadCustomers();
-        await loadOverview();
-        await loadStats();
-        await loadCustomersForOrders();
-    } else {
-        showCustomerError(result.error || 'Ошибка удаления клиента');
-    }
-};
-
-async function loadCustomers() {
-    const container = document.getElementById('customers-list');
-    container.innerHTML = 'Загрузка...';
-
-    const res = await fetch('/api/customers');
-    const data = await res.json();
-
-    if (!data.success || !data.data.length) {
-        container.innerHTML = '<div class="empty-text">Клиенты не найдены</div>';
-        return;
-    }
-
-    container.innerHTML = data.data.map(c => {
-        const customerId = c.CUSTOMER_ID || c.USER_ID;
-
-        return `
-            <div class="item-card">
-                <div class="item-info">
-                    <div>
-                        <b>${escapeHtml(c.FULL_NAME)}</b><br>
-                        <small>Телефон: ${escapeHtml(c.PHONE)}</small><br>
-                        <small>Email: ${escapeHtml(c.EMAIL)}</small><br>
-                        <small>Логин: ${escapeHtml(c.LOGIN)}</small><br>
-                        <small>Адрес: ${escapeHtml(c.DELIVERY_ADDRESS)}</small>
-                    </div>
-                </div>
-
-                <div class="item-actions">
-                    <button onclick='editCustomer(${customerId}, ${JSON.stringify(c.FULL_NAME)}, ${JSON.stringify(c.PHONE)}, ${JSON.stringify(c.EMAIL)}, ${JSON.stringify(c.LOGIN)}, ${JSON.stringify(c.DELIVERY_ADDRESS)})'>✏️</button>
-                    <button class="danger-btn" onclick="deleteCustomer(${customerId})">🗑️</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-async function loadCustomersForOrders() {
-    const select = document.getElementById('order-customer');
-    if (!select) return;
-
-    select.innerHTML = '';
-
-    const res = await fetch('/api/customers');
-    const data = await res.json();
-
-    if (!data.success || !data.data.length) return;
-
-    data.data.forEach(c => {
-        const option = document.createElement('option');
-        option.value = c.CUSTOMER_ID || c.USER_ID;
-        option.textContent = `${c.FULL_NAME} (${c.LOGIN})`;
-        select.appendChild(option);
-    });
-}
-
-async function loadOrderStatuses() {
-    const select = document.getElementById('order-status');
-    if (!select) return;
-
-    select.innerHTML = '';
-
-    const res = await fetch('/api/order-statuses');
-    const data = await res.json();
-
-    if (!data.success || !data.data.length) return;
-
-    data.data.forEach(status => {
-        const option = document.createElement('option');
-        option.value = status.id;
-        option.textContent = status.name;
-        select.appendChild(option);
-    });
-}
-
-async function saveOrder(e) {
-    e.preventDefault();
-    showOrderError('');
-    showOrderSuccess('');
-
-    const data = {
-        customer_id: Number(document.getElementById('order-customer').value),
-        order_status_id: Number(document.getElementById('order-status').value)
-    };
-
-    const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: authHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-        showOrderSuccess(`Заказ создан. ID заказа: ${result.order_id}`);
-        document.getElementById('order-item-order-id').value = result.order_id;
-        await loadOrders();
-        await loadOverview();
-        await loadStats();
-    } else {
-        showOrderError(result.error || 'Ошибка создания заказа');
-    }
-}
-
-async function saveOrderItem(e) {
-    e.preventDefault();
-    showOrderItemError('');
-    showOrderItemSuccess('');
-
-    const orderId = Number(document.getElementById('order-item-order-id').value);
-    const productId = Number(document.getElementById('order-item-product').value);
-    const quantity = Number(document.getElementById('order-item-quantity').value);
-
-    const res = await fetch(`/api/orders/${orderId}/items`, {
-        method: 'POST',
-        headers: authHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({
-            product_id: productId,
-            quantity: quantity
-        })
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-        showOrderItemSuccess('Товар добавлен в заказ');
-        await loadOrders();
-        await loadOverview();
-        await loadStats();
-    } else {
-        showOrderItemError(result.error || 'Ошибка добавления товара в заказ');
-    }
-}
-
-window.changeOrderStatus = async function(orderId) {
-    const select = document.getElementById(`order-status-${orderId}`);
-    const order_status_id = Number(select.value);
-
-    const res = await fetch(`/api/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: authHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({ order_status_id })
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-        await loadOrders();
-        await loadOverview();
-        await loadStats();
-    } else {
-        showOrderError(result.error || 'Ошибка изменения статуса');
-    }
-};
-
-window.deleteOrder = async function(orderId) {
-    if (!confirm('Удалить заказ?')) return;
-
-    const res = await fetch(`/api/orders/${orderId}`, {
-        method: 'DELETE',
-        headers: authHeaders()
-    });
-
-    const result = await res.json();
-
-    if (result.success) {
-        await loadOrders();
-        await loadOverview();
-        await loadStats();
-    } else {
-        showOrderError(result.error || 'Ошибка удаления заказа');
-    }
-};
-
-window.toggleOrderItems = async function(orderId) {
-    const container = document.getElementById(`order-items-${orderId}`);
-
-    if (container.dataset.loaded === 'true') {
-        container.classList.toggle('hidden');
-        return;
-    }
-
-    const res = await fetch(`/api/orders/${orderId}/items`);
-    const data = await res.json();
-
-    if (!data.success || !data.data.length) {
-        container.innerHTML = '<div class="empty-text">Состав заказа пуст</div>';
-        container.dataset.loaded = 'true';
-        container.classList.remove('hidden');
-        return;
-    }
-
-    container.innerHTML = `
-        <table class="mini-table">
-            <thead>
-                <tr>
-                    <th>Товар</th>
-                    <th>Цена</th>
-                    <th>Количество</th>
-                    <th>Сумма</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${data.data.map(item => `
-                    <tr>
-                        <td>${escapeHtml(item.PRODUCT_NAME)}</td>
-                        <td>${formatMoney(item.SALE_PRICE_AT_TIME)}</td>
-                        <td>${escapeHtml(item.QUANTITY)}</td>
-                        <td>${formatMoney(item.TOTAL_SUM)}</td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        </table>
-    `;
-
-    container.dataset.loaded = 'true';
-    container.classList.remove('hidden');
-};
-
-async function loadOrders() {
-    const container = document.getElementById('orders-list');
-    const preview = document.getElementById('overview-orders-preview');
-
-    container.innerHTML = 'Загрузка...';
-    preview.innerHTML = 'Загрузка...';
-
-    const [ordersRes, statusesRes] = await Promise.all([
-        fetch('/api/orders').then(r => r.json()),
-        fetch('/api/order-statuses').then(r => r.json())
-    ]);
-
-    if (!ordersRes.success || !ordersRes.data.length) {
-        container.innerHTML = '<div class="empty-text">Заказы не найдены</div>';
-        preview.innerHTML = '<div class="empty-text">Заказы не найдены</div>';
-        return;
-    }
-
-    const statuses = statusesRes.success ? statusesRes.data : [];
-
-    container.innerHTML = ordersRes.data.map(o => `
-        <div class="item-card">
-            <div class="item-info">
-                <div>
-                    <b>Заказ №${escapeHtml(o.ORDER_ID)}</b><br>
-                    <small>Клиент: ${escapeHtml(o.CUSTOMER_NAME)}</small><br>
-                    <small>Дата: ${escapeHtml(new Date(o.ORDER_DATE).toLocaleString('ru-RU'))}</small><br>
-                    <small>Сумма: ${formatMoney(o.TOTAL_SUM)}</small><br><br>
-
-                    <label>Статус заказа</label>
-                    <select id="order-status-${o.ORDER_ID}">
-                        ${statuses.map(s => `
-                            <option value="${s.id}" ${Number(s.id) === Number(o.ORDER_STATUS_ID) ? 'selected' : ''}>
-                                ${escapeHtml(s.name)}
-                            </option>
-                        `).join('')}
-                    </select>
-
-                    <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button type="button" onclick="changeOrderStatus(${o.ORDER_ID})">Сохранить статус</button>
-                        <button type="button" class="secondary-btn" onclick="toggleOrderItems(${o.ORDER_ID})">Состав заказа</button>
-                        <button type="button" class="danger-btn" onclick="deleteOrder(${o.ORDER_ID})">Удалить</button>
-                    </div>
-
-                    <div id="order-items-${o.ORDER_ID}" class="hidden" data-loaded="false" style="margin-top: 12px;"></div>
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    preview.innerHTML = ordersRes.data.slice(0, 5).map(o => `
-        <div class="small-line">
-            <div>
-                <b>Заказ №${escapeHtml(o.ORDER_ID)}</b><br>
-                <span>${escapeHtml(o.CUSTOMER_NAME)} — ${escapeHtml(o.ORDER_STATUS)}</span>
-            </div>
-            <div>${formatMoney(o.TOTAL_SUM)}</div>
-        </div>
-    `).join('');
-}
-
-async function loadSuppliers() {
-    const container = document.getElementById('suppliers-list');
-    container.innerHTML = 'Загрузка...';
-
-    const res = await fetch('/api/suppliers');
-    const data = await res.json();
-
-    if (!data.success || !data.data.length) {
-        container.innerHTML = '<div class="empty-text">Поставщики не найдены</div>';
-        return;
-    }
-
-    container.innerHTML = data.data.map(s => `
-        <div class="item-card">
-            <div class="item-info">
-                <div>
-                    <b>${escapeHtml(s.NAME)}</b><br>
-                    <small>Юридический адрес: ${escapeHtml(s.LEGAL_ADDRESS)}</small>
-                </div>
-            </div>
-
-            <div class="item-actions">
-                <button onclick='editSupplier(${s.SUPPLIER_ID}, ${JSON.stringify(s.NAME)}, ${JSON.stringify(s.LEGAL_ADDRESS)})'>✏️</button>
-                <button class="danger-btn" onclick="deleteSupplier(${s.SUPPLIER_ID})">🗑️</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-window.editSupplier = function(id, name, address) {
-    clearSupplierMessages();
-
-    document.getElementById('supplier-id').value = id;
-    document.getElementById('supplier-name').value = name || '';
-    document.getElementById('supplier-address').value = address || '';
-    document.getElementById('supplier-submit-btn').textContent = 'Обновить поставщика';
-    document.getElementById('cancel-supplier-edit-btn').classList.remove('hidden');
-
-    switchSection('suppliers-section');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-window.deleteSupplier = async function(id) {
-    if (!confirm('Удалить поставщика?')) return;
-
-    const res = await fetch(`/api/suppliers/${id}`, {
-        method: 'DELETE',
-        headers: authHeaders()
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-        showSupplierSuccess('Поставщик удалён');
-        await loadSuppliers();
-        await loadOverview();
-        await loadStats();
-    } else {
-        showSupplierError(data.error || 'Ошибка удаления поставщика');
-    }
-};
-
-async function saveSupplier(e) {
-    e.preventDefault();
-    clearSupplierMessages();
-
-    const id = document.getElementById('supplier-id').value;
-    const name = document.getElementById('supplier-name').value.trim();
-    const legal_address = document.getElementById('supplier-address').value.trim();
-
-    if (!name || !legal_address) {
-        return showSupplierError('Заполните название и юридический адрес');
-    }
-
-    const res = await fetch(id ? `/api/suppliers/${id}` : '/api/suppliers', {
-        method: id ? 'PUT' : 'POST',
-        headers: authHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({ name, legal_address })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-        showSupplierSuccess(id ? 'Поставщик обновлён' : 'Поставщик добавлен');
-        clearSupplierForm();
-        await loadSuppliers();
-        await loadOverview();
-        await loadStats();
-    } else {
-        showSupplierError(data.error || 'Ошибка сохранения поставщика');
-    }
-}
-
-async function loadOverview() {
-    const [productsRes, customersRes, ordersRes, suppliersRes] = await Promise.all([
-        fetch('/api/products?page=1&limit=1000').then(r => r.json()),
-        fetch('/api/customers').then(r => r.json()),
-        fetch('/api/orders').then(r => r.json()),
-        fetch('/api/suppliers').then(r => r.json())
-    ]);
-
-    const products = productsRes.success ? ((productsRes.data && productsRes.data.products) || []) : [];
-    const customers = customersRes.success ? customersRes.data : [];
-    const orders = ordersRes.success ? ordersRes.data : [];
-    const suppliers = suppliersRes.success ? suppliersRes.data : [];
-
-    const totalSum = orders.reduce((sum, o) => sum + Number(o.TOTAL_SUM || 0), 0);
-
-    document.getElementById('overview-products-count').textContent = products.length;
-    document.getElementById('overview-customers-count').textContent = customers.length;
-    document.getElementById('overview-orders-count').textContent = orders.length;
-    document.getElementById('overview-orders-sum').textContent = formatMoney(totalSum);
-
-    renderTopProducts(products);
-    renderActivity(orders, products, customers, suppliers);
-}
-
-function renderTopProducts(products) {
-    const container = document.getElementById('top-products-preview');
-    if (!container) return;
-
-    if (!products.length) {
-        container.innerHTML = '<div class="empty-text">Товары не найдены</div>';
-        return;
-    }
-
-    container.innerHTML = products
-        .slice()
-        .sort((a, b) => Number(b.price || 0) - Number(a.price || 0))
-        .slice(0, 5)
-        .map((p, index) => `
-            <div class="small-line">
-                <div><b>${index + 1}. ${escapeHtml(p.name)}</b><br><span>${escapeHtml(p.manufacturer || 'Производитель не указан')}</span></div>
-                <div>${formatMoney(p.price)}</div>
-            </div>
-        `).join('');
-}
-
-function renderActivity(orders, products, customers, suppliers) {
-    const container = document.getElementById('activity-preview');
-    if (!container) return;
-
-    const items = [
-        `Новых заказов: ${orders.length}`,
-        `Товаров в каталоге: ${products.length}`,
-        `Клиентов в системе: ${customers.length}`,
-        `Поставщиков: ${suppliers.length}`
-    ];
-
-    container.innerHTML = items.map(text => `
-        <div class="small-line">
-            <div>● ${escapeHtml(text)}</div>
-            <span>сейчас</span>
-        </div>
-    `).join('');
-}
-
-function renderChart(containerId, monthlySales) {
-    const chart = document.getElementById(containerId);
-
-    if (!chart) return;
-
-    chart.innerHTML = '';
-    chart.setAttribute('data-chart-json', JSON.stringify(monthlySales || []));
-
-    if (!monthlySales || monthlySales.length === 0) {
-        chart.innerHTML = '<div class="empty-text">Нет данных для построения графика</div>';
-        return;
-    }
-
-    const maxValue = Math.max(...monthlySales.map(x => Number(x.total_sum || 0)), 1);
-
-    monthlySales.forEach(item => {
-        const value = Number(item.total_sum || 0);
-        const height = Math.max((value / maxValue) * 200, 10);
-
-        const barWrap = document.createElement('div');
-        barWrap.className = 'chart-item';
-
-        barWrap.innerHTML = `
-            <div class="chart-value">${formatMoney(value)}</div>
-            <div class="chart-bar" style="height:${height}px"></div>
-            <div class="chart-label">${escapeHtml(item.month_label)}</div>
-        `;
-
-        chart.appendChild(barWrap);
-    });
-}
-
-async function loadStats() {
-    const res = await fetch('/api/stats/summary');
-    const result = await res.json();
-
-    if (!result.success) {
-        document.getElementById('stats-products').textContent = '0';
-        document.getElementById('stats-customers').textContent = '0';
-        document.getElementById('stats-orders').textContent = '0';
-        document.getElementById('stats-orders-sum').textContent = '0 ₽';
-        renderChart('stats-chart', []);
-        renderChart('overview-sales-chart', []);
-        return;
-    }
-
-    const stats = result.data || {};
-
-    document.getElementById('stats-products').textContent = stats.products_count || 0;
-    document.getElementById('stats-customers').textContent = stats.customers_count || 0;
-    document.getElementById('stats-orders').textContent = stats.orders_count || 0;
-    document.getElementById('stats-orders-sum').textContent = formatMoney(stats.total_orders_sum || 0);
-
-    renderChart('stats-chart', stats.monthly_sales || []);
-    renderChart('overview-sales-chart', stats.monthly_sales || []);
-}
-
-function downloadStatsChart() {
-    const chart = document.getElementById('stats-chart');
-    const raw = chart.getAttribute('data-chart-json');
-
-    if (!raw) {
-        alert('Нет данных для скачивания');
-        return;
-    }
-
-    const monthlySales = JSON.parse(raw);
-
-    if (!monthlySales.length) {
-        alert('Нет данных для скачивания');
-        return;
-    }
-
-    const canvas = document.createElement('canvas');
-    const width = Math.max(900, monthlySales.length * 140);
-    const height = 520;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext('2d');
-
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.fillStyle = '#111111';
-    ctx.font = 'bold 24px Arial';
-    ctx.fillText('График продаж по месяцам', 30, 40);
-
-    const chartLeft = 70;
-    const chartBottom = 430;
-    const chartTop = 90;
-    const chartHeight = chartBottom - chartTop;
-    const barWidth = 70;
-    const gap = 50;
-
-    const maxValue = Math.max(...monthlySales.map(x => Number(x.total_sum || 0)), 1);
-
-    ctx.strokeStyle = '#999999';
-    ctx.lineWidth = 1;
-
-    ctx.beginPath();
-    ctx.moveTo(chartLeft, chartTop);
-    ctx.lineTo(chartLeft, chartBottom);
-    ctx.lineTo(width - 40, chartBottom);
-    ctx.stroke();
-
-    monthlySales.forEach((item, index) => {
-        const value = Number(item.total_sum || 0);
-        const barHeight = Math.max((value / maxValue) * chartHeight, 8);
-
-        const x = chartLeft + 30 + index * (barWidth + gap);
-        const y = chartBottom - barHeight;
-
-        ctx.fillStyle = '#007bff';
-        ctx.fillRect(x, y, barWidth, barHeight);
-
-        ctx.fillStyle = '#222222';
-        ctx.font = '14px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(formatMoney(value), x + barWidth / 2, y - 10);
-        ctx.fillText(item.month_label, x + barWidth / 2, chartBottom + 22);
-    });
-
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = 'sales-chart.png';
-    link.click();
-}
-
-document.getElementById('product-image-file').addEventListener('change', function () {
-    const preview = document.getElementById('image-preview');
-    preview.innerHTML = '';
-
-    const file = this.files[0];
-    if (!file) return;
-
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    preview.appendChild(img);
-});
-
-document.getElementById('login-btn').onclick = () => loginAdmin();
-
-document.getElementById('logout-btn').onclick = () => {
-    adminToken = '';
-    localStorage.removeItem('adminToken');
-    setAuthState(false);
-};
-
-document.getElementById('product-form').onsubmit = saveProduct;
-document.getElementById('supplier-form').onsubmit = saveSupplier;
-document.getElementById('customer-form').onsubmit = saveCustomer;
-document.getElementById('order-form').onsubmit = saveOrder;
-document.getElementById('order-item-form').onsubmit = saveOrderItem;
-
-document.getElementById('cancel-edit-btn').onclick = function() {
-    clearProductForm();
-};
-
-document.getElementById('cancel-customer-edit-btn').onclick = function() {
-    clearCustomerForm();
-};
-
-document.getElementById('cancel-supplier-edit-btn').onclick = function() {
-    clearSupplierForm();
-};
-
-document.getElementById('refresh-stats-btn').onclick = async function() {
-    await loadStats();
-    await loadOverview();
-};
-
-document.getElementById('overview-refresh-btn').onclick = async function() {
-    await loadOverview();
-    await loadStats();
-};
-
-document.getElementById('download-stats-chart-btn').onclick = function() {
-    downloadStatsChart();
-};
-
-document.getElementById('product-search').addEventListener('input', loadProducts);
-
-document.getElementById('global-search').addEventListener('input', function () {
-    const value = this.value.toLowerCase().trim();
-
-    if (!value) return;
-
-    if (value.includes('товар')) switchSection('products-section');
-    if (value.includes('клиент')) switchSection('customers-section');
-    if (value.includes('заказ')) switchSection('orders-section');
-    if (value.includes('постав')) switchSection('suppliers-section');
-    if (value.includes('стат')) switchSection('stats-section');
-});
-
-document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        switchSection(this.dataset.section);
-    });
-});
-
-if (adminToken) {
-    setAuthState(true);
-    initializeAdminPanel();
-} else {
-    setAuthState(false);
-}
 </script>
 </body>
 </html>
