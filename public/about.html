@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link rel="shortcut icon" href="/icons/android-chrome-192x192.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>О нас - Медицинское Оборудование</title>
+    <title>О нас - VitaEquip</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
     <style>
         :root {
-            --bg: #f6f8fb;
-            --card: #ffffff;
-            --card-hover: #fcfdfe;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --blue: #0284c7;
-            --blue-light: #0ea5e9;
-            --green: #10b981;
-            --border: rgba(226, 232, 240, 0.8);
-            --shadow: 0 20px 40px rgba(148, 163, 184, 0.12);
-            /* Оптимальная скорость для всех анимаций интерфейса */
-            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            --bg: #07111f;
+            --card: #0d1b2e;
+            --card2: #13243a;
+            --blue: #2f80ff;
+            --blue2: #43a5ff;
+            --green: #19c37d;
+            --text: #ffffff;
+            --muted: #9fb3cc;
+            --border: rgba(148, 163, 184, 0.18);
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
         }
 
         * {
@@ -30,109 +32,124 @@
 
         body {
             margin: 0;
-            font-family: system-ui, -apple-system, sans-serif;
-            background: 
-                radial-gradient(circle at 0% 0%, rgba(14, 165, 233, 0.05), transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.04), transparent 40%),
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(47, 128, 255, 0.15), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(25, 195, 125, 0.08), transparent 40%),
                 var(--bg);
-            color: var(--text-main);
+            color: var(--text);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
         a {
             text-decoration: none;
-            transition: var(--transition);
         }
 
-        /* АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ (Базовые классы) */
-        .reveal {
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* --- КЛАССЫ АНИМАЦИИ ПОЯВЛЕНИЯ --- */
+        .fade-in {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* СТЕКЛЯННАЯ ШАПКА */
+        /* --- ШАПКА САЙТА --- */
         .site-header {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(7, 17, 31, 0.85);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
+            transition: background 0.3s;
         }
 
         .header-inner {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 16px 28px;
+            padding: 14px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 32px;
+            gap: 24px;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 12px;
-            color: var(--text-main);
+            color: #fff;
             font-size: 22px;
             font-weight: 800;
-            letter-spacing: -0.5px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.02);
         }
 
         .logo img {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            transition: transform 0.5s ease;
-        }
-        
-        .logo:hover img {
-            transform: rotate(360deg);
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(47, 128, 255, 0.3);
         }
 
         .logo span {
-            color: var(--blue);
+            color: var(--blue2);
         }
 
         .menu-toggle {
             display: none;
-            background: var(--card);
-            color: var(--text-main);
+            background: var(--card2);
+            color: #fff;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 18px;
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 20px;
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .menu-toggle:hover {
+            background: var(--blue);
+            border-color: var(--blue2);
         }
 
         .nav-menu ul {
             display: flex;
-            gap: 32px;
+            gap: 24px;
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
         .nav-menu a {
-            color: var(--text-muted);
+            color: #cbd5e1;
             font-weight: 600;
-            font-size: 15px;
-            padding: 8px 0;
+            padding: 8px 4px;
+            transition: color 0.25s ease, transform 0.25s ease;
+            white-space: nowrap;
             position: relative;
-        }
-
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            color: var(--blue);
         }
 
         .nav-menu a::after {
@@ -140,11 +157,11 @@
             position: absolute;
             bottom: 0;
             left: 50%;
-            transform: translateX(-50%);
             width: 0;
             height: 2px;
-            background: var(--blue);
-            transition: var(--transition);
+            background: var(--blue2);
+            transition: all 0.25s ease;
+            transform: translateX(-50%);
         }
 
         .nav-menu a:hover::after,
@@ -152,411 +169,484 @@
             width: 100%;
         }
 
-        /* КНОПКИ С ЭФФЕКТОМ СВЕЧЕНИЯ */
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--blue2);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        /* --- КНОПКИ --- */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--blue), var(--blue-light));
-            background-size: 200% 100%;
-            background-position: left center;
+            gap: 10px;
+            background: var(--blue);
             color: #fff;
-            padding: 12px 26px;
+            padding: 12px 24px;
             border-radius: 12px;
-            font-weight: 600;
-            font-size: 15px;
-            border: none;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(47, 128, 255, 0.25);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid transparent;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
-            transition: var(--transition);
+            text-align: center;
         }
 
         .btn:hover {
-            background-position: right center;
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(2, 132, 199, 0.35);
+            background: #1d64e8;
+            box-shadow: 0 12px 28px rgba(47, 128, 255, 0.4), 0 0 15px rgba(67, 165, 255, 0.2);
         }
-
+        
         .btn:active {
             transform: translateY(0);
         }
 
         .btn-secondary {
-            background: #f1f5f9;
-            color: var(--text-main);
+            background: rgba(19, 36, 58, 0.6);
+            border: 1px solid var(--border);
             box-shadow: none;
         }
-
         .btn-secondary:hover {
-            background: #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            color: var(--blue);
+            background: var(--card2);
+            border-color: var(--blue2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
-        /* КАРТОЧКИ */
-        .card-base {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            padding: 40px;
-            transition: var(--transition);
-        }
-
+        /* --- ОСНОВНОЙ КОНТЕНТ --- */
         .container {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 56px 28px 100px;
+            padding: 40px 24px 80px;
         }
 
-        /* HERO СЕКЦИЯ */
+        /* Блок Hero */
         .hero {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 32px;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
             margin-bottom: 40px;
         }
 
+        .hero-main,
+        .mini-card,
+        .panel-card,
+        .info-card,
+        .step-card,
+        .stat-card,
+        .brand-panel {
+            background: linear-gradient(145deg, rgba(19, 36, 58, 0.75), rgba(13, 27, 46, 0.85));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
         .hero-main {
+            padding: 48px;
             position: relative;
             overflow: hidden;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(2, 132, 199, 0.06);
-            border: 1px solid rgba(2, 132, 199, 0.15);
-            color: var(--blue);
-            border-radius: 99px;
-            padding: 6px 14px;
-            font-size: 13.5px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            animation: pulseBadge 2.5s infinite alternate;
+        .hero-main::after {
+            content: "";
+            position: absolute;
+            right: -40px;
+            top: -40px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(47, 128, 255, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
-        @keyframes pulseBadge {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.03); background-color: rgba(2, 132, 199, 0.1); }
+        .badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(47, 128, 255, 0.12);
+            border: 1px solid rgba(67, 165, 255, 0.25);
+            color: #dbeafe;
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-main h1 {
             margin: 0 0 20px;
-            font-size: 48px;
+            font-size: 44px;
+            line-height: 1.2;
             font-weight: 800;
-            line-height: 1.15;
-            letter-spacing: -1px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: -0.5px;
         }
 
         .hero-main h1 span {
-            color: var(--blue);
-            background: linear-gradient(45deg, var(--blue), var(--green));
+            color: var(--blue2);
+            background: linear-gradient(90deg, var(--blue2), #7fc0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-main p {
-            color: var(--text-muted);
-            font-size: 16.5px;
+            color: var(--muted);
+            font-size: 17px;
             line-height: 1.7;
-            margin-bottom: 20px;
+            margin: 0 0 16px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-actions {
             display: flex;
             gap: 16px;
+            flex-wrap: wrap;
             margin-top: 32px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-side {
             display: grid;
-            gap: 24px;
+            gap: 20px;
         }
 
         .mini-card {
-            padding: 32px;
+            padding: 28px;
         }
-
         .mini-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 22px 45px rgba(148, 163, 184, 0.18);
+            transform: translateY(-3px);
+            border-color: rgba(67, 165, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.35);
         }
 
         .mini-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: rgba(2, 132, 199, 0.08);
-            color: var(--blue);
+            width: 48px;
+            height: 48px;
+            background: rgba(47, 128, 255, 0.15);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            margin-bottom: 16px;
-            transition: var(--transition);
+            color: var(--blue2);
+            font-size: 22px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
         }
-
         .mini-card:hover .mini-icon {
-            transform: scale(1.1) rotate(10deg);
+            transform: scale(1.1) rotate(5deg);
             background: var(--blue);
             color: #fff;
         }
 
         .mini-card h3 {
-            margin: 0 0 8px;
-            font-size: 19px;
+            margin: 0 0 10px;
+            font-size: 20px;
             font-weight: 700;
         }
 
         .mini-card p {
             margin: 0;
-            color: var(--text-muted);
-            font-size: 14.5px;
+            color: var(--muted);
             line-height: 1.6;
+            font-size: 15px;
         }
 
-        /* ДВА СТОЛБЦА */
+        /* Две колонки (О нас / Картинка) */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            margin-top: 32px;
+            gap: 24px;
+            margin-top: 24px;
         }
 
+        .panel-card {
+            padding: 40px;
+        }
+
+        .panel-card h2,
         .section-title {
+            margin: 0 0 16px;
             font-size: 32px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            margin: 0 0 24px;
         }
 
         .title-line {
-            width: 50px;
+            width: 64px;
             height: 4px;
-            background: var(--blue);
-            border-radius: 4px;
-            margin-bottom: 24px;
-            transition: width 0.6s ease;
-        }
-
-        /* Интерактивная линия при появлении блока */
-        .reveal.active .title-line {
-            width: 80px;
+            background: linear-gradient(90deg, var(--blue2), var(--green));
+            border-radius: 10px;
+            margin-bottom: 28px;
         }
 
         .panel-card p {
-            color: var(--text-muted);
-            line-height: 1.7;
-            font-size: 15.5px;
-            margin-bottom: 20px;
+            color: var(--muted);
+            line-height: 1.75;
+            font-size: 16px;
+            margin: 0 0 16px;
         }
+        .panel-card p:last-child { margin-bottom: 0; }
 
-        /* ИЗОБРАЖЕНИЕ С ЭФФЕКТОМ МАСШТАБИРОВАНИЯ */
         .image-card {
-            min-height: 100%;
-            background: url("https://medical.eastagency.com/images/bnr-04.jpg") center/cover;
+            min-height: 450px;
+            background:
+                linear-gradient(rgba(7, 17, 31, 0.1), rgba(7, 17, 31, 0.6)),
+                url("https://medical.eastagency.com/images/bnr-04.jpg") center/cover;
+            border: 1px solid var(--border);
             border-radius: 24px;
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--border);
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
-
         .image-card:hover {
-            transform: scale(1.01);
-            box-shadow: 0 25px 50px rgba(148, 163, 184, 0.25);
+            border-color: rgba(67, 165, 255, 0.3);
         }
 
         .image-label {
             position: absolute;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            left: 24px;
+            right: 24px;
+            bottom: 24px;
+            background: rgba(7, 17, 31, 0.85);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 20px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transform: translateY(10px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        .reveal.active .image-label {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             transform: translateY(0);
-            opacity: 1;
+            transition: transform 0.3s ease;
+        }
+        .image-card:hover .image-label {
+            transform: translateY(-3px);
+            border-color: rgba(25, 195, 125, 0.3);
         }
 
         .image-label b {
             display: block;
-            color: var(--blue);
-            font-size: 16.5px;
-            margin-bottom: 4px;
+            color: var(--green);
+            font-size: 18px;
+            margin-bottom: 6px;
         }
 
         .image-label span {
-            color: var(--text-muted);
+            color: var(--muted);
             font-size: 14px;
+            line-height: 1.5;
         }
 
-        /* СЕТКИ ДЛЯ СЕКЦИЙ */
+        /* Секции общие */
         .section {
-            margin-top: 72px;
+            margin-top: 56px;
         }
 
-        .cards-grid, .steps-grid, .stats-grid {
+        /* Сетка преимуществ */
+        .cards-grid {
             display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
         }
 
-        .cards-grid { grid-template-columns: repeat(3, 1fr); }
-        .steps-grid { grid-template-columns: repeat(4, 1fr); }
-        .stats-grid { grid-template-columns: repeat(4, 1fr); }
-
-        .info-card, .step-card, .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+        .info-card {
             padding: 32px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
         }
 
-        /* Эффект умного всплытия карточек */
-        .info-card:hover, .step-card:hover, .stat-card:hover {
+        .info-card:hover,
+        .step-card:hover,
+        .stat-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(2, 132, 199, 0.25);
-            box-shadow: 0 25px 50px rgba(148, 163, 184, 0.22);
+            border-color: rgba(67, 165, 255, 0.45);
+            box-shadow: 0 20px 40px rgba(47, 128, 255, 0.12);
         }
 
         .info-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(2, 132, 199, 0.06);
-            color: var(--blue);
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(47, 128, 255, 0.15);
+            color: var(--blue2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             margin-bottom: 20px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
-
         .info-card:hover .info-icon {
-            transform: scale(1.1);
-            background: rgba(2, 132, 199, 0.15);
+            background: var(--blue2);
+            color: #fff;
+            transform: scale(1.05);
         }
 
-        .info-card h3, .step-card h3 {
+        .info-card h3 {
             margin: 0 0 12px;
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 700;
         }
 
-        .info-card p, .step-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
+        .info-card p {
+            color: var(--muted);
+            line-height: 1.65;
             margin: 0;
-            font-size: 14.5px;
+            font-size: 15px;
         }
 
-        /* ЦИФРЫ С ЭФФЕКТОМ УВЕЛИЧЕНИЯ */
+        /* Сетка статистики */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .stat-card {
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            right: -30px;
+            top: -30px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(47, 128, 255, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
         .stat-card b {
             display: block;
             font-size: 42px;
             font-weight: 800;
-            color: var(--text-main);
-            margin-bottom: 4px;
-            background: linear-gradient(to right, var(--text-main), var(--blue));
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(135deg, #fff, var(--blue2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover b {
-            transform: scale(1.05);
         }
 
         .stat-card span {
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 500;
+            color: var(--muted);
+            font-size: 15px;
+            position: relative;
+            z-index: 2;
+            font-weight: 600;
         }
 
-        /* ШАГИ */
+        /* Сетка шагов */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .step-card {
+            padding: 32px;
+        }
+
         .step-number {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--blue);
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            display: inline-block;
-            background: rgba(2, 132, 199, 0.08);
-            padding: 4px 10px;
-            border-radius: 6px;
-            transition: var(--transition);
-        }
-
-        .step-card:hover .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: var(--blue);
             color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(47, 128, 255, 0.35);
+            transition: transform 0.3s ease;
+        }
+        .step-card:hover .step-number {
+            transform: scale(1.1) rotate(-5deg);
+            background: var(--green);
+            box-shadow: 0 0 20px rgba(25, 195, 125, 0.35);
         }
 
-        /* ПАРТНЕРЫ */
+        .step-card h3 {
+            margin: 0 0 12px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .step-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        /* Панель брендов */
+        .brand-panel {
+            padding: 40px;
+        }
+
         .brand-panel p {
-            color: var(--text-muted);
-            max-width: 800px;
-            font-size: 16px;
+            color: var(--muted);
+            max-width: 850px;
             line-height: 1.7;
+            font-size: 16px;
             margin: 0 0 32px;
         }
 
         .brands {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 16px;
         }
 
         .brand {
-            background: #f8fafc;
+            background: rgba(7, 17, 31, 0.5);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 20px 10px;
             text-align: center;
-            font-weight: 700;
-            font-size: 13.5px;
-            color: var(--text-muted);
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--muted);
             letter-spacing: 0.5px;
-            transition: var(--transition);
-            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .brand:hover {
-            background: #fff;
-            border-color: var(--blue);
-            color: var(--blue);
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 10px 20px rgba(148, 163, 184, 0.15);
+            color: var(--blue2);
+            background: rgba(19, 36, 58, 0.9);
+            border-color: var(--blue2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* ТЕМНЫЙ БЛОК ПРИЗЫВА К ДЕЙСТВИЮ */
+        /* CTA Блок */
         .cta {
-            margin-top: 64px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            margin-top: 56px;
+            background: linear-gradient(135deg, #1e62d0, #13935e);
             border-radius: 24px;
             padding: 48px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 32px;
-            color: #fff;
+            box-shadow: 0 18px 45px rgba(47, 128, 255, 0.15);
             position: relative;
             overflow: hidden;
         }
@@ -564,291 +654,478 @@
         .cta::before {
             content: '';
             position: absolute;
-            top: -50%; right: -20%;
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(2, 132, 199, 0.15), transparent 70%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08), transparent 60%);
             pointer-events: none;
         }
 
         .cta h2 {
-            margin: 0 0 8px;
+            margin: 0 0 10px;
             font-size: 32px;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
 
         .cta p {
             margin: 0;
-            color: #94a3b8;
+            color: rgba(255, 255, 255, 0.9);
             font-size: 16px;
         }
 
         .cta .btn {
             background: #fff;
-            color: #0f172a;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #07111f;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            white-space: nowrap;
         }
-
         .cta .btn:hover {
-            background: #f8fafc;
-            box-shadow: 0 12px 28px rgba(255,255,255,0.15);
+            background: #f1f5f9;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
         }
 
-        /* ПОДВАЛ */
+        /* Подвал */
         footer {
             border-top: 1px solid var(--border);
             text-align: center;
-            padding: 32px;
-            color: var(--text-muted);
-            background: #fff;
-            font-size: 14px;
+            padding: 32px 24px;
+            color: var(--muted);
+            background: rgba(7, 17, 31, 0.9);
+            font-size: 15px;
+            font-weight: 500;
         }
 
-        /* АДАПТИВНОСТЬ */
-        @media (max-width: 1150px) {
-            .hero, .two-col { grid-template-columns: 1fr; }
-            .image-card { min-height: 360px; }
-            .cards-grid { grid-template-columns: repeat(2, 1fr); }
-            .steps-grid, .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+        /* --- МЕДИА ЗАПРОСЫ (Улучшенная адаптация) --- */
+        
+        @media (max-width: 1100px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .hero-side {
+                grid-template-columns: 1fr 1fr;
+            }
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+            .image-card {
+                min-height: 360px;
+            }
+            .hero-main h1 {
+                font-size: 38px;
+            }
         }
 
         @media (max-width: 768px) {
-            .menu-toggle { display: block; }
+            .header-inner {
+                padding: 16px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Переделка меню под мобильную шторку */
             .nav-menu {
                 display: none;
-                position: absolute;
-                top: 100%; left: 0; right: 0;
-                background: #fff;
-                border-bottom: 1px solid var(--border);
-                padding: 24px;
-                box-shadow: var(--shadow);
+                width: 100%;
+                order: 3;
+                background: #0d1b2e;
+                border-radius: 16px;
+                border: 1px solid var(--border);
+                padding: 16px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                margin-top: 10px;
+                animation: fadeInDown 0.3s ease forwards;
             }
-            .nav-menu.open { display: block; }
-            .nav-menu ul { flex-direction: column; gap: 16px; }
+
+            @keyframes fadeInDown {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .nav-menu.open {
+                display: block;
+            }
+
+            .nav-menu ul {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .nav-menu a {
+                display: block;
+                padding: 12px 16px;
+                border-radius: 10px;
+                transition: background 0.2s;
+            }
             .nav-menu a::after { display: none; }
-            .header-actions { display: none; }
             
-            .container { padding: 32px 16px 64px; }
-            .card-base, .info-card, .step-card, .stat-card { padding: 28px 20px; }
-            .hero-main h1 { font-size: 32px; }
-            .section-title { font-size: 26px; }
-            .cta { flex-direction: column; text-align: center; padding: 36px 20px; }
-            .cta .btn { width: 100%; }
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                background: rgba(47, 128, 255, 0.15);
+                color: var(--blue2);
+                padding-left: 20px;
+            }
+
+            /* Интеграция экшенов внутрь меню на мобилках */
+            .header-actions {
+                display: none;
+                width: 100%;
+                order: 4;
+                margin-top: 10px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .header-actions.open {
+                display: flex;
+            }
+
+            .header-actions .btn {
+                width: 100%;
+                padding: 14px;
+            }
+
+            .container {
+                padding: 24px 16px 48px;
+            }
+
+            .hero-main {
+                padding: 32px 24px;
+            }
+
+            .hero-main h1 {
+                font-size: 32px;
+            }
+
+            .panel-card {
+                padding: 32px 24px;
+            }
+
+            .hero-side {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title,
+            .panel-card h2 {
+                font-size: 28px;
+            }
+
+            .cta {
+                padding: 32px 24px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cta h2 {
+                font-size: 26px;
+            }
+
+            .cta .btn {
+                width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
-            .cards-grid, .steps-grid, .stats-grid { grid-template-columns: 1fr; }
+            .hero-main h1 {
+                font-size: 26px;
+            }
+            
+            .badge {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+
+            .hero-main, .panel-card, .brand-panel, .info-card, .step-card, .stat-card {
+                border-radius: 18px;
+            }
+            
+            .brands {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="logo" href="/">
+            <img src="/icons/android-chrome-192x192.png" alt="VitaEquip">
+            Vita<span>Equip</span>
+        </a>
 
-    <header class="site-header">
-        <div class="header-inner">
-            <div class="logo">
-                <img src="https://medical.eastagency.com/images/favicon.png" alt="Логотип">
-                MED<span>EQUIP</span>
-            </div>
-            
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <button class="menu-toggle" type="button" id="menuToggle" aria-label="Открыть меню">
+            <i class="fa-solid fa-bars"></i>
+        </button>
 
-            <nav class="nav-menu" id="navMenu">
-                <ul>
-                    <li><a href="/">Главная</a></li>
-                    <li><a href="/catalog">Каталог</a></li>
-                    <li><a href="/about" class="active">О нас</a></li>
-                    <li><a href="/services">Услуги</a></li>
-                    <li><a href="/contacts">Контакты</a></li>
-                </ul>
-            </nav>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="/catalog">Каталог</a></li>
+                <li><a class="active" href="/about">О нас</a></li>
+                <li><a href="/services">Услуги</a></li>
+                <li><a href="/operator_guide">Руководство</a></li>
+                <li><a href="/partners">Партнеры</a></li>
+                <li><a href="/contacts">Контакты</a></li>
+            </ul>
+        </nav>
 
-            <div class="header-actions">
-                <button class="btn btn-secondary" style="margin-right: 8px; padding: 10px 16px;">Ru</button>
-                <button class="btn">Связаться</button>
-            </div>
+        <div class="header-actions" id="headerActions">
+            <a href="/catalog" class="btn">Каталог</a>
+            <a href="/admin" class="btn btn-secondary">Админ</a>
         </div>
-    </header>
-
-    <div class="container">
-        
-        <!-- HERO СЕКЦИЯ (Сразу активна, так как находится на первом экране) -->
-        <div class="hero reveal active">
-            <div class="hero-main card-base">
-                <div class="badge">🌐 Международные поставки</div>
-                <h1>О компании <span>MedEquip</span></h1>
-                <p>Мы поставляем передовое медицинское оборудование от ведущих мировых производителей. Наша цель — обеспечение клиник надежной техникой для точной диагностики и эффективного лечения.</p>
-                <p>Наша команда состоит из инженеров и экспертов с многолетним опытом, готовых решить любую задачу — от подбора единичного аппарата до комплексного оснащения медицинских центров.</p>
-                <div class="hero-actions">
-                    <button class="btn">Посмотреть каталог</button>
-                    <button class="btn btn-secondary">Узнать об услугах</button>
-                </div>
-            </div>
-            
-            <div class="hero-side">
-                <div class="mini-card card-base">
-                    <div class="mini-icon">✓</div>
-                    <h3>Сертификация</h3>
-                    <p>Все поставляемое оборудование имеет официальные регистрационные удостоверения и декларации соответствия.</p>
-                </div>
-                <div class="mini-card card-base">
-                    <div class="mini-icon">🛠</div>
-                    <h3>Поддержка 24/7</h3>
-                    <p>Собственный сервисный центр осуществляет гарантийное и постгарантийное обслуживание техники в кратчайшие сроки.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ДВА СТОЛБЦА -->
-        <div class="two-col reveal">
-            <div class="panel-card card-base">
-                <h2 class="section-title">Наша миссия</h2>
-                <div class="title-line"></div>
-                <p>Мы стремимся сделать современные медицинские технологии доступными для каждого медицинского учреждения. Мы верим, что качественное оборудование — это залог точного диагноза и спасенных жизней.</p>
-                <p>Осуществляем прямые поставки без посредников, что позволяет нам предлагать конкурентные цены и гибкие условия оплаты для постоянных клиентов.</p>
-            </div>
-            
-            <div class="image-card">
-                <div class="image-label">
-                    <b>Высокие стандарты</b>
-                    <span>Каждый аппарат проходит строгую предпродажную проверку нашими инженерами.</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ПРЕИМУЩЕСТВА -->
-        <div class="section reveal">
-            <h2 class="section-title">Почему выбирают нас</h2>
-            <div class="title-line"></div>
-            <div class="cards-grid">
-                <div class="info-card">
-                    <div class="info-icon">📦</div>
-                    <h3>Широкий ассортимент</h3>
-                    <p>Более 500 наименований техники для любых направлений: от УЗИ до хирургических комплексов.</p>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon">🤝</div>
-                    <h3>Индивидуальный подход</h3>
-                    <p>Подбираем конфигурацию оборудования под бюджет и конкретные задачи вашей клиники.</p>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon">🚚</div>
-                    <h3>Быстрая доставка</h3>
-                    <p>Налаженная логистическая цепочка позволяет доставлять технику в целости и строго в срок.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- СТАТИСТИКА -->
-        <div class="section reveal">
-            <h2 class="section-title">Компания в цифрах</h2>
-            <div class="title-line"></div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <b>10+</b>
-                    <span>Лет на рынке</span>
-                </div>
-                <div class="stat-card">
-                    <b>1200+</b>
-                    <span>Оснащенных клиник</span>
-                </div>
-                <div class="stat-card">
-                    <b>50+</b>
-                    <span>Мировых брендов</span>
-                </div>
-                <div class="stat-card">
-                    <b>99%</b>
-                    <span>Довольных клиентов</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ЭТАПЫ РАБОТЫ -->
-        <div class="section reveal">
-            <h2 class="section-title">Этапы сотрудничества</h2>
-            <div class="title-line"></div>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <span class="step-number">Шаг 01</span>
-                    <h3>Консультация</h3>
-                    <p>Анализируем ваши потребности и формируем коммерческое предложение.</p>
-                </div>
-                <div class="step-card">
-                    <span class="step-number">Шаг 02</span>
-                    <h3>Договор</h3>
-                    <p>Согласовываем условия, фиксируем сроки и подписываем документы.</p>
-                </div>
-                <div class="step-card">
-                    <span class="step-number">Шаг 03</span>
-                    <h3>Доставка и монтаж</h3>
-                    <p>Привозим, устанавливаем и проводим пусконаладочные работы.</p>
-                </div>
-                <div class="step-card">
-                    <span class="step-number">Шаг 04</span>
-                    <h3>Обучение</h3>
-                    <p>Обучаем медицинский персонал правилам работы с новым оборудованием.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ПАРТНЕРЫ -->
-        <div class="section reveal">
-            <div class="brand-panel card-base">
-                <h2 class="section-title">Официальный дистрибьютор</h2>
-                <div class="title-line"></div>
-                <p>Мы напрямую сотрудничаем с брендами, заслужившими признание медицинского сообщества по всему миру. Это гарантирует подлинность оборудования и полную сервисную поддержку на фабричном уровне.</p>
-                <div class="brands">
-                    <div class="brand">MINDRAY</div>
-                    <div class="brand">OLYMPUS</div>
-                    <div class="brand">STORZ</div>
-                    <div class="brand">PENTAX</div>
-                    <div class="brand">PHILIPS</div>
-                    <div class="brand">GE</div>
-                    <div class="brand">CHIROMAX</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- БЛОК ПРИЗЫВА К ДЕЙСТВИЮ -->
-        <div class="cta reveal">
-            <div>
-                <h2>Нужна помощь с подбором?</h2>
-                <p>Оставьте заявку, и наш эксперт свяжется с вами в течение 15 минут.</p>
-            </div>
-            <button class="btn">Получить консультацию</button>
-        </div>
-
     </div>
+</header>
 
-    <footer>
-        &copy; 2026 MedEquip. Все права защищены. Поставки профессионального медицинского оборудования.
-    </footer>
+<main class="container">
+    <section class="hero">
+        <div class="hero-main fade-in">
+            <div class="badge">🏥 О компании VitaEquip</div>
 
-    <script>
-        // Открытие/закрытие меню
-        function toggleMenu() {
-            const nav = document.getElementById('navMenu');
-            nav.classList.toggle('open');
+            <h1>Интернет-ресурс для продажи <span>современной медтехники</span></h1>
+
+            <p>
+                VitaEquip — это интернет-ресурс, предназначенный для продажи медицинского оборудования,
+                просмотра каталога, оформления заказов и управления данными через административную панель.
+            </p>
+
+            <p>
+                Проект объединяет пользовательскую часть, базу данных и инструменты управления товарами,
+                клиентами, заказами, поставщиками и статистикой.
+            </p>
+
+            <div class="hero-actions">
+                <a href="/catalog" class="btn"><i class="fa-solid fa-table-list"></i> Перейти в каталог</a>
+                <a href="/contacts" class="btn btn-secondary">Связаться с нами</a>
+            </div>
+        </div>
+
+        <div class="hero-side">
+            <div class="mini-card fade-in delay-1">
+                <div class="mini-icon"><i class="fa-solid fa-database"></i></div>
+                <h3>Единая база данных</h3>
+                <p>Информация о товарах, клиентах, заказах и поставщиках хранится в одной структуре.</p>
+            </div>
+
+            <div class="mini-card fade-in delay-2">
+                <div class="mini-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Статистика и аналитика</h3>
+                <p>Админ-панель отображает выручку, количество заказов и график продаж.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="two-col section fade-in">
+        <div class="panel-card">
+            <h2>Кто мы такие</h2>
+            <div class="title-line"></div>
+
+            <p>
+                VitaEquip ориентирован на медицинские организации, которым необходимо быстро и удобно
+                работать с медицинской техникой. Интернет-ресурс позволяет представить оборудование
+                в структурированном каталоге, разделить товары по категориям и предоставить пользователю
+                основные сведения о каждой позиции.
+            </p>
+
+            <p>
+                В отличие от обычного информационного сайта, VitaEquip включает полноценную базу данных.
+                За счёт этого система может хранить сведения о пользователях, клиентах, товарах, заказах,
+                оплатах и поставщиках.
+            </p>
+
+            <p>
+                Особое внимание уделяется удобству управления. Для сотрудников предусмотрена
+                административная панель, где можно добавлять новые товары, изменять сведения о клиентах,
+                создавать заказы, контролировать их статусы и анализировать статистику продаж.
+            </p>
+        </div>
+
+        <div class="image-card">
+            <div class="image-label">
+                <b>VitaEquip</b>
+                <span>интернет-ресурс, объединяющий каталог медтехники, базу данных и панель управления</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section fade-in">
+        <h2 class="section-title">Наши преимущества</h2>
+        <div class="title-line"></div>
+
+        <div class="cards-grid">
+            <div class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+                <h3>Каталог оборудования</h3>
+                <p>Товары разделены по категориям, имеют описание, стоимость, производителя и изображение.</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                <h3>Работа с заказами</h3>
+                <p>Система хранит заказы, состав заказа, статус обработки и стоимость на момент продажи.</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-user-group"></i></div>
+                <h3>Учет клиентов</h3>
+                <p>В базе сохраняются сведения о клиентах, контактные данные, логины и адреса доставки.</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-truck"></i></div>
+                <h3>Поставщики</h3>
+                <p>Проект предусматривает учет поставщиков и данных, связанных с поступлением медтехники.</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                <h3>Аналитика</h3>
+                <p>Администратор может просматривать выручку, количество заказов и продажи по месяцам.</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>Контроль доступа</h3>
+                <p>Доступ к панели управления выполняется через авторизацию администратора.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section fade-in">
+        <h2 class="section-title">VitaEquip в цифрах</h2>
+        <div class="title-line"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <b>10+</b>
+                <span>товаров в каталоге</span>
+            </div>
+
+            <div class="stat-card">
+                <b>6+</b>
+                <span>основных разделов</span>
+            </div>
+
+            <div class="stat-card">
+                <b>12</b>
+                <span>таблиц базы данных</span>
+            </div>
+
+            <div class="stat-card">
+                <b>24/7</b>
+                <span>доступ к ресурсу</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section fade-in">
+        <h2 class="section-title">Как работает интернет-ресурс</h2>
+        <div class="title-line"></div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Просмотр каталога</h3>
+                <p>Пользователь открывает каталог, выбирает категорию и изучает карточки товаров.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Выбор товара</h3>
+                <p>В карточке отображаются характеристики, изображение, производитель и цена.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Оформление заказа</h3>
+                <p>Система сохраняет клиента, состав заказа, статус и стоимость товара.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>Управление</h3>
+                <p>Администратор контролирует товары, клиентов, поставщиков, заказы и статистику.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section brand-panel fade-in">
+        <h2 class="section-title">Партнёрство и бренды</h2>
+        <div class="title-line"></div>
+
+        <p>
+            Интернет-ресурс ориентирован на работу с медицинским оборудованием разных направлений:
+            диагностическим, лабораторным и хирургическим. В каталоге могут быть представлены товары
+            различных производителей и поставщиков.
+        </p>
+
+        <div class="brands">
+            <div class="brand">PHILIPS</div>
+            <div class="brand">Mindray</div>
+            <div class="brand">SIEMENS</div>
+            <div class="brand">Canon</div>
+            <div class="brand">GE</div>
+            <div class="brand">Dräger</div>
+            <div class="brand">OLYMPUS</div>
+        </div>
+    </section>
+
+    <section class="cta fade-in">
+        <div>
+            <h2>Готовы перейти к каталогу?</h2>
+            <p>Посмотрите медицинское оборудование, представленное в базе данных VitaEquip.</p>
+        </div>
+        <a href="/catalog" class="btn">Открыть каталог</a>
+    </section>
+</main>
+
+<footer>
+    VitaEquip — интернет-ресурс для продажи медтехники
+</footer>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const headerActions = document.getElementById('headerActions');
+
+    menuToggle.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+        headerActions.classList.toggle('open');
+
+        const icon = menuToggle.querySelector('i');
+
+        if (navMenu.classList.contains('open')) {
+            icon.className = 'fa-solid fa-xmark';
+        } else {
+            icon.className = 'fa-solid fa-bars';
         }
+    });
 
-        // СКРИПТ ДЛЯ ПЛАВНОГО ПОЯВЛЕНИЯ БЛОКОВ ПРИ СКРОЛЛЕ
-        document.addEventListener("DOMContentLoaded", function() {
-            const reveals = document.querySelectorAll(".reveal");
+    // Дополнительная крутая фишка: Анимация появления элементов при доскролле (Intersection Observer)
+    const fadeBlocks = document.querySelectorAll('.fade-in');
+    
+    const observerOptions = {
+        root: null,
+        threshold: 0.1,
+        rootMargin: "0px 0px -40px 0px"
+    };
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting) {
-                        entry.target.classList.add("active");
-                    }
-                });
-            }, {
-                // Блок сработает, когда 10% его площади появится на экране
-                threshold: 0.1
-            });
-
-            reveals.forEach(reveal => {
-                observer.observe(reveal);
-            });
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+                entry.target.style.opacity = '1';
+                observer.unobserve(entry.target);
+            }
         });
-    </script>
+    }, observerOptions);
+
+    fadeBlocks.forEach(block => {
+        // Изначально ставим паузу для анимации, если скрипт отработал
+        block.style.animationPlayState = 'paused';
+        observer.observe(block);
+    });
+</script>
 </body>
 </html>
