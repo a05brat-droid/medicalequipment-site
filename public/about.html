@@ -94,7 +94,7 @@
         }
 
         .logo {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 12px;
             color: #fff;
@@ -129,6 +129,7 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
+            z-index: 101; /* Чтобы кнопка была поверх шторки */
         }
         .menu-toggle:hover {
             background: var(--blue);
@@ -695,7 +696,7 @@
         }
 
 
-        /* --- МЕДИА ЗАПРОСЫ (Улучшенная адаптация) --- */
+        /* --- МЕДИА ЗАПРОСЫ (Полностью исправленный адаптив) --- */
         
         @media (max-width: 1100px) {
             .hero {
@@ -717,76 +718,92 @@
         }
 
         @media (max-width: 768px) {
+            body.menu-open {
+                overflow: hidden; /* Запрещаем скролл сайта при открытом меню */
+            }
+
             .header-inner {
                 padding: 16px;
+                position: relative;
             }
 
             .menu-toggle {
-                display: block;
+                display: block; /* Показываем бургер */
             }
 
-            /* Переделка меню под мобильную шторку */
+            /* Превращаем меню в красивую полноэкранную шторку */
             .nav-menu {
                 display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
                 width: 100%;
-                order: 3;
-                background: #0d1b2e;
-                border-radius: 16px;
-                border: 1px solid var(--border);
-                padding: 16px;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-                margin-top: 10px;
-                animation: fadeInDown 0.3s ease forwards;
-            }
-
-            @keyframes fadeInDown {
-                from { opacity: 0; transform: translateY(-10px); }
-                to { opacity: 1; transform: translateY(0); }
+                height: 100vh;
+                background: #07111f;
+                z-index: 99;
+                padding: 100px 24px 40px 24px;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 30px;
+                overflow-y: auto;
             }
 
             .nav-menu.open {
-                display: block;
+                display: flex;
+                animation: fadeIn 0.25s ease forwards;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
 
             .nav-menu ul {
                 flex-direction: column;
-                gap: 6px;
+                gap: 12px;
+                width: 100%;
             }
 
             .nav-menu a {
                 display: block;
-                padding: 12px 16px;
-                border-radius: 10px;
-                transition: background 0.2s;
+                padding: 14px 20px;
+                font-size: 18px;
+                border-radius: 12px;
+                background: rgba(19, 36, 58, 0.4);
+                border: 1px solid var(--border);
+                transition: all 0.2s ease;
             }
             .nav-menu a::after { display: none; }
             
             .nav-menu a:hover,
             .nav-menu a.active {
                 background: rgba(47, 128, 255, 0.15);
+                border-color: var(--blue2);
                 color: var(--blue2);
-                padding-left: 20px;
+                padding-left: 28px;
             }
 
-            /* Интеграция экшенов внутрь меню на мобилках */
+            /* Прячем десктопные кнопки из шапки */
             .header-actions {
                 display: none;
                 width: 100%;
-                order: 4;
-                margin-top: 10px;
                 flex-direction: column;
-                gap: 10px;
+                gap: 12px;
+                margin-top: auto; /* Прижимает кнопки к низу шторки */
             }
             
-            .header-actions.open {
+            /* Показываем их ТОЛЬКО внутри открытой шторки */
+            .nav-menu.open .header-actions {
                 display: flex;
             }
 
             .header-actions .btn {
                 width: 100%;
-                padding: 14px;
+                padding: 16px;
+                font-size: 16px;
             }
 
+            /* Остальной контент страницы */
             .container {
                 padding: 24px 16px 48px;
             }
@@ -869,24 +886,23 @@
                 <li><a href="/partners">Партнеры</a></li>
                 <li><a href="/contacts">Контакты</a></li>
             </ul>
+            <div class="header-actions" id="headerActions">
+                <a href="/catalog" class="btn">Каталог</a>
+                <a href="/admin" class="btn btn-secondary">Админ</a>
+            </div>
         </nav>
-
-        <div class="header-actions" id="headerActions">
-            <a href="/catalog" class="btn">Каталог</a>
-            <a href="/admin" class="btn btn-secondary">Админ</a>
-        </div>
     </div>
 </header>
 
 <main class="container">
     <section class="hero">
         <div class="hero-main fade-in">
-            <div class="badge">🏥 О компании VitaEquip</div>
+            <div class="badge">О компании VitaEquip</div>
 
             <h1>Интернет-ресурс для продажи <span>современной медтехники</span></h1>
 
             <p>
-                VitaEquip — это интернет-ресурс, предназначенный для продажи медицинского оборудования,
+                VitaEquip — это internet-ресурс, предназначенный для продажи медицинского оборудования,
                 просмотра каталога, оформления заказов и управления данными через административную панель.
             </p>
 
@@ -1087,14 +1103,12 @@
 <script>
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
-    const headerActions = document.getElementById('headerActions');
 
     menuToggle.addEventListener('click', function () {
         navMenu.classList.toggle('open');
-        headerActions.classList.toggle('open');
-
+        document.body.classList.toggle('menu-open');
+        
         const icon = menuToggle.querySelector('i');
-
         if (navMenu.classList.contains('open')) {
             icon.className = 'fa-solid fa-xmark';
         } else {
@@ -1102,7 +1116,7 @@
         }
     });
 
-    // Дополнительная крутая фишка: Анимация появления элементов при доскролле (Intersection Observer)
+    // Анимация появления элементов при доскролле (Intersection Observer)
     const fadeBlocks = document.querySelectorAll('.fade-in');
     
     const observerOptions = {
@@ -1122,7 +1136,6 @@
     }, observerOptions);
 
     fadeBlocks.forEach(block => {
-        // Изначально ставим паузу для анимации, если скрипт отработал
         block.style.animationPlayState = 'paused';
         observer.observe(block);
     });
