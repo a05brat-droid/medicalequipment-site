@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link rel="shortcut icon" href="/icons/android-chrome-192x192.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Admin</title>
@@ -37,6 +38,7 @@
             color: var(--text-main);
             font-family: Inter, Arial, sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         button, input, select, textarea {
@@ -170,42 +172,6 @@
             box-shadow: 0 0 12px var(--green);
         }
 
-        .main-area {
-            min-width: 0;
-        }
-
-        .topbar {
-            height: 72px;
-            background: rgba(13, 27, 46, 0.82);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
-            backdrop-filter: blur(16px);
-            position: sticky;
-            top: 0;
-            z-index: 20;
-        }
-
-        .topbar-search {
-            width: min(420px, 45vw);
-            background: rgba(7, 17, 31, 0.75);
-            border: 1px solid var(--border);
-            color: #fff;
-            border-radius: 12px;
-            padding: 12px 14px;
-        }
-
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
-            flex: 1;
-        }
-
         .site-link-btn {
             display: inline-flex;
             align-items: center;
@@ -236,6 +202,42 @@
             background: rgba(25, 195, 125, 0.14);
             border: 1px solid rgba(25, 195, 125, 0.35);
             box-shadow: none;
+        }
+
+        .main-area {
+            min-width: 0;
+        }
+
+        .topbar {
+            min-height: 72px;
+            background: rgba(13, 27, 46, 0.82);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px 28px;
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .topbar-search {
+            width: min(420px, 45vw);
+            background: rgba(7, 17, 31, 0.75);
+            border: 1px solid var(--border);
+            color: #fff;
+            border-radius: 12px;
+            padding: 12px 14px;
         }
 
         .topbar-actions {
@@ -366,7 +368,8 @@
             gap: 18px;
         }
 
-        .panel-card {
+        .panel-card,
+        .form-card {
             background: rgba(13, 27, 46, 0.9);
             border: 1px solid var(--border);
             border-radius: 20px;
@@ -374,7 +377,12 @@
             box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
         }
 
-        .panel-card h3 {
+        .form-card {
+            margin-bottom: 24px;
+        }
+
+        .panel-card h3,
+        .form-card h3 {
             margin: 0 0 16px;
             color: #fff;
         }
@@ -456,14 +464,6 @@
         .quick-action span {
             color: rgba(255,255,255,0.8);
             font-size: 12px;
-        }
-
-        .form-card {
-            background: rgba(13, 27, 46, 0.88);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 24px;
         }
 
         .form-grid {
@@ -718,7 +718,16 @@
                 align-items: stretch;
             }
 
+            .topbar-left {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
             .topbar-search {
+                width: 100%;
+            }
+
+            .site-link-btn {
                 width: 100%;
             }
 
@@ -727,232 +736,71 @@
                 flex-direction: column;
             }
         }
-        /*
-   MOBILE + TABLET ADAPTIVE
- */
 
-@media (max-width: 900px) {
+        @media (max-width: 600px) {
+            #auth-section {
+                margin: 20px;
+                padding: 22px;
+            }
 
-    .sidebar {
-        height: auto;
-        position: relative;
-        padding-bottom: 90px;
-    }
+            .content {
+                padding: 14px;
+            }
 
-    .admin-layout {
-        grid-template-columns: 1fr;
-    }
+            .section-title {
+                font-size: 24px;
+            }
 
-    .topbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
-        height: auto;
-        padding: 18px;
-    }
+            .dashboard-value {
+                font-size: 28px;
+            }
 
-    .topbar-left {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
+            .panel-card,
+            .form-card,
+            .dashboard-card,
+            .stat-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
 
-    .topbar-actions {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
+            .admin-nav button {
+                font-size: 14px;
+                padding: 12px;
+            }
 
-    .topbar-search {
-        width: 100%;
-    }
+            input,
+            select,
+            textarea,
+            button {
+                font-size: 16px;
+            }
 
-    .site-link-btn {
-        width: 100%;
-    }
+            .item-thumb {
+                width: 100%;
+                height: auto;
+                max-height: 240px;
+            }
 
-    .content {
-        padding: 18px;
-    }
+            .topbar-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
 
-    .dashboard-grid,
-    .dashboard-row,
-    .dashboard-row-three,
-    .quick-actions,
-    .card-grid,
-    .form-grid {
-        grid-template-columns: 1fr !important;
-    }
+            .topbar-actions button {
+                width: 100%;
+            }
 
-    .item-card {
-        flex-direction: column;
-    }
+            .admin-user {
+                width: 100%;
+                justify-content: center;
+            }
 
-    .item-info {
-        flex-direction: column;
-    }
-
-    .item-actions {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
-
-    .item-actions button {
-        flex: 1;
-        min-width: 120px;
-    }
-
-    .chart {
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-
-    .chart-item {
-        min-width: 90px;
-    }
-
-    .mini-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .section-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .section-header button {
-        width: 100%;
-    }
-
-    .sidebar-bottom {
-        position: relative;
-        margin-top: 20px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-}
-
-@media (max-width: 600px) {
-
-    body {
-        overflow-x: hidden;
-    }
-
-    #auth-section {
-        margin: 20px;
-        padding: 22px;
-    }
-
-    .content {
-        padding: 14px;
-    }
-
-    .section-title {
-        font-size: 24px;
-    }
-
-    .dashboard-value {
-        font-size: 28px;
-    }
-
-    .panel-card,
-    .form-card,
-    .dashboard-card,
-    .stat-card {
-        padding: 16px;
-        border-radius: 16px;
-    }
-
-    .admin-nav button {
-        font-size: 14px;
-        padding: 12px;
-    }
-
-    .brand {
-        margin-bottom: 18px;
-    }
-
-    .brand-title {
-        font-size: 16px;
-    }
-
-    input,
-    select,
-    textarea,
-    button {
-        font-size: 16px;
-    }
-
-    .item-thumb {
-        width: 100%;
-        height: auto;
-        max-height: 240px;
-    }
-
-    .topbar {
-        padding: 14px;
-    }
-
-    .admin-user {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .topbar-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .topbar-actions button {
-        width: 100%;
-    }
-
-    .quick-action {
-        width: 100%;
-    }
-
-    .chart {
-        min-height: 220px;
-    }
-
-    .chart-bar {
-        width: 36px;
-    }
-}
-
-@media (max-width: 400px) {
-
-    .section-title {
-        font-size: 21px;
-    }
-
-    .dashboard-value {
-        font-size: 24px;
-    }
-
-    .brand-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-    }
-
-    .brand-title {
-        font-size: 15px;
-    }
-
-    .admin-nav button {
-        padding: 10px;
-        font-size: 13px;
-    }
-
-    .item-actions button {
-        width: 100%;
-    }
-}
+            .mini-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
     </style>
 </head>
 
@@ -1285,6 +1133,11 @@
                                         <label>Статус заказа</label>
                                         <select id="order-status" required></select>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>Дата заказа</label>
+                                        <input type="date" id="order-date" required>
+                                    </div>
                                 </div>
 
                                 <button type="submit">Создать заказ</button>
@@ -1524,6 +1377,13 @@ function clearSupplierForm() {
     clearSupplierMessages();
 }
 
+function setDefaultOrderDate() {
+    const orderDateInput = document.getElementById('order-date');
+    if (orderDateInput && !orderDateInput.value) {
+        orderDateInput.value = new Date().toISOString().split('T')[0];
+    }
+}
+
 function escapeHtml(value) {
     return String(value ?? '')
         .replace(/&/g, '&amp;')
@@ -1565,8 +1425,20 @@ function switchSection(sectionId) {
         btn.classList.remove('active');
     });
 
-    document.getElementById(sectionId).classList.add('active');
-    document.querySelector(`.nav-btn[data-section="${sectionId}"]`).classList.add('active');
+    const targetSection = document.getElementById(sectionId);
+    const targetBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+
+    if (targetBtn) {
+        targetBtn.classList.add('active');
+    }
+
+    if (sectionId === 'orders-section') {
+        setDefaultOrderDate();
+    }
 
     clearFormMessages();
     clearSupplierMessages();
@@ -1584,25 +1456,31 @@ async function loginAdmin() {
         return showAuthError('Введите логин и пароль');
     }
 
-    const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (data.success && data.token) {
-        adminToken = data.token;
-        localStorage.setItem('adminToken', adminToken);
-        setAuthState(true);
-        await initializeAdminPanel();
-    } else {
-        showAuthError(data.error || 'Ошибка авторизации');
+        if (data.success && data.token) {
+            adminToken = data.token;
+            localStorage.setItem('adminToken', adminToken);
+            setAuthState(true);
+            await initializeAdminPanel();
+        } else {
+            showAuthError(data.error || 'Ошибка авторизации');
+        }
+    } catch (error) {
+        showAuthError('Ошибка подключения к серверу');
     }
 }
 
 async function initializeAdminPanel() {
+    setDefaultOrderDate();
+
     await Promise.all([
         loadCategories(),
         loadProducts(),
@@ -1979,9 +1857,17 @@ async function saveOrder(e) {
     showOrderError('');
     showOrderSuccess('');
 
+    const orderDate = document.getElementById('order-date').value;
+
+    if (!orderDate) {
+        showOrderError('Выберите дату заказа');
+        return;
+    }
+
     const data = {
         customer_id: Number(document.getElementById('order-customer').value),
-        order_status_id: Number(document.getElementById('order-status').value)
+        order_status_id: Number(document.getElementById('order-status').value),
+        order_date: orderDate
     };
 
     const res = await fetch('/api/orders', {
@@ -1997,6 +1883,7 @@ async function saveOrder(e) {
     if (result.success) {
         showOrderSuccess(`Заказ создан. ID заказа: ${result.order_id}`);
         document.getElementById('order-item-order-id').value = result.order_id;
+        setDefaultOrderDate();
         await loadOrders();
         await loadOverview();
         await loadStats();
@@ -2545,6 +2432,8 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
         switchSection(this.dataset.section);
     });
 });
+
+setDefaultOrderDate();
 
 if (adminToken) {
     setAuthState(true);
