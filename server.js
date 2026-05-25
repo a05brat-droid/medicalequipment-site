@@ -337,7 +337,7 @@ async function seedDatabase() {
         if (customer) {
             const order = await dbRun(
                 `INSERT INTO ORDERS (CUSTOMER_ID, ORDER_DATE, ORDER_STATUS_ID) VALUES (?, ?, ?)`,
-                [customer.CUSTOMER_ID, '2026-05-08', 2]
+                [customer.CUSTOMER_ID, '2026-05-08T12:00:00.000Z', 2]
             );
 
             await dbRun(
@@ -974,7 +974,7 @@ app.get('/api/orders', async (req, res) => {
 
 app.post('/api/orders', adminAuth, async (req, res) => {
     try {
-        const { customer_id, order_status_id } = req.body;
+        const { customer_id, order_status_id, order_date } = req.body;
 
         if (!customer_id) {
             return res.status(400).json({ success: false, error: 'Не выбран клиент' });
@@ -993,10 +993,25 @@ app.post('/api/orders', adminAuth, async (req, res) => {
             return res.status(400).json({ success: false, error: 'Статус заказа не найден' });
         }
 
+        let finalOrderDate = new Date().toISOString();
+
+        if (order_date) {
+            const parsedDate = new Date(order_date);
+
+            if (Number.isNaN(parsedDate.getTime())) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Некорректная дата заказа'
+                });
+            }
+
+            finalOrderDate = parsedDate.toISOString();
+        }
+
         const result = await dbRun(`
-            INSERT INTO ORDERS (CUSTOMER_ID, ORDER_STATUS_ID)
-            VALUES (?, ?)
-        `, [Number(customer_id), statusId]);
+            INSERT INTO ORDERS (CUSTOMER_ID, ORDER_DATE, ORDER_STATUS_ID)
+            VALUES (?, ?, ?)
+        `, [Number(customer_id), finalOrderDate, statusId]);
 
         res.json({ success: true, order_id: result.lastID, message: 'Заказ создан' });
     } catch (error) {
