@@ -9,6 +9,7 @@ const session = require('express-session');
 const jwt = require('jsonwebtoken');
 const sqlite3 = require('sqlite3').verbose();
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -22,6 +23,16 @@ const dbPath = path.join(dbDir, 'medicalequipment.sqlite');
 
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.mail.ru',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+    }
+});
 
 app.use('/uploads', express.static(uploadsDir));
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -117,14 +128,17 @@ function adminAuth(req, res, next) {
 }
 
 app.use(cors({ origin: true, credentials: true }));
+
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     next();
 });
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(session({
     secret: SESSION_SECRET,
     resave: false,
@@ -307,15 +321,25 @@ async function seedDatabase() {
             `INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?, ?, ?)`,
             ['Петров Петр Олегович', '+79990000002', 'client1@mail.ru', 'client1', sha1('client1')]
         );
+
         const user1 = await dbGet(`SELECT USER_ID FROM USERS WHERE LOGIN = ?`, ['client1']);
-        await dbRun(`INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS) VALUES (?, ?)`, [user1.USER_ID, 'г. Москва, ул. Ленина, д. 10']);
+
+        await dbRun(
+            `INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS) VALUES (?, ?)`,
+            [user1.USER_ID, 'г. Москва, ул. Ленина, д. 10']
+        );
 
         await dbRun(
             `INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD) VALUES (?, ?, ?, ?, ?)`,
             ['Смирнова Анна Олеговна', '+79990000003', 'client2@mail.ru', 'client2', sha1('client2')]
         );
+
         const user2 = await dbGet(`SELECT USER_ID FROM USERS WHERE LOGIN = ?`, ['client2']);
-        await dbRun(`INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS) VALUES (?, ?)`, [user2.USER_ID, 'г. Санкт-Петербург, Невский пр., д. 25']);
+
+        await dbRun(
+            `INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS) VALUES (?, ?)`,
+            [user2.USER_ID, 'г. Санкт-Петербург, Невский пр., д. 25']
+        );
     }
 
     const suppliersCount = await dbGet(`SELECT COUNT(*) AS count FROM SUPPLIERS`);
@@ -334,6 +358,7 @@ async function seedDatabase() {
 
     if (ordersCount.count === 0) {
         const customer = await dbGet(`SELECT CUSTOMER_ID FROM CUSTOMERS ORDER BY CUSTOMER_ID LIMIT 1`);
+
         if (customer) {
             const order = await dbRun(
                 `INSERT INTO ORDERS (CUSTOMER_ID, ORDER_DATE, ORDER_STATUS_ID) VALUES (?, ?, ?)`,
@@ -387,7 +412,11 @@ app.get('/api/health', async (req, res) => {
         await dbGet('SELECT 1 AS ok');
         res.json({ success: true, database: 'connected' });
     } catch (error) {
-        res.status(500).json({ success: false, database: 'disconnected', error: error.message });
+        res.status(500).json({
+            success: false,
+            database: 'disconnected',
+            error: error.message
+        });
     }
 });
 
@@ -415,10 +444,22 @@ app.get('/api/about', (req, res) => {
                 'Интернет-ресурс объединяет пользовательскую часть, административную панель и базу данных для хранения информации о товарах, клиентах, заказах и поставщиках.'
             ],
             advantages: [
-                { title: 'Качественное оборудование', text: 'В каталоге представлены категории медицинской техники для диагностики, лабораторной и хирургической деятельности.' },
-                { title: 'Удобная работа с заказами', text: 'Система позволяет оформлять заказы, изменять их статусы и контролировать состав заказа.' },
-                { title: 'Централизованная база данных', text: 'Информация о товарах, клиентах, поставщиках и оплатах хранится в единой структуре данных.' },
-                { title: 'Административная панель', text: 'Для сотрудников предусмотрены инструменты управления товарами, клиентами, заказами и поставщиками.' }
+                {
+                    title: 'Качественное оборудование',
+                    text: 'В каталоге представлены категории медицинской техники для диагностики, лабораторной и хирургической деятельности.'
+                },
+                {
+                    title: 'Удобная работа с заказами',
+                    text: 'Система позволяет оформлять заказы, изменять их статусы и контролировать состав заказа.'
+                },
+                {
+                    title: 'Централизованная база данных',
+                    text: 'Информация о товарах, клиентах, поставщиках и оплатах хранится в единой структуре данных.'
+                },
+                {
+                    title: 'Административная панель',
+                    text: 'Для сотрудников предусмотрены инструменты управления товарами, клиентами, заказами и поставщиками.'
+                }
             ],
             cooperationBenefits: [
                 'Быстрый доступ к каталогу медицинского оборудования.',
@@ -431,42 +472,73 @@ app.get('/api/about', (req, res) => {
     });
 });
 
-app.post('/api/feedback', (req, res) => {
-    const { name, phone, email, message } = req.body || {};
+app.post('/api/feedback', async (req, res) => {
+    try {
+        const { name, phone, email, message } = req.body || {};
 
-    if (!name || !phone || !message) {
-        return res.status(400).json({
+        if (!name || !phone || !message) {
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните имя, телефон и сообщение'
+            });
+        }
+
+        const feedbackFile = path.join(__dirname, 'feedback.json');
+        let feedback = [];
+
+        try {
+            if (fs.existsSync(feedbackFile)) {
+                feedback = JSON.parse(fs.readFileSync(feedbackFile, 'utf8'));
+            }
+        } catch (error) {
+            feedback = [];
+        }
+
+        feedback.push({
+            id: Date.now(),
+            name,
+            phone,
+            email: email || '',
+            message,
+            created_at: new Date().toISOString()
+        });
+
+        fs.writeFileSync(feedbackFile, JSON.stringify(feedback, null, 2), 'utf8');
+
+        await transporter.sendMail({
+            from: `"VitaEquip" <${process.env.MAIL_USER}>`,
+            to: process.env.MAIL_TO,
+            subject: 'Новое обращение VitaEquip',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #111827;">
+                    <h2 style="color: #2f80ff; margin-bottom: 16px;">
+                        Новое сообщение с сайта VitaEquip
+                    </h2>
+
+                    <p><b>Имя:</b> ${name}</p>
+                    <p><b>Телефон:</b> ${phone}</p>
+                    <p><b>Email:</b> ${email || 'Не указан'}</p>
+
+                    <p><b>Сообщение:</b></p>
+                    <div style="background: #f5f7fa; padding: 15px; border-radius: 10px;">
+                        ${message}
+                    </div>
+                </div>
+            `
+        });
+
+        res.json({
+            success: true,
+            message: 'Сообщение отправлено'
+        });
+    } catch (error) {
+        console.error('Ошибка отправки сообщения:', error);
+
+        res.status(500).json({
             success: false,
-            error: 'Заполните имя, телефон и сообщение'
+            error: 'Ошибка отправки сообщения'
         });
     }
-
-    const feedbackFile = path.join(__dirname, 'feedback.json');
-    let feedback = [];
-
-    try {
-        if (fs.existsSync(feedbackFile)) {
-            feedback = JSON.parse(fs.readFileSync(feedbackFile, 'utf8'));
-        }
-    } catch (error) {
-        feedback = [];
-    }
-
-    feedback.push({
-        id: Date.now(),
-        name,
-        phone,
-        email: email || '',
-        message,
-        created_at: new Date().toISOString()
-    });
-
-    fs.writeFileSync(feedbackFile, JSON.stringify(feedback, null, 2), 'utf8');
-
-    res.json({
-        success: true,
-        message: 'Сообщение сохранено'
-    });
 });
 
 function getFilesRecursive(dir, base = '') {
@@ -506,10 +578,16 @@ app.get('/api/categories', async (req, res) => {
             ORDER BY c.NAME
         `);
 
-        res.json({ success: true, data: rows });
+        res.json({
+            success: true,
+            data: rows
+        });
     } catch (error) {
         console.error('Ошибка /api/categories:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки категорий' });
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки категорий'
+        });
     }
 });
 
@@ -571,7 +649,11 @@ app.get('/api/products', async (req, res) => {
         });
     } catch (error) {
         console.error('Ошибка /api/products:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки товаров' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки товаров'
+        });
     }
 });
 
@@ -599,7 +681,10 @@ app.get('/api/products/:id', async (req, res) => {
         `, [Number(req.params.id)]);
 
         if (!product) {
-            return res.status(404).json({ success: false, error: 'Товар не найден' });
+            return res.status(404).json({
+                success: false,
+                error: 'Товар не найден'
+            });
         }
 
         res.json({
@@ -611,13 +696,20 @@ app.get('/api/products/:id', async (req, res) => {
         });
     } catch (error) {
         console.error('Ошибка /api/products/:id:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки товара' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки товара'
+        });
     }
 });
 
 app.post('/api/upload-image', adminAuth, upload.single('image'), async (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ success: false, error: 'Файл не выбран' });
+        return res.status(400).json({
+            success: false,
+            error: 'Файл не выбран'
+        });
     }
 
     res.json({
@@ -631,7 +723,10 @@ app.post('/api/admin/login', async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(400).json({ success: false, error: 'Введите логин и пароль' });
+            return res.status(400).json({
+                success: false,
+                error: 'Введите логин и пароль'
+            });
         }
 
         const user = await dbGet(`
@@ -641,7 +736,10 @@ app.post('/api/admin/login', async (req, res) => {
         `, [username, sha1(password)]);
 
         if (!user) {
-            return res.status(401).json({ success: false, error: 'Неверный логин или пароль' });
+            return res.status(401).json({
+                success: false,
+                error: 'Неверный логин или пароль'
+            });
         }
 
         const role = user.LOGIN === 'admin' ? 'admin' : 'user';
@@ -654,7 +752,11 @@ app.post('/api/admin/login', async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user.USER_ID, login: user.LOGIN, role },
+            {
+                userId: user.USER_ID,
+                login: user.LOGIN,
+                role
+            },
             JWT_SECRET,
             { expiresIn: '8h' }
         );
@@ -671,7 +773,11 @@ app.post('/api/admin/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Ошибка /api/admin/login:', error);
-        res.status(500).json({ success: false, error: 'Ошибка авторизации' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка авторизации'
+        });
     }
 });
 
@@ -692,7 +798,10 @@ app.post('/api/products', adminAuth, async (req, res) => {
         } = req.body;
 
         if (!name || !category_id || !price) {
-            return res.status(400).json({ success: false, error: 'Заполните название, категорию и цену' });
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните название, категорию и цену'
+            });
         }
 
         await dbRun(`
@@ -726,10 +835,17 @@ app.post('/api/products', adminAuth, async (req, res) => {
             weight || null
         ]);
 
-        res.json({ success: true, message: 'Товар добавлен' });
+        res.json({
+            success: true,
+            message: 'Товар добавлен'
+        });
     } catch (error) {
         console.error('Ошибка POST /api/products:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка добавления товара' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка добавления товара'
+        });
     }
 });
 
@@ -750,7 +866,10 @@ app.put('/api/products/:id', adminAuth, async (req, res) => {
         } = req.body;
 
         if (!name || !category_id || !price) {
-            return res.status(400).json({ success: false, error: 'Заполните название, категорию и цену' });
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните название, категорию и цену'
+            });
         }
 
         await dbRun(`
@@ -784,10 +903,17 @@ app.put('/api/products/:id', adminAuth, async (req, res) => {
             Number(req.params.id)
         ]);
 
-        res.json({ success: true, message: 'Товар обновлён' });
+        res.json({
+            success: true,
+            message: 'Товар обновлён'
+        });
     } catch (error) {
         console.error('Ошибка PUT /api/products/:id:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка обновления товара' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка обновления товара'
+        });
     }
 });
 
@@ -802,13 +928,23 @@ app.delete('/api/products/:id', adminAuth, async (req, res) => {
 
         if (product && product.IMAGE && product.IMAGE.startsWith('/uploads/')) {
             const fullImagePath = path.join(__dirname, product.IMAGE.replace(/^\//, ''));
-            if (fs.existsSync(fullImagePath)) fs.unlinkSync(fullImagePath);
+
+            if (fs.existsSync(fullImagePath)) {
+                fs.unlinkSync(fullImagePath);
+            }
         }
 
-        res.json({ success: true, message: 'Товар удалён' });
+        res.json({
+            success: true,
+            message: 'Товар удалён'
+        });
     } catch (error) {
         console.error('Ошибка DELETE /api/products/:id:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления товара' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка удаления товара'
+        });
     }
 });
 
@@ -828,49 +964,93 @@ app.get('/api/customers', async (req, res) => {
             ORDER BY u.FULL_NAME
         `);
 
-        res.json({ success: true, data: rows });
+        res.json({
+            success: true,
+            data: rows
+        });
     } catch (error) {
         console.error('Ошибка GET /api/customers:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки клиентов' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки клиентов'
+        });
     }
 });
 
 app.post('/api/customers', adminAuth, async (req, res) => {
     try {
-        const { full_name, phone, email, login, password, delivery_address } = req.body;
+        const {
+            full_name,
+            phone,
+            email,
+            login,
+            password,
+            delivery_address
+        } = req.body;
 
         if (!full_name || !phone || !email || !login || !password || !delivery_address) {
-            return res.status(400).json({ success: false, error: 'Заполните все обязательные поля' });
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните все обязательные поля'
+            });
         }
 
         const result = await dbRun(`
             INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD)
             VALUES (?, ?, ?, ?, ?)
-        `, [full_name, phone, email, login, sha1(password)]);
+        `, [
+            full_name,
+            phone,
+            email,
+            login,
+            sha1(password)
+        ]);
 
         await dbRun(`
             INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS)
             VALUES (?, ?)
-        `, [result.lastID, delivery_address]);
+        `, [
+            result.lastID,
+            delivery_address
+        ]);
 
-        res.json({ success: true, message: 'Клиент добавлен' });
+        res.json({
+            success: true,
+            message: 'Клиент добавлен'
+        });
     } catch (error) {
         console.error('Ошибка POST /api/customers:', error);
+
         const duplicate = String(error.message || '').includes('UNIQUE');
+
         res.status(500).json({
             success: false,
-            error: duplicate ? 'Клиент с таким логином или email уже существует' : 'Ошибка добавления клиента'
+            error: duplicate
+                ? 'Клиент с таким логином или email уже существует'
+                : 'Ошибка добавления клиента'
         });
     }
 });
 
 app.put('/api/customers/:id', adminAuth, async (req, res) => {
     try {
-        const { full_name, phone, email, login, password, delivery_address } = req.body;
+        const {
+            full_name,
+            phone,
+            email,
+            login,
+            password,
+            delivery_address
+        } = req.body;
+
         const userId = Number(req.params.id);
 
         if (!full_name || !phone || !email || !login || !delivery_address) {
-            return res.status(400).json({ success: false, error: 'Заполните все обязательные поля' });
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните все обязательные поля'
+            });
         }
 
         if (password && password.trim() !== '') {
@@ -878,28 +1058,51 @@ app.put('/api/customers/:id', adminAuth, async (req, res) => {
                 UPDATE USERS
                 SET FULL_NAME = ?, PHONE = ?, EMAIL = ?, LOGIN = ?, PASSWORD = ?
                 WHERE USER_ID = ?
-            `, [full_name, phone, email, login, sha1(password), userId]);
+            `, [
+                full_name,
+                phone,
+                email,
+                login,
+                sha1(password),
+                userId
+            ]);
         } else {
             await dbRun(`
                 UPDATE USERS
                 SET FULL_NAME = ?, PHONE = ?, EMAIL = ?, LOGIN = ?
                 WHERE USER_ID = ?
-            `, [full_name, phone, email, login, userId]);
+            `, [
+                full_name,
+                phone,
+                email,
+                login,
+                userId
+            ]);
         }
 
         await dbRun(`
             UPDATE CUSTOMERS
             SET DELIVERY_ADDRESS = ?
             WHERE USER_ID = ?
-        `, [delivery_address, userId]);
+        `, [
+            delivery_address,
+            userId
+        ]);
 
-        res.json({ success: true, message: 'Клиент обновлён' });
+        res.json({
+            success: true,
+            message: 'Клиент обновлён'
+        });
     } catch (error) {
         console.error('Ошибка PUT /api/customers/:id:', error);
+
         const duplicate = String(error.message || '').includes('UNIQUE');
+
         res.status(500).json({
             success: false,
-            error: duplicate ? 'Клиент с таким логином или email уже существует' : 'Ошибка обновления клиента'
+            error: duplicate
+                ? 'Клиент с таким логином или email уже существует'
+                : 'Ошибка обновления клиента'
         });
     }
 });
@@ -923,10 +1126,17 @@ app.delete('/api/customers/:id', adminAuth, async (req, res) => {
 
         await dbRun(`DELETE FROM USERS WHERE USER_ID = ?`, [userId]);
 
-        res.json({ success: true, message: 'Клиент удалён' });
+        res.json({
+            success: true,
+            message: 'Клиент удалён'
+        });
     } catch (error) {
         console.error('Ошибка DELETE /api/customers/:id:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления клиента' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка удаления клиента'
+        });
     }
 });
 
@@ -938,10 +1148,17 @@ app.get('/api/order-statuses', async (req, res) => {
             ORDER BY ORDER_STATUS_ID
         `);
 
-        res.json({ success: true, data: rows });
+        res.json({
+            success: true,
+            data: rows
+        });
     } catch (error) {
         console.error('Ошибка GET /api/order-statuses:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки статусов заказов' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки статусов заказов'
+        });
     }
 });
 
@@ -965,32 +1182,59 @@ app.get('/api/orders', async (req, res) => {
             ORDER BY o.ORDER_ID DESC
         `);
 
-        res.json({ success: true, data: rows });
+        res.json({
+            success: true,
+            data: rows
+        });
     } catch (error) {
         console.error('Ошибка GET /api/orders:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки заказов' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки заказов'
+        });
     }
 });
 
 app.post('/api/orders', adminAuth, async (req, res) => {
     try {
-        const { customer_id, order_status_id, order_date } = req.body;
+        const {
+            customer_id,
+            order_status_id,
+            order_date
+        } = req.body;
 
         if (!customer_id) {
-            return res.status(400).json({ success: false, error: 'Не выбран клиент' });
+            return res.status(400).json({
+                success: false,
+                error: 'Не выбран клиент'
+            });
         }
 
-        const customer = await dbGet(`SELECT CUSTOMER_ID FROM CUSTOMERS WHERE CUSTOMER_ID = ?`, [Number(customer_id)]);
+        const customer = await dbGet(
+            `SELECT CUSTOMER_ID FROM CUSTOMERS WHERE CUSTOMER_ID = ?`,
+            [Number(customer_id)]
+        );
 
         if (!customer) {
-            return res.status(400).json({ success: false, error: 'Клиент не найден' });
+            return res.status(400).json({
+                success: false,
+                error: 'Клиент не найден'
+            });
         }
 
         const statusId = Number(order_status_id || 1);
-        const status = await dbGet(`SELECT ORDER_STATUS_ID FROM ORDER_STATUSES WHERE ORDER_STATUS_ID = ?`, [statusId]);
+
+        const status = await dbGet(
+            `SELECT ORDER_STATUS_ID FROM ORDER_STATUSES WHERE ORDER_STATUS_ID = ?`,
+            [statusId]
+        );
 
         if (!status) {
-            return res.status(400).json({ success: false, error: 'Статус заказа не найден' });
+            return res.status(400).json({
+                success: false,
+                error: 'Статус заказа не найден'
+            });
         }
 
         let finalOrderDate = new Date().toISOString();
@@ -1011,12 +1255,24 @@ app.post('/api/orders', adminAuth, async (req, res) => {
         const result = await dbRun(`
             INSERT INTO ORDERS (CUSTOMER_ID, ORDER_DATE, ORDER_STATUS_ID)
             VALUES (?, ?, ?)
-        `, [Number(customer_id), finalOrderDate, statusId]);
+        `, [
+            Number(customer_id),
+            finalOrderDate,
+            statusId
+        ]);
 
-        res.json({ success: true, order_id: result.lastID, message: 'Заказ создан' });
+        res.json({
+            success: true,
+            order_id: result.lastID,
+            message: 'Заказ создан'
+        });
     } catch (error) {
         console.error('Ошибка создания заказа:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка создания заказа' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка создания заказа'
+        });
     }
 });
 
@@ -1026,47 +1282,88 @@ app.post('/api/orders/:id/items', adminAuth, async (req, res) => {
         const { product_id, quantity } = req.body;
 
         if (!orderId || orderId <= 0) {
-            return res.status(400).json({ success: false, error: 'Некорректный ID заказа' });
+            return res.status(400).json({
+                success: false,
+                error: 'Некорректный ID заказа'
+            });
         }
 
         if (!product_id || !quantity || Number(quantity) <= 0) {
-            return res.status(400).json({ success: false, error: 'Не выбран товар или указано неверное количество' });
+            return res.status(400).json({
+                success: false,
+                error: 'Не выбран товар или указано неверное количество'
+            });
         }
 
-        const order = await dbGet(`SELECT ORDER_ID FROM ORDERS WHERE ORDER_ID = ?`, [orderId]);
-        if (!order) return res.status(404).json({ success: false, error: 'Заказ не найден' });
+        const order = await dbGet(
+            `SELECT ORDER_ID FROM ORDERS WHERE ORDER_ID = ?`,
+            [orderId]
+        );
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                error: 'Заказ не найден'
+            });
+        }
 
         const product = await dbGet(`
             SELECT PRODUCT_ID, CURRENT_SALE_PRICE
             FROM PRODUCTS
             WHERE PRODUCT_ID = ?
-        `, [Number(product_id)]);
+        `, [
+            Number(product_id)
+        ]);
 
-        if (!product) return res.status(404).json({ success: false, error: 'Товар не найден' });
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                error: 'Товар не найден'
+            });
+        }
 
         const exists = await dbGet(`
             SELECT ORDER_ID, PRODUCT_ID
             FROM ORDER_ITEMS
             WHERE ORDER_ID = ? AND PRODUCT_ID = ?
-        `, [orderId, Number(product_id)]);
+        `, [
+            orderId,
+            Number(product_id)
+        ]);
 
         if (exists) {
             await dbRun(`
                 UPDATE ORDER_ITEMS
                 SET QUANTITY = QUANTITY + ?
                 WHERE ORDER_ID = ? AND PRODUCT_ID = ?
-            `, [Number(quantity), orderId, Number(product_id)]);
+            `, [
+                Number(quantity),
+                orderId,
+                Number(product_id)
+            ]);
         } else {
             await dbRun(`
                 INSERT INTO ORDER_ITEMS (ORDER_ID, PRODUCT_ID, SALE_PRICE_AT_TIME, QUANTITY)
                 VALUES (?, ?, ?, ?)
-            `, [orderId, Number(product_id), Number(product.CURRENT_SALE_PRICE), Number(quantity)]);
+            `, [
+                orderId,
+                Number(product_id),
+                Number(product.CURRENT_SALE_PRICE),
+                Number(quantity)
+            ]);
         }
 
-        res.json({ success: true, message: 'Товар добавлен в заказ' });
+        res.json({
+            success: true,
+            message: 'Товар добавлен в заказ'
+        });
     } catch (error) {
         console.error('Ошибка добавления товара в заказ:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка добавления товара в заказ' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка добавления товара в заказ'
+        });
     }
 });
 
@@ -1084,12 +1381,21 @@ app.get('/api/orders/:id/items', async (req, res) => {
             JOIN PRODUCTS p ON p.PRODUCT_ID = oi.PRODUCT_ID
             WHERE oi.ORDER_ID = ?
             ORDER BY p.NAME
-        `, [Number(req.params.id)]);
+        `, [
+            Number(req.params.id)
+        ]);
 
-        res.json({ success: true, data: rows });
+        res.json({
+            success: true,
+            data: rows
+        });
     } catch (error) {
         console.error('Ошибка GET /api/orders/:id/items:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки состава заказа' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки состава заказа'
+        });
     }
 });
 
@@ -1099,25 +1405,56 @@ app.put('/api/orders/:id/status', adminAuth, async (req, res) => {
         const orderId = Number(req.params.id);
 
         if (!order_status_id) {
-            return res.status(400).json({ success: false, error: 'Не выбран новый статус' });
+            return res.status(400).json({
+                success: false,
+                error: 'Не выбран новый статус'
+            });
         }
 
-        const order = await dbGet(`SELECT ORDER_ID FROM ORDERS WHERE ORDER_ID = ?`, [orderId]);
-        if (!order) return res.status(400).json({ success: false, error: 'Заказ не найден' });
+        const order = await dbGet(
+            `SELECT ORDER_ID FROM ORDERS WHERE ORDER_ID = ?`,
+            [orderId]
+        );
 
-        const status = await dbGet(`SELECT ORDER_STATUS_ID FROM ORDER_STATUSES WHERE ORDER_STATUS_ID = ?`, [Number(order_status_id)]);
-        if (!status) return res.status(400).json({ success: false, error: 'Статус не найден' });
+        if (!order) {
+            return res.status(400).json({
+                success: false,
+                error: 'Заказ не найден'
+            });
+        }
+
+        const status = await dbGet(
+            `SELECT ORDER_STATUS_ID FROM ORDER_STATUSES WHERE ORDER_STATUS_ID = ?`,
+            [Number(order_status_id)]
+        );
+
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                error: 'Статус не найден'
+            });
+        }
 
         await dbRun(`
             UPDATE ORDERS
             SET ORDER_STATUS_ID = ?
             WHERE ORDER_ID = ?
-        `, [Number(order_status_id), orderId]);
+        `, [
+            Number(order_status_id),
+            orderId
+        ]);
 
-        res.json({ success: true, message: 'Статус заказа обновлён' });
+        res.json({
+            success: true,
+            message: 'Статус заказа обновлён'
+        });
     } catch (error) {
         console.error('Ошибка PUT /api/orders/:id/status:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка обновления статуса заказа' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка обновления статуса заказа'
+        });
     }
 });
 
@@ -1129,10 +1466,17 @@ app.delete('/api/orders/:id', adminAuth, async (req, res) => {
         await dbRun(`DELETE FROM PAYMENTS WHERE ORDER_ID = ?`, [orderId]);
         await dbRun(`DELETE FROM ORDERS WHERE ORDER_ID = ?`, [orderId]);
 
-        res.json({ success: true, message: 'Заказ удалён' });
+        res.json({
+            success: true,
+            message: 'Заказ удалён'
+        });
     } catch (error) {
         console.error('Ошибка DELETE /api/orders/:id:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления заказа' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка удаления заказа'
+        });
     }
 });
 
@@ -1144,52 +1488,93 @@ app.get('/api/suppliers', async (req, res) => {
             ORDER BY NAME
         `);
 
-        res.json({ success: true, data: rows });
+        res.json({
+            success: true,
+            data: rows
+        });
     } catch (error) {
         console.error('Ошибка GET /api/suppliers:', error);
-        res.status(500).json({ success: false, error: 'Ошибка загрузки поставщиков' });
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки поставщиков'
+        });
     }
 });
 
 app.post('/api/suppliers', adminAuth, async (req, res) => {
     try {
-        const { name, legal_address } = req.body;
+        const {
+            name,
+            legal_address
+        } = req.body;
 
         if (!name || !legal_address) {
-            return res.status(400).json({ success: false, error: 'Заполните название и юридический адрес' });
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните название и юридический адрес'
+            });
         }
 
         await dbRun(`
             INSERT INTO SUPPLIERS (NAME, LEGAL_ADDRESS)
             VALUES (?, ?)
-        `, [name, legal_address]);
+        `, [
+            name,
+            legal_address
+        ]);
 
-        res.json({ success: true, message: 'Поставщик добавлен' });
+        res.json({
+            success: true,
+            message: 'Поставщик добавлен'
+        });
     } catch (error) {
         console.error('Ошибка POST /api/suppliers:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка добавления поставщика' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка добавления поставщика'
+        });
     }
 });
 
 app.put('/api/suppliers/:id', adminAuth, async (req, res) => {
     try {
         const supplierId = Number(req.params.id);
-        const { name, legal_address } = req.body;
+
+        const {
+            name,
+            legal_address
+        } = req.body;
 
         if (!supplierId || !name || !legal_address) {
-            return res.status(400).json({ success: false, error: 'Заполните все обязательные поля' });
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните все обязательные поля'
+            });
         }
 
         await dbRun(`
             UPDATE SUPPLIERS
             SET NAME = ?, LEGAL_ADDRESS = ?
             WHERE SUPPLIER_ID = ?
-        `, [name, legal_address, supplierId]);
+        `, [
+            name,
+            legal_address,
+            supplierId
+        ]);
 
-        res.json({ success: true, message: 'Поставщик обновлён' });
+        res.json({
+            success: true,
+            message: 'Поставщик обновлён'
+        });
     } catch (error) {
         console.error('Ошибка PUT /api/suppliers/:id:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка обновления поставщика' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка обновления поставщика'
+        });
     }
 });
 
@@ -1197,19 +1582,32 @@ app.delete('/api/suppliers/:id', adminAuth, async (req, res) => {
     try {
         const supplierId = Number(req.params.id);
 
-        const supplies = await dbAll(`SELECT SUPPLY_ID FROM SUPPLIES WHERE SUPPLIER_ID = ?`, [supplierId]);
+        const supplies = await dbAll(
+            `SELECT SUPPLY_ID FROM SUPPLIES WHERE SUPPLIER_ID = ?`,
+            [supplierId]
+        );
 
         for (const supply of supplies) {
-            await dbRun(`DELETE FROM SUPPLY_ITEMS WHERE SUPPLY_ID = ?`, [supply.SUPPLY_ID]);
+            await dbRun(
+                `DELETE FROM SUPPLY_ITEMS WHERE SUPPLY_ID = ?`,
+                [supply.SUPPLY_ID]
+            );
         }
 
         await dbRun(`DELETE FROM SUPPLIES WHERE SUPPLIER_ID = ?`, [supplierId]);
         await dbRun(`DELETE FROM SUPPLIERS WHERE SUPPLIER_ID = ?`, [supplierId]);
 
-        res.json({ success: true, message: 'Поставщик удалён' });
+        res.json({
+            success: true,
+            message: 'Поставщик удалён'
+        });
     } catch (error) {
         console.error('Ошибка DELETE /api/suppliers/:id:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка удаления поставщика' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка удаления поставщика'
+        });
     }
 });
 
@@ -1255,7 +1653,11 @@ app.get('/api/stats/summary', async (req, res) => {
         });
     } catch (error) {
         console.error('Ошибка /api/stats/summary:', error);
-        res.status(500).json({ success: false, error: error.message || 'Ошибка загрузки статистики' });
+
+        res.status(500).json({
+            success: false,
+            error: error.message || 'Ошибка загрузки статистики'
+        });
     }
 });
 
@@ -1263,11 +1665,17 @@ app.use((err, req, res, next) => {
     console.error('Глобальная ошибка:', err);
 
     if (err instanceof multer.MulterError) {
-        return res.status(400).json({ success: false, error: err.message });
+        return res.status(400).json({
+            success: false,
+            error: err.message
+        });
     }
 
     if (err.message === 'Разрешены только изображения JPG, JPEG, PNG и WEBP') {
-        return res.status(400).json({ success: false, error: err.message });
+        return res.status(400).json({
+            success: false,
+            error: err.message
+        });
     }
 
     res.status(500).json({
