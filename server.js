@@ -494,8 +494,15 @@ app.post('/api/feedback', async (req, res) => {
     auth: {
         user: 'vitaequip12@mail.ru',
         pass: 'ctgGBECRSbd9nQzb8M5W'
-    }
+    },
+    tls: {
+        rejectUnauthorized: false
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
 });
+await transporter.verify();
         await transporter.sendMail({
             from: 'vitaequip12@mail.ru',
 to: 'vitaequip12@mail.ru',
