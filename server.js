@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-const nodemailer = require('nodemailer');
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -486,7 +485,7 @@ app.post('/api/feedback', async (req, res) => {
             });
         }
 
-        const nodemailer = require('nodemailer');
+        
 
         const transporter = nodemailer.createTransport({
             service: 'mail',
