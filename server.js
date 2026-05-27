@@ -473,39 +473,33 @@ app.get('/api/about', (req, res) => {
     });
 });
 
-aapp.post('/api/feedback', async (req, res) => {
+app.post('/api/feedback', async (req, res) => {
 
     try {
 
-        const { name, phone, email, message } = req.body || {};
+        const { name, phone, email, message } = req.body;
 
         if (!name || !phone || !message) {
-
             return res.status(400).json({
                 success: false,
                 error: 'Заполните имя, телефон и сообщение'
             });
         }
 
+        const nodemailer = require('nodemailer');
+
         const transporter = nodemailer.createTransport({
-
             service: 'mail',
-
             auth: {
-                user: process.env.MAIL_USER,
-                pass: process.env.MAIL_PASS
+                user: 'vitaequip12@mail.ru',
+                pass: 'ctgGBECRSbd9nQzb8M5W'
             }
-
         });
 
         await transporter.sendMail({
-
-            from: process.env.MAIL_USER,
-
-            to: process.env.MAIL_USER,
-
-            subject: 'Новое сообщение VitaEquip',
-
+            from: 'vitaequip12@mail.ru',
+            to: 'vitaequip12@mail.ru',
+            subject: 'Новое сообщение с сайта VitaEquip',
             html: `
                 <h2>Новое сообщение с сайта VitaEquip</h2>
 
@@ -517,52 +511,13 @@ aapp.post('/api/feedback', async (req, res) => {
 
                 <p><b>Сообщение:</b></p>
 
-                <p>${message}</p>
-            `
-        });
-
-        res.json({
-            success: true,
-            message: 'Сообщение успешно отправлено'
-        });
-
-    } catch (error) {
-
-        console.error('Ошибка отправки email:', error);
-
-        res.status(500).json({
-            success: false,
-            error: 'Ошибка отправки сообщения'
-        });
-    }
-
-});
-
-        fs.writeFileSync(feedbackFile, JSON.stringify(feedback, null, 2), 'utf8');
-
-        await transporter.sendMail({
-            from: `"VitaEquip" <${process.env.MAIL_USER}>`,
-            to: process.env.MAIL_TO,
-            subject: 'Новое обращение VitaEquip',
-            html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px; color: #111827;">
-                    <h2 style="color: #2f80ff; margin-bottom: 16px;">
-                        Новое сообщение с сайта VitaEquip
-                    </h2>
-
-                    <p><b>Имя:</b> ${name}</p>
-                    <p><b>Телефон:</b> ${phone}</p>
-                    <p><b>Email:</b> ${email || 'Не указан'}</p>
-
-                    <p><b>Сообщение:</b></p>
-                    <div style="background: #f5f7fa; padding: 15px; border-radius: 10px;">
-                        ${message}
-                    </div>
+                <div style="padding:15px;background:#f4f4f4;border-radius:8px;">
+                    ${message}
                 </div>
             `
         });
 
-                res.json({
+        res.json({
             success: true,
             message: 'Сообщение отправлено'
         });
@@ -576,8 +531,8 @@ aapp.post('/api/feedback', async (req, res) => {
             error: 'Ошибка отправки сообщения'
         });
     }
-});
 
+});
 function getFilesRecursive(dir, base = '') {
     if (!fs.existsSync(dir)) return [];
 
