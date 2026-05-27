@@ -24,16 +24,6 @@ const dbPath = path.join(dbDir, 'medicalequipment.sqlite');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.mail.ru',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-    }
-});
-
 app.use('/uploads', express.static(uploadsDir));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -473,10 +463,8 @@ app.get('/api/about', (req, res) => {
 });
 
 app.post('/api/feedback', async (req, res) => {
-
     try {
-
-        const { name, phone, email, message } = req.body;
+        const { name, phone, email, message } = req.body || {};
 
         if (!name || !phone || !message) {
             return res.status(400).json({
@@ -485,41 +473,60 @@ app.post('/api/feedback', async (req, res) => {
             });
         }
 
-        
+        if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
+            return res.status(500).json({
+                success: false,
+                error: 'Не настроены данные почты на сервере'
+            });
+        }
 
-       const transporter = nodemailer.createTransport({
-    host: 'smtp.mail.ru',
-    port: 465,
-    secure: true,
-    auth: {
-        user: 'vitaequip12@mail.ru',
-        pass: 'ctgGBECRSbd9nQzb8M5W'
-    },
-    tls: {
-        rejectUnauthorized: false
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-});
-await transporter.verify();
+        const feedbackFile = path.join(__dirname, 'feedback.json');
+        let feedback = [];
+
+        try {
+            if (fs.existsSync(feedbackFile)) {
+                feedback = JSON.parse(fs.readFileSync(feedbackFile, 'utf8'));
+            }
+        } catch (error) {
+            feedback = [];
+        }
+
+        feedback.push({
+            id: Date.now(),
+            name,
+            phone,
+            email: email || '',
+            message,
+            created_at: new Date().toISOString()
+        });
+
+        fs.writeFileSync(feedbackFile, JSON.stringify(feedback, null, 2), 'utf8');
+
+        const transporter = nodemailer.createTransport({
+            service: 'mail.ru',
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS
+            },
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000
+        });
+
         await transporter.sendMail({
-            from: 'vitaequip12@mail.ru',
-to: 'vitaequip12@mail.ru',
+            from: `"VitaEquip" <${process.env.MAIL_USER}>`,
+            to: process.env.MAIL_TO || process.env.MAIL_USER,
             subject: 'Новое сообщение с сайта VitaEquip',
             html: `
-                <h2>Новое сообщение с сайта VitaEquip</h2>
-
-                <p><b>Имя:</b> ${name}</p>
-
-                <p><b>Телефон:</b> ${phone}</p>
-
-                <p><b>Email:</b> ${email || 'Не указан'}</p>
-
-                <p><b>Сообщение:</b></p>
-
-                <div style="padding:15px;background:#f4f4f4;border-radius:8px;">
-                    ${message}
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #111827;">
+                    <h2 style="color: #2f80ff;">Новое сообщение с сайта VitaEquip</h2>
+                    <p><b>Имя:</b> ${name}</p>
+                    <p><b>Телефон:</b> ${phone}</p>
+                    <p><b>Email:</b> ${email || 'Не указан'}</p>
+                    <p><b>Сообщение:</b></p>
+                    <div style="padding:15px;background:#f4f4f4;border-radius:8px;">
+                        ${message}
+                    </div>
                 </div>
             `
         });
@@ -528,9 +535,7 @@ to: 'vitaequip12@mail.ru',
             success: true,
             message: 'Сообщение отправлено'
         });
-
     } catch (error) {
-
         console.error('Ошибка отправки сообщения:', error);
 
         res.status(500).json({
@@ -538,8 +543,8 @@ to: 'vitaequip12@mail.ru',
             error: 'Ошибка отправки сообщения'
         });
     }
-
 });
+
 function getFilesRecursive(dir, base = '') {
     if (!fs.existsSync(dir)) return [];
 
