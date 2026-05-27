@@ -562,11 +562,13 @@ aapp.post('/api/feedback', async (req, res) => {
             `
         });
 
-        res.json({
+                res.json({
             success: true,
             message: 'Сообщение отправлено'
         });
+
     } catch (error) {
+
         console.error('Ошибка отправки сообщения:', error);
 
         res.status(500).json({
