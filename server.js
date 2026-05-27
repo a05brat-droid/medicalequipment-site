@@ -487,17 +487,18 @@ app.post('/api/feedback', async (req, res) => {
 
         
 
-        const transporter = nodemailer.createTransport({
-            service: 'mail',
-            auth: {
-                user: 'vitaequip12@mail.ru',
-                pass: 'ctgGBECRSbd9nQzb8M5W'
-            }
-        });
-
+       const transporter = nodemailer.createTransport({
+    host: 'smtp.mail.ru',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'vitaequip12@mail.ru',
+        pass: 'ctgGBECRSbd9nQzb8M5W'
+    }
+});
         await transporter.sendMail({
             from: 'vitaequip12@mail.ru',
-            to: 'vitaequip12@mail.ru',
+to: 'vitaequip12@mail.ru',
             subject: 'Новое сообщение с сайта VitaEquip',
             html: `
                 <h2>Новое сообщение с сайта VitaEquip</h2>
