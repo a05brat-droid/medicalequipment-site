@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const nodemailer = require('nodemailer');
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -472,36 +473,70 @@ app.get('/api/about', (req, res) => {
     });
 });
 
-app.post('/api/feedback', async (req, res) => {
+aapp.post('/api/feedback', async (req, res) => {
+
     try {
+
         const { name, phone, email, message } = req.body || {};
 
         if (!name || !phone || !message) {
+
             return res.status(400).json({
                 success: false,
                 error: 'Заполните имя, телефон и сообщение'
             });
         }
 
-        const feedbackFile = path.join(__dirname, 'feedback.json');
-        let feedback = [];
+        const transporter = nodemailer.createTransport({
 
-        try {
-            if (fs.existsSync(feedbackFile)) {
-                feedback = JSON.parse(fs.readFileSync(feedbackFile, 'utf8'));
+            service: 'mail',
+
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS
             }
-        } catch (error) {
-            feedback = [];
-        }
 
-        feedback.push({
-            id: Date.now(),
-            name,
-            phone,
-            email: email || '',
-            message,
-            created_at: new Date().toISOString()
         });
+
+        await transporter.sendMail({
+
+            from: process.env.MAIL_USER,
+
+            to: process.env.MAIL_USER,
+
+            subject: 'Новое сообщение VitaEquip',
+
+            html: `
+                <h2>Новое сообщение с сайта VitaEquip</h2>
+
+                <p><b>Имя:</b> ${name}</p>
+
+                <p><b>Телефон:</b> ${phone}</p>
+
+                <p><b>Email:</b> ${email || 'Не указан'}</p>
+
+                <p><b>Сообщение:</b></p>
+
+                <p>${message}</p>
+            `
+        });
+
+        res.json({
+            success: true,
+            message: 'Сообщение успешно отправлено'
+        });
+
+    } catch (error) {
+
+        console.error('Ошибка отправки email:', error);
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка отправки сообщения'
+        });
+    }
+
+});
 
         fs.writeFileSync(feedbackFile, JSON.stringify(feedback, null, 2), 'utf8');
 
