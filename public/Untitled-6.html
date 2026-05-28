@@ -46,21 +46,21 @@
         }
 
         .site-header {
-            background: rgba(7, 17, 31, 0.92);
-            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            background: rgba(7, 17, 31, 0.88);
+            border-bottom: 1px solid var(--border);
             backdrop-filter: blur(16px);
         }
 
         .header-inner {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 14px 28px;
+            padding: 16px 28px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 24px;
         }
 
@@ -69,43 +69,69 @@
             align-items: center;
             gap: 12px;
             color: #fff;
-            font-size: 22px;
             font-weight: 800;
+            font-size: 22px;
+            flex-shrink: 0;
         }
 
         .logo img {
             width: 46px;
             height: 46px;
             border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 0 24px rgba(47, 128, 255, 0.35);
         }
 
         .logo span {
             color: var(--blue2);
         }
 
-        nav ul {
+        .menu-toggle {
+            display: none;
+            background: rgba(19, 36, 58, 0.92);
+            color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-menu {
             display: flex;
-            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        nav a {
+        .nav-menu a {
             color: #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
-            padding: 10px 4px;
             transition: 0.2s;
+            white-space: nowrap;
         }
 
-        nav a:hover,
-        nav a.active {
-            color: var(--blue2);
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #fff;
+            background: rgba(47, 128, 255, 0.16);
         }
 
-        .header-buttons {
+        .header-actions {
             display: flex;
+            align-items: center;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .btn {
@@ -123,6 +149,7 @@
             box-shadow: 0 12px 28px rgba(47, 128, 255, 0.28);
             transition: 0.2s;
             font-size: 15px;
+            text-align: center;
         }
 
         .btn:hover {
@@ -134,6 +161,7 @@
             background: rgba(19, 36, 58, 0.88);
             border: 1px solid var(--border);
             box-shadow: none;
+            color: #dbeafe;
         }
 
         .container {
@@ -299,16 +327,16 @@
         }
 
         .category-card::before {
-    content: "\f0f8";
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
-    position: absolute;
-    right: 24px;
-    top: 22px;
-    font-size: 34px;
-    opacity: 0.18;
-    color: var(--blue2);
-}
+            content: "\f0f8";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 24px;
+            top: 22px;
+            font-size: 34px;
+            opacity: 0.18;
+            color: var(--blue2);
+        }
 
         .category-card:hover {
             transform: translateY(-5px);
@@ -602,20 +630,6 @@
         }
 
         @media (max-width: 1050px) {
-            .header-inner {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            nav ul {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .header-buttons {
-                justify-content: center;
-            }
-
             .hero {
                 grid-template-columns: 1fr;
             }
@@ -636,6 +650,59 @@
             .cta {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 950px) {
+            .header-inner {
+                flex-wrap: wrap;
+            }
+
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: auto;
+            }
+
+            .nav-menu,
+            .header-actions {
+                width: 100%;
+                display: none;
+            }
+
+            .nav-menu.open,
+            .header-actions.open {
+                display: flex;
+            }
+
+            .nav-menu {
+                order: 3;
+            }
+
+            .nav-menu ul {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .nav-menu a {
+                display: block;
+                width: 100%;
+                text-align: center;
+                background: rgba(19, 36, 58, 0.88);
+            }
+
+            .header-actions {
+                order: 4;
+                flex-direction: column;
+                margin-top: 14px;
+            }
+
+            .header-actions .btn {
+                width: 100%;
             }
         }
 
@@ -686,16 +753,6 @@
             .logo img {
                 width: 42px;
                 height: 42px;
-            }
-
-            nav ul {
-                width: 100%;
-                justify-content: center;
-                gap: 10px;
-            }
-
-            .header-buttons {
-                flex-direction: column;
             }
 
             .btn {
@@ -754,7 +811,11 @@
             Vita<span>Equip</span>
         </a>
 
-        <nav>
+        <button class="menu-toggle" type="button" id="menuToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="nav-menu" id="navMenu">
             <ul>
                 <li><a class="active" href="/catalog">Каталог</a></li>
                 <li><a href="/about">О нас</a></li>
@@ -765,9 +826,9 @@
             </ul>
         </nav>
 
-        <div class="header-buttons">
-            <a href="/" class="btn btn-secondary">Главная</a>
-            <a href="/admin" class="btn">Админ</a>
+        <div class="header-actions" id="headerActions">
+            <a href="/catalog" class="btn">Каталог</a>
+            <a href="/admin" class="btn btn-secondary">Админ</a>
         </div>
     </div>
 </header>
@@ -895,6 +956,25 @@
             });
         }
     });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const headerActions = document.getElementById('headerActions');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function () {
+            navMenu.classList.toggle('open');
+            headerActions.classList.toggle('open');
+
+            const icon = menuToggle.querySelector('i');
+
+            if (navMenu.classList.contains('open')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
+        });
+    }
 
     function scrollToCatalog() {
         const catalog = document.getElementById('catalog');
