@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>О нас - VitaEquip</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
@@ -50,69 +51,71 @@
             height: auto;
         }
 
-        /* --- КЛАССЫ АНИМАЦИИ ПОЯВЛЕНИЯ --- */
         .fade-in {
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
         }
-        
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        /* --- ШАПКА САЙТА (ИСПРАВЛЕННЫЙ ДЕСКТОП) --- */
         .site-header {
-            background: rgba(7, 17, 31, 0.85);
-            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: background 0.3s;
+            z-index: 1000;
+            background: rgba(7, 17, 31, 0.88);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .header-inner {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 14px 24px;
+            padding: 16px 28px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 24px;
         }
 
         .logo {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 12px;
             color: #fff;
-            font-size: 22px;
             font-weight: 800;
+            font-size: 22px;
             flex-shrink: 0;
-            transition: transform 0.3s ease;
-        }
-        .logo:hover {
-            transform: scale(1.02);
         }
 
         .logo img {
-            width: 42px;
-            height: 42px;
+            width: 46px;
+            height: 46px;
             border-radius: 12px;
             object-fit: cover;
-            box-shadow: 0 0 15px rgba(47, 128, 255, 0.3);
+            box-shadow: 0 0 24px rgba(47, 128, 255, 0.35);
         }
 
         .logo span {
@@ -121,24 +124,24 @@
 
         .menu-toggle {
             display: none;
-            background: var(--card2);
+            background: rgba(19, 36, 58, 0.92);
             color: #fff;
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 11px 14px;
             font-size: 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            z-index: 101;
         }
-        .menu-toggle:hover {
-            background: var(--blue);
-            border-color: var(--blue2);
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
         }
 
         .nav-menu ul {
             display: flex;
-            gap: 24px;
+            align-items: center;
+            gap: 10px;
             list-style: none;
             padding: 0;
             margin: 0;
@@ -146,49 +149,27 @@
 
         .nav-menu a {
             color: #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
-            padding: 8px 4px;
-            transition: color 0.25s ease, transform 0.25s ease;
+            transition: 0.2s;
             white-space: nowrap;
-            position: relative;
-        }
-
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--blue2);
-            transition: all 0.25s ease;
-            transform: translateX(-50%);
-        }
-
-        .nav-menu a:hover::after,
-        .nav-menu a.active::after {
-            width: 100%;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
-            color: var(--blue2);
+            color: #fff;
+            background: rgba(47, 128, 255, 0.16);
         }
 
-        /* Кнопки для ПК */
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-shrink: 0;
         }
 
-        /* Кнопки дубликаты внутри мобильного меню (по умолчанию скрыты на ПК) */
-        .mobile-actions {
-            display: none;
-        }
-
-        /* --- КНОПКИ --- */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -211,30 +192,30 @@
             background: #1d64e8;
             box-shadow: 0 12px 28px rgba(47, 128, 255, 0.4), 0 0 15px rgba(67, 165, 255, 0.2);
         }
-        
+
         .btn:active {
             transform: translateY(0);
         }
 
         .btn-secondary {
-            background: rgba(19, 36, 58, 0.6);
+            background: rgba(19, 36, 58, 0.88);
             border: 1px solid var(--border);
             box-shadow: none;
+            color: #dbeafe;
         }
+
         .btn-secondary:hover {
             background: var(--card2);
             border-color: var(--blue2);
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
-        /* --- ОСНОВНОЙ КОНТЕНТ --- */
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 40px 24px 80px;
         }
 
-        /* Блок Hero */
         .hero {
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
@@ -334,6 +315,7 @@
         .mini-card {
             padding: 28px;
         }
+
         .mini-card:hover {
             transform: translateY(-3px);
             border-color: rgba(67, 165, 255, 0.3);
@@ -353,6 +335,7 @@
             margin-bottom: 20px;
             transition: transform 0.3s ease;
         }
+
         .mini-card:hover .mini-icon {
             transform: scale(1.1) rotate(5deg);
             background: var(--blue);
@@ -372,7 +355,6 @@
             font-size: 15px;
         }
 
-        /* Две колонки (О нас / Картинка) */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -406,7 +388,10 @@
             font-size: 16px;
             margin: 0 0 16px;
         }
-        .panel-card p:last-child { margin-bottom: 0; }
+
+        .panel-card p:last-child {
+            margin-bottom: 0;
+        }
 
         .image-card {
             min-height: 450px;
@@ -420,6 +405,7 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
+
         .image-card:hover {
             border-color: rgba(67, 165, 255, 0.3);
         }
@@ -438,6 +424,7 @@
             transform: translateY(0);
             transition: transform 0.3s ease;
         }
+
         .image-card:hover .image-label {
             transform: translateY(-3px);
             border-color: rgba(25, 195, 125, 0.3);
@@ -456,12 +443,10 @@
             line-height: 1.5;
         }
 
-        /* Секции общие */
         .section {
             margin-top: 56px;
         }
 
-        /* Сетка преимуществ */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -493,6 +478,7 @@
             margin-bottom: 20px;
             transition: all 0.3s ease;
         }
+
         .info-card:hover .info-icon {
             background: var(--blue2);
             color: #fff;
@@ -512,7 +498,6 @@
             font-size: 15px;
         }
 
-        /* Сетка статистики */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -556,7 +541,6 @@
             font-weight: 600;
         }
 
-        /* Сетка шагов */
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -582,6 +566,7 @@
             box-shadow: 0 0 20px rgba(47, 128, 255, 0.35);
             transition: transform 0.3s ease;
         }
+
         .step-card:hover .step-number {
             transform: scale(1.1) rotate(-5deg);
             background: var(--green);
@@ -601,7 +586,6 @@
             font-size: 15px;
         }
 
-        /* Панель брендов */
         .brand-panel {
             padding: 40px;
         }
@@ -635,6 +619,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .brand:hover {
             color: var(--blue2);
             background: rgba(19, 36, 58, 0.9);
@@ -643,7 +628,6 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* CTA Блок */
         .cta {
             margin-top: 56px;
             background: linear-gradient(135deg, #1e62d0, #13935e);
@@ -661,7 +645,10 @@
         .cta::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08), transparent 60%);
             pointer-events: none;
         }
@@ -684,13 +671,13 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             white-space: nowrap;
         }
+
         .cta .btn:hover {
             background: #f1f5f9;
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.25);
         }
 
-        /* Подвал */
         footer {
             border-top: 1px solid var(--border);
             text-align: center;
@@ -701,115 +688,83 @@
             font-weight: 500;
         }
 
-
-        /* --- МЕДИА ЗАПРОСЫ (Полная гармония ПК и мобильного адаптива) --- */
-        
         @media (max-width: 1100px) {
             .hero {
                 grid-template-columns: 1fr;
                 gap: 24px;
             }
+
             .hero-side {
                 grid-template-columns: 1fr 1fr;
             }
+
             .two-col {
                 grid-template-columns: 1fr;
             }
+
             .image-card {
                 min-height: 360px;
             }
+
             .hero-main h1 {
                 font-size: 38px;
             }
         }
 
-        @media (max-width: 768px) {
-            body.menu-open {
-                overflow: hidden;
-            }
-
+        @media (max-width: 950px) {
             .header-inner {
-                padding: 16px;
-                position: relative;
-            }
-
-            /* Прячем ПК-версию кнопок */
-            .header-actions {
-                display: none !important; 
+                flex-wrap: wrap;
             }
 
             .menu-toggle {
-                display: block;
-            }
-
-            /* Мобильная шторка */
-            .nav-menu {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                background: #07111f;
-                z-index: 99;
-                padding: 100px 24px 40px 24px;
-                flex-direction: column;
-                justify-content: flex-start;
-                gap: 30px;
-                overflow-y: auto;
-            }
-
-            .nav-menu.open {
                 display: flex;
-                animation: fadeIn 0.25s ease forwards;
+                align-items: center;
+                justify-content: center;
+                margin-left: auto;
             }
 
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
+            .nav-menu,
+            .header-actions {
+                width: 100%;
+                display: none;
+            }
+
+            .nav-menu.open,
+            .header-actions.open {
+                display: flex;
+            }
+
+            .nav-menu {
+                order: 3;
             }
 
             .nav-menu ul {
-                flex-direction: column;
-                gap: 12px;
                 width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                margin-top: 10px;
             }
 
             .nav-menu a {
                 display: block;
-                padding: 14px 20px;
-                font-size: 18px;
+                width: 100%;
+                text-align: center;
+                background: rgba(19, 36, 58, 0.88);
                 border-radius: 12px;
-                background: rgba(19, 36, 58, 0.4);
-                border: 1px solid var(--border);
-                transition: all 0.2s ease;
-            }
-            .nav-menu a::after { display: none; }
-            
-            .nav-menu a:hover,
-            .nav-menu a.active {
-                background: rgba(47, 128, 255, 0.15);
-                border-color: var(--blue2);
-                color: var(--blue2);
-                padding-left: 28px;
+                padding: 13px 16px;
             }
 
-            /* Включаем блок мобильных кнопок в самом низу шторки */
-            .mobile-actions {
-                display: flex;
-                width: 100%;
+            .header-actions {
+                order: 4;
                 flex-direction: column;
-                gap: 12px;
-                margin-top: auto; 
+                margin-top: 14px;
             }
 
-            .mobile-actions .btn {
+            .header-actions .btn {
                 width: 100%;
-                padding: 16px;
-                font-size: 16px;
             }
 
-            /* Контент */
             .container {
                 padding: 24px 16px 48px;
             }
@@ -850,28 +805,53 @@
             }
         }
 
+        @media (max-width: 650px) {
+            .header-inner {
+                padding: 14px 16px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .logo img {
+                width: 42px;
+                height: 42px;
+            }
+
+            .hero-main h1 {
+                font-size: 28px;
+            }
+
+            .hero-main,
+            .panel-card,
+            .brand-panel,
+            .info-card,
+            .step-card,
+            .stat-card {
+                border-radius: 18px;
+            }
+
+            .brands {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
         @media (max-width: 480px) {
             .hero-main h1 {
                 font-size: 26px;
             }
-            
+
             .badge {
                 font-size: 13px;
                 padding: 6px 12px;
-            }
-
-            .hero-main, .panel-card, .brand-panel, .info-card, .step-card, .stat-card {
-                border-radius: 18px;
-            }
-            
-            .brands {
-                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 
 <body>
+
 <header class="site-header">
     <div class="header-inner">
         <a class="logo" href="/">
@@ -879,7 +859,7 @@
             Vita<span>Equip</span>
         </a>
 
-        <button class="menu-toggle" type="button" id="menuToggle" aria-label="Открыть меню">
+        <button class="menu-toggle" type="button" id="menuToggle">
             <i class="fa-solid fa-bars"></i>
         </button>
 
@@ -892,14 +872,9 @@
                 <li><a href="/partners">Партнеры</a></li>
                 <li><a href="/contacts">Контакты</a></li>
             </ul>
-            
-            <div class="mobile-actions">
-                <a href="/catalog" class="btn">Каталог</a>
-                <a href="/admin" class="btn btn-secondary">Админ</a>
-            </div>
         </nav>
 
-        <div class="header-actions">
+        <div class="header-actions" id="headerActions">
             <a href="/catalog" class="btn">Каталог</a>
             <a href="/admin" class="btn btn-secondary">Админ</a>
         </div>
@@ -914,7 +889,7 @@
             <h1>Интернет-ресурс для продажи <span>современной медтехники</span></h1>
 
             <p>
-                VitaEquip — это internet-ресурс, предназначенный для продажи медицинского оборудования,
+                VitaEquip — это интернет-ресурс, предназначенный для продажи медицинского оборудования,
                 просмотра каталога, оформления заказов и управления данными через административную панель.
             </p>
 
@@ -1104,6 +1079,7 @@
             <h2>Готовы перейти к каталогу?</h2>
             <p>Посмотрите медицинское оборудование, представленное в базе данных VitaEquip.</p>
         </div>
+
         <a href="/catalog" class="btn">Открыть каталог</a>
     </section>
 </main>
@@ -1115,22 +1091,25 @@
 <script>
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
+    const headerActions = document.getElementById('headerActions');
 
-    menuToggle.addEventListener('click', function () {
-        navMenu.classList.toggle('open');
-        document.body.classList.toggle('menu-open');
-        
-        const icon = menuToggle.querySelector('i');
-        if (navMenu.classList.contains('open')) {
-            icon.className = 'fa-solid fa-xmark';
-        } else {
-            icon.className = 'fa-solid fa-bars';
-        }
-    });
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function () {
+            navMenu.classList.toggle('open');
+            headerActions.classList.toggle('open');
 
-    // Анимация появления элементов при доскролле
+            const icon = menuToggle.querySelector('i');
+
+            if (navMenu.classList.contains('open')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
+        });
+    }
+
     const fadeBlocks = document.querySelectorAll('.fade-in');
-    
+
     const observerOptions = {
         root: null,
         threshold: 0.1,
@@ -1152,5 +1131,6 @@
         observer.observe(block);
     });
 </script>
+
 </body>
 </html>
