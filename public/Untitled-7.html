@@ -50,21 +50,22 @@
         }
 
         .site-header {
-            background: rgba(7,17,31,0.92);
-            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
-            backdrop-filter: blur(14px);
+            z-index: 1000;
+            background: rgba(7, 17, 31, 0.88);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .header-inner {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 14px 28px;
+            padding: 16px 28px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 24px;
         }
 
@@ -79,40 +80,65 @@
         }
 
         .logo img {
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 0 24px rgba(47, 128, 255, 0.35);
         }
 
         .logo span {
             color: var(--blue2);
         }
 
-        nav ul {
+        .menu-toggle {
+            display: none;
+            background: rgba(19, 36, 58, 0.92);
+            color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-menu {
             display: flex;
-            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-menu ul {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             list-style: none;
             margin: 0;
             padding: 0;
         }
 
-        nav a {
+        .nav-menu a {
             color: #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             transition: 0.2s;
             white-space: nowrap;
         }
 
-        nav a:hover,
-        nav a.active {
-            color: var(--blue2);
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #fff;
+            background: rgba(47, 128, 255, 0.16);
         }
 
-        .header-buttons {
+        .header-actions {
             display: flex;
+            align-items: center;
             gap: 10px;
             flex-shrink: 0;
         }
+
 
         .btn {
             display: inline-flex;
@@ -423,20 +449,6 @@
         }
 
         @media(max-width: 1100px) {
-            .header-inner {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .header-buttons {
-                justify-content: center;
-            }
-
             .hero {
                 grid-template-columns: 1fr;
             }
@@ -451,6 +463,61 @@
 
             .hero-main h1 {
                 font-size: 40px;
+            }
+        }
+
+        @media(max-width: 950px) {
+            .header-inner {
+                flex-wrap: wrap;
+            }
+
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: auto;
+            }
+
+            .nav-menu,
+            .header-actions {
+                width: 100%;
+                display: none;
+            }
+
+            .nav-menu.open,
+            .header-actions.open {
+                display: flex;
+            }
+
+            .nav-menu {
+                order: 3;
+            }
+
+            .nav-menu ul {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .nav-menu a {
+                display: block;
+                width: 100%;
+                text-align: center;
+                background: rgba(19, 36, 58, 0.88);
+                border-radius: 12px;
+                padding: 13px 16px;
+            }
+
+            .header-actions {
+                order: 4;
+                flex-direction: column;
+                margin-top: 14px;
+            }
+
+            .header-actions .btn {
+                width: 100%;
             }
         }
 
@@ -499,22 +566,7 @@
                 width: 42px;
                 height: 42px;
             }
-
-            nav ul {
-                width: 100%;
-                gap: 12px;
-            }
-
-            nav a {
-                font-size: 14px;
-            }
-
-            .header-buttons {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .btn {
+.btn {
                 width: 100%;
             }
 
@@ -573,11 +625,47 @@
                 font-size: 19px;
             }
         }
+        .diploma-ticker {
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(90deg, #0b1627, #12233d);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 0;
+    position: relative;
+    z-index: 9999;
+}
+
+.diploma-ticker-track {
+    white-space: nowrap;
+    display: inline-block;
+    padding-left: 100%;
+    animation: tickerMove 28s linear infinite;
+    color: #ffcc70;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-shadow: 0 0 10px rgba(255,204,112,0.35);
+}
+
+@keyframes tickerMove {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
     </style>
 </head>
 
 <body>
-
+<div class="diploma-ticker">
+    <div class="diploma-ticker-track">
+        ⚠️ Сайт не является коммерческим проектом. Данный интернет-ресурс разработан исключительно в учебных целях в рамках дипломного проекта студента ИСПО ⚠️
+        ⚠️ Сайт не является коммерческим проектом. Данный интернет-ресурс разработан исключительно в учебных целях в рамках дипломного проекта студента ИСПО ⚠️
+    </div>
+    </div>
 <header class="site-header">
     <div class="header-inner">
 
@@ -586,7 +674,11 @@
             Vita<span>Equip</span>
         </a>
 
-        <nav>
+        <button class="menu-toggle" type="button" id="menuToggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="nav-menu" id="navMenu">
             <ul>
                 <li><a href="/catalog">Каталог</a></li>
                 <li><a href="/about">О нас</a></li>
@@ -597,7 +689,7 @@
             </ul>
         </nav>
 
-        <div class="header-buttons">
+        <div class="header-actions" id="headerActions">
             <a href="/catalog" class="btn">Каталог</a>
             <a href="/admin" class="btn btn-secondary">Админ</a>
         </div>
@@ -853,6 +945,28 @@
                 brand.style.display = 'block';
             } else {
                 brand.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const headerActions = document.getElementById('headerActions');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function () {
+            navMenu.classList.toggle('open');
+            headerActions.classList.toggle('open');
+
+            const icon = menuToggle.querySelector('i');
+
+            if (navMenu.classList.contains('open')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
             }
         });
     }
