@@ -865,7 +865,7 @@
 
         <div class="header-actions" id="headerActions">
             <a href="/catalog" class="btn">Каталог</a>
-            <a href="/admin" class="btn btn-secondary">Админ</a>
+            <a href="/login" class="btn btn-ghost" id="authButton">Войти</a>
         </div>
     </div>
 </header>
@@ -1050,6 +1050,15 @@
         }
     }
 </script>
+<script>
+    const authButton = document.getElementById('authButton');
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
 
+    if (token && user && authButton) {
+        authButton.textContent = user.fullName || user.login || 'Профиль';
+        authButton.href = '/profile';
+    }
+</script>
 </body>
 </html>
