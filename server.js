@@ -117,6 +117,30 @@ function adminAuth(req, res, next) {
     }
 }
 
+
+function authUser(req, res, next) {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            error: 'Требуется авторизация'
+        });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            error: 'Недействительный токен'
+        });
+    }
+}
+
 app.use(cors({ origin: true, credentials: true }));
 
 app.use((req, res, next) => {
@@ -382,6 +406,8 @@ app.get('/services', sendPublicPage('Untitled-8.html'));
 app.get('/partners', sendPublicPage('Untitled-7.html'));
 app.get('/contacts', sendPublicPage('Untitled-5.html'));
 app.get('/admin', sendPublicPage('admin.html'));
+app.get('/login', sendPublicPage('login.html'));
+app.get('/profile', sendPublicPage('profile.html'));
 app.get('/experiment', sendPublicPage('experiment.html'));
 app.get('/exp', sendPublicPage('exp.html'));
 app.get('/operator_guide', sendPublicPage('operator_guide.html'));
@@ -702,6 +728,296 @@ app.post('/api/upload-image', adminAuth, upload.single('image'), async (req, res
         filePath: '/uploads/' + req.file.filename
     });
 });
+
+
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { login, username, password } = req.body;
+        const userLogin = login || username;
+
+        if (!userLogin || !password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Введите логин и пароль'
+            });
+        }
+
+        const user = await dbGet(`
+            SELECT USER_ID, FULL_NAME, PHONE, EMAIL, LOGIN
+            FROM USERS
+            WHERE LOGIN = ? AND PASSWORD = ?
+        `, [userLogin, sha1(password)]);
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                error: 'Неверный логин или пароль'
+            });
+        }
+
+        const role = user.LOGIN === 'admin' ? 'admin' : 'user';
+
+        const token = jwt.sign(
+            {
+                userId: user.USER_ID,
+                login: user.LOGIN,
+                role
+            },
+            JWT_SECRET,
+            { expiresIn: '8h' }
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user.USER_ID,
+                fullName: user.FULL_NAME,
+                phone: user.PHONE,
+                email: user.EMAIL,
+                login: user.LOGIN,
+                role
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка /api/auth/login:', error);
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка входа'
+        });
+    }
+});
+
+app.post('/api/auth/register', async (req, res) => {
+    try {
+        const {
+            full_name,
+            fullName,
+            phone,
+            email,
+            login,
+            password,
+            delivery_address,
+            deliveryAddress
+        } = req.body;
+
+        const finalFullName = full_name || fullName;
+        const finalDeliveryAddress = delivery_address || deliveryAddress;
+
+        if (!finalFullName || !phone || !email || !login || !password || !finalDeliveryAddress) {
+            return res.status(400).json({
+                success: false,
+                error: 'Заполните все поля регистрации'
+            });
+        }
+
+        if (login.toLowerCase() === 'admin') {
+            return res.status(400).json({
+                success: false,
+                error: 'Логин admin зарезервирован'
+            });
+        }
+
+        const existing = await dbGet(`
+            SELECT USER_ID
+            FROM USERS
+            WHERE LOGIN = ? OR EMAIL = ?
+        `, [login, email]);
+
+        if (existing) {
+            return res.status(400).json({
+                success: false,
+                error: 'Пользователь с таким логином или email уже существует'
+            });
+        }
+
+        await dbRun(`BEGIN TRANSACTION`);
+
+        try {
+            const result = await dbRun(`
+                INSERT INTO USERS (FULL_NAME, PHONE, EMAIL, LOGIN, PASSWORD)
+                VALUES (?, ?, ?, ?, ?)
+            `, [
+                finalFullName,
+                phone,
+                email,
+                login,
+                sha1(password)
+            ]);
+
+            await dbRun(`
+                INSERT INTO CUSTOMERS (USER_ID, DELIVERY_ADDRESS)
+                VALUES (?, ?)
+            `, [
+                result.lastID,
+                finalDeliveryAddress
+            ]);
+
+            await dbRun(`COMMIT`);
+
+            const token = jwt.sign(
+                {
+                    userId: result.lastID,
+                    login,
+                    role: 'user'
+                },
+                JWT_SECRET,
+                { expiresIn: '8h' }
+            );
+
+            res.json({
+                success: true,
+                token,
+                user: {
+                    id: result.lastID,
+                    fullName: finalFullName,
+                    phone,
+                    email,
+                    login,
+                    role: 'user'
+                }
+            });
+        } catch (error) {
+            await dbRun(`ROLLBACK`);
+            throw error;
+        }
+    } catch (error) {
+        console.error('Ошибка /api/auth/register:', error);
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка регистрации'
+        });
+    }
+});
+
+app.get('/api/auth/me', authUser, async (req, res) => {
+    try {
+        const user = await dbGet(`
+            SELECT
+                u.USER_ID,
+                u.FULL_NAME,
+                u.PHONE,
+                u.EMAIL,
+                u.LOGIN,
+                c.CUSTOMER_ID,
+                c.DELIVERY_ADDRESS
+            FROM USERS u
+            LEFT JOIN CUSTOMERS c ON c.USER_ID = u.USER_ID
+            WHERE u.USER_ID = ?
+        `, [req.user.userId]);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: 'Пользователь не найден'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                id: user.USER_ID,
+                customerId: user.CUSTOMER_ID,
+                fullName: user.FULL_NAME,
+                phone: user.PHONE,
+                email: user.EMAIL,
+                login: user.LOGIN,
+                deliveryAddress: user.DELIVERY_ADDRESS,
+                role: req.user.role
+            }
+        });
+    } catch (error) {
+        console.error('Ошибка /api/auth/me:', error);
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки профиля'
+        });
+    }
+});
+
+app.get('/api/my/orders', authUser, async (req, res) => {
+    try {
+        const rows = await dbAll(`
+            SELECT
+                o.ORDER_ID,
+                o.ORDER_DATE,
+                o.ORDER_STATUS_ID,
+                s.NAME AS ORDER_STATUS,
+                IFNULL(SUM(oi.SALE_PRICE_AT_TIME * oi.QUANTITY), 0) AS TOTAL_SUM,
+                COUNT(oi.PRODUCT_ID) AS ITEMS_COUNT
+            FROM ORDERS o
+            JOIN CUSTOMERS c ON c.CUSTOMER_ID = o.CUSTOMER_ID
+            JOIN ORDER_STATUSES s ON s.ORDER_STATUS_ID = o.ORDER_STATUS_ID
+            LEFT JOIN ORDER_ITEMS oi ON oi.ORDER_ID = o.ORDER_ID
+            WHERE c.USER_ID = ?
+            GROUP BY o.ORDER_ID, o.ORDER_DATE, o.ORDER_STATUS_ID, s.NAME
+            ORDER BY o.ORDER_ID DESC
+        `, [req.user.userId]);
+
+        res.json({
+            success: true,
+            data: rows
+        });
+    } catch (error) {
+        console.error('Ошибка /api/my/orders:', error);
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки заказов'
+        });
+    }
+});
+
+app.get('/api/my/orders/:id/items', authUser, async (req, res) => {
+    try {
+        const orderId = Number(req.params.id);
+
+        const order = await dbGet(`
+            SELECT o.ORDER_ID
+            FROM ORDERS o
+            JOIN CUSTOMERS c ON c.CUSTOMER_ID = o.CUSTOMER_ID
+            WHERE o.ORDER_ID = ? AND c.USER_ID = ?
+        `, [orderId, req.user.userId]);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                error: 'Заказ не найден'
+            });
+        }
+
+        const rows = await dbAll(`
+            SELECT
+                oi.ORDER_ID,
+                oi.PRODUCT_ID,
+                p.NAME AS PRODUCT_NAME,
+                p.IMAGE AS PRODUCT_IMAGE,
+                oi.SALE_PRICE_AT_TIME,
+                oi.QUANTITY,
+                oi.SALE_PRICE_AT_TIME * oi.QUANTITY AS TOTAL_SUM
+            FROM ORDER_ITEMS oi
+            JOIN PRODUCTS p ON p.PRODUCT_ID = oi.PRODUCT_ID
+            WHERE oi.ORDER_ID = ?
+            ORDER BY p.NAME
+        `, [orderId]);
+
+        res.json({
+            success: true,
+            data: rows
+        });
+    } catch (error) {
+        console.error('Ошибка /api/my/orders/:id/items:', error);
+
+        res.status(500).json({
+            success: false,
+            error: 'Ошибка загрузки состава заказа'
+        });
+    }
+});
+
 
 app.post('/api/admin/login', async (req, res) => {
     try {
